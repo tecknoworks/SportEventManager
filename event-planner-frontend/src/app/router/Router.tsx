@@ -11,10 +11,10 @@ const RouterComponent: FC = () => (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
-        <Route path="signup" element={<SignUpPage />} />
         <Route path="test" element={<App />} />
         <Route path="*" element={<NotFound />} />
       </Route>
+      <Route path="signup" element={<SignUpPage />} />
     </Routes>
   </BrowserRouter>
 )
