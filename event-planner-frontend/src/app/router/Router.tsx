@@ -5,6 +5,7 @@ import NotFound from 'features/static-pages/NotFound'
 import Layout from './Layout'
 import SignUpPage from 'features/registration/SignUpPage'
 import App from 'App'
+import LoginPage from 'features/login/LoginPage'
 
 const RouterComponent: FC = () => (
   <BrowserRouter>
@@ -12,6 +13,7 @@ const RouterComponent: FC = () => (
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
+        <Route path='login' element={<LoginPage/>} />
         <Route path="test" element={<App />} />
         <Route path="*" element={<NotFound />} />
       </Route>
