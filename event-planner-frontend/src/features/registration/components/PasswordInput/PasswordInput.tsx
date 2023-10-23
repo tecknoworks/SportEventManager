@@ -1,0 +1,47 @@
+import {
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
+} from '@chakra-ui/react';
+
+type Props = {
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  show: boolean;
+  onToggleShow: () => void;
+  placeholder: string;
+  errorMessage: string;
+};
+
+function PasswordInput({
+  onChange,
+  show,
+  onToggleShow,
+  placeholder,
+  errorMessage,
+}: Props) {
+  return (
+    <FormControl isInvalid={errorMessage.length > 0}>
+      <FormLabel>{placeholder}</FormLabel>
+      <InputGroup size="md">
+        <Input
+          pr="75px"
+          type={show ? 'text' : 'password'}
+          placeholder={placeholder}
+          onChange={onChange}
+        />
+        <InputRightElement width="75px">
+          <Button h="28px" size="sm" onClick={onToggleShow}>
+            {show ? 'Hide' : 'Show'}
+          </Button>
+        </InputRightElement>
+      </InputGroup>
+      <FormErrorMessage>{errorMessage}</FormErrorMessage>
+    </FormControl>
+  );
+}
+
+export default PasswordInput;
