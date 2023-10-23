@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { FormEvent, useEffect } from 'react'
 import "common/styles/form.scss"
 import {
     Box,
@@ -18,28 +18,50 @@ const SignupForm = () => {
     const [showPw, setShowPw] = React.useState<boolean>(false)
     const [showCpw, setShowCpw] = React.useState<boolean>(false)
     const [isDisabled, setIsDisabled] = React.useState<boolean>(true)
+    const [error, setError] = React.useState<string>("")
 
     const [userName, setUserName] = React.useState<string>("")
     const [email, setEmail] = React.useState<string>("")
     const [phoneNumber, setPhoneNumber] = React.useState<number>(0)
-    const [password, setPassword] = React.useState<string>("");
-    const [confirmPassword, setConfirmPassword] = React.useState<string>("");
+    const [password, setPassword] = React.useState<string>("")
+    const [confirmPassword, setConfirmPassword] = React.useState<string>("")
 
-    useEffect(() => {
+    const checkIfEmptyInputValues = () : boolean => {
         if (userName !== ""
             && email !== ""
             && phoneNumber !== 0
             && password !== ""
-            && confirmPassword !== "" 
-            && password === confirmPassword) {
+            && confirmPassword !== "") {
+            return false
+        }
+
+        return true
+    }
+
+    const checkIfPasswordEqualsConfirmPassword = () : boolean=> {
+        if (password === confirmPassword)
+            return true
+        return false
+    }
+
+    useEffect(() => {
+        if (!checkIfEmptyInputValues()
+            && checkIfPasswordEqualsConfirmPassword()) {
             setIsDisabled(false)
         } else {
             setIsDisabled(true)
         }
     }, [userName, email, phoneNumber, password, confirmPassword])
 
-    const handleClickShowPw = () => setShowPw(!showPw)
-    const handleClickShowCpw = () => setShowCpw(!showCpw)
+    const handleClickShowPw = () : void => setShowPw(!showPw)
+    const handleClickShowCpw = () : void => setShowCpw(!showCpw)
+
+    function handleSubmit(event: FormEvent): void {
+        event.preventDefault()
+
+        if(password == "da")
+            setError('Function not implemented.')
+    }
 
     return (
         <Box
@@ -53,7 +75,7 @@ const SignupForm = () => {
             <Text color="gray.500" as="b" fontSize="3xl">
                 Signup
             </Text>
-            <form className="form-container">
+            <form className="form-container" onSubmit={handleSubmit}>
                 <Stack spacing={5}>
                     <FormControl isRequired>
                         <FormLabel>User name</FormLabel>
@@ -66,7 +88,7 @@ const SignupForm = () => {
                     <FormControl isRequired>
                         <FormLabel>Phone number</FormLabel>
                         <InputGroup>
-                            <InputLeftAddon children="+40" />
+                            <InputLeftAddon children="tel" />
                             <Input type="number" placeholder="Phone number" onChange={(e) => setPhoneNumber(Number(e.target.value))} />
                         </InputGroup>
                     </FormControl>
@@ -102,8 +124,10 @@ const SignupForm = () => {
                                 </Button>
                             </InputRightElement>
                         </InputGroup>
+                        <FormHelperText color="#610C9F">Confirm password must match the password!</FormHelperText>
                     </FormControl>
-                    <Button color="#610C9F" size="md" variant="solid" isDisabled={isDisabled}>
+                    <Text color="red.500" textAlign="center" fontSize='md'>{error}</Text>
+                    <Button type="submit" color="#610C9F" size="md" variant="solid" isDisabled={isDisabled}>
                         Create account
                     </Button>
                 </Stack>
