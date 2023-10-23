@@ -5,6 +5,12 @@ export function validatePassword(password: string) {
       message: 'Password must be at least 12 characters long.',
     };
 
+  if (/\s/.test(password))
+    return {
+      isValid: false,
+      message: 'Password must not contain spaces.',
+    };
+
   if (!/[a-z]/.test(password))
     return {
       isValid: false,
