@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 const LogInForm = () => {
   
-  //used for "Forgot password"
+  //used for "Forgot password test"   
   const navigate = useNavigate();
 
   const [showPw, setShowPw] = React.useState<boolean>(false);
