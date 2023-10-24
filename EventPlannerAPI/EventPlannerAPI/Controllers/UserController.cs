@@ -24,7 +24,7 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpPost("/createUser")]
-        public IActionResult CreateUser([FromBody] Placeholder user)
+        public IActionResult CreateUser([FromBody] EventPlannerUser user)
         {
             try
             {
@@ -37,7 +37,7 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpPut("/updateUser/{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] Placeholder user)
+        public IActionResult UpdateUser(int id, [FromBody] EventPlannerUser user)
         {
             try
             {
