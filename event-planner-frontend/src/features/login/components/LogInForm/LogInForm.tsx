@@ -15,7 +15,6 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const LogInForm = () => {
-
   const navigate = useNavigate();
 
   const [showPw, setShowPw] = React.useState<boolean>(false);
@@ -37,8 +36,10 @@ const LogInForm = () => {
   React.useEffect(() => {
     let tempErrors = { userNameOrEmail: '', password: '' };
 
+    
     const regex = /^[a-zA-Z0-9.@_-]+$/;
 
+  
     tempErrors.userNameOrEmail = !regex.test(userNameOrEmail) ? 'Enter a valid username or email' : "";
 
     tempErrors.password = (!password) ? 'Required' : "";
@@ -64,11 +65,13 @@ const LogInForm = () => {
       </Text>
       <form className="form-container">
         <Stack spacing={5}>
+
           <FormControl isRequired isInvalid={usernameTouched && !!errors.userNameOrEmail}>
             <FormLabel>User name / Email</FormLabel>
             <Input
               type="text"
               placeholder="User name / Email"
+
               onChange={(e) => {
                 setUserNameOrEmail(e.target.value);
                 setUsernameTouched(true)
@@ -76,6 +79,7 @@ const LogInForm = () => {
             />
             <FormErrorMessage>{errors.userNameOrEmail}</FormErrorMessage>
           </FormControl>
+
           <FormControl isRequired isInvalid={passwordTouched && !!errors.password}>
             <FormLabel>Password</FormLabel>
             <InputGroup size="md">
@@ -83,6 +87,7 @@ const LogInForm = () => {
                 pr="75px"
                 type={showPw ? 'text' : 'password'}
                 placeholder="Enter password"
+
                 onChange={(e) => {
                   setPassword(e.target.value);
                   setPasswordTouched(true)
