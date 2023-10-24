@@ -15,8 +15,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const LogInForm = () => {
-  
-  //used for "Forgot password"
+
   const navigate = useNavigate();
 
   const [showPw, setShowPw] = React.useState<boolean>(false);
@@ -28,7 +27,7 @@ const LogInForm = () => {
   const [usernameTouched, setUsernameTouched] = React.useState(false);
   const [passwordTouched, setPasswordTouched] = React.useState(false);
 
-  //create type and state for validation
+
   type FormErrorMessage = { userNameOrEmail: string; password: string };
   const [errors, setErrors] = React.useState<FormErrorMessage>({
     userNameOrEmail: '',
@@ -38,17 +37,12 @@ const LogInForm = () => {
   React.useEffect(() => {
     let tempErrors = { userNameOrEmail: '', password: '' };
 
-    //accepts username starting with a letter or a number. '-' and '_' are allowed.
-    const regex =
-      /^(?:[A-Z\d][A-Z\d_-]{5,30}|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})$/i;
+    const regex = /^[a-zA-Z0-9.@_-]+$/;
 
-    if (!regex.test(userNameOrEmail)) {
-      tempErrors.userNameOrEmail = 'Enter a valid username or email';
-    }
+    tempErrors.userNameOrEmail = !regex.test(userNameOrEmail) ? 'Enter a valid username or email' : "";
 
-    if (!password) {
-      tempErrors.password = 'Required';
-    }
+    tempErrors.password = (!password) ? 'Required' : "";
+
     setErrors(tempErrors);
 
     setIsDisabled(Object.values(tempErrors).some((error) => error !== ''));
@@ -70,24 +64,27 @@ const LogInForm = () => {
       </Text>
       <form className="form-container">
         <Stack spacing={5}>
-          <FormControl isRequired isInvalid={usernameTouched &&!!errors.userNameOrEmail}>
+          <FormControl isRequired isInvalid={usernameTouched && !!errors.userNameOrEmail}>
             <FormLabel>User name / Email</FormLabel>
             <Input
               type="text"
               placeholder="User name / Email"
-              onChange={(e) => {setUserNameOrEmail(e.target.value);
-                setUsernameTouched(true)}}
+              onChange={(e) => {
+                setUserNameOrEmail(e.target.value);
+                setUsernameTouched(true)
+              }}
             />
             <FormErrorMessage>{errors.userNameOrEmail}</FormErrorMessage>
           </FormControl>
-          <FormControl isRequired isInvalid={passwordTouched &&!!errors.password}>
+          <FormControl isRequired isInvalid={passwordTouched && !!errors.password}>
             <FormLabel>Password</FormLabel>
             <InputGroup size="md">
               <Input
                 pr="75px"
                 type={showPw ? 'text' : 'password'}
                 placeholder="Enter password"
-                onChange={(e) => {setPassword(e.target.value);
+                onChange={(e) => {
+                  setPassword(e.target.value);
                   setPasswordTouched(true)
                 }}
               />
