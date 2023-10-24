@@ -1,4 +1,6 @@
-﻿using DataAccessLayer.Models;
+﻿using BusinessLayer.DTOs;
+using BusinessLayer.Interfaces;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,20 +10,33 @@ namespace EventPlannerAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public UserController() { }
 
-        [HttpGet("/getUsers")] 
-        public IActionResult GetUsers()
+        private IUserLogicService _userLogicService;
+
+        public UserController(IUserLogicService userLogicService)
         {
-            try
-            {
-                return Ok("Get users works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            this._userLogicService = userLogicService;
         }
+
+        [HttpPost("/login")]
+        public async Task<IActionResult> Login([FromBody]LogInUserDto logInUserDto)
+        {
+            var result = await _userLogicService.LogIn(logInUserDto);
+
+            if (!result) return BadRequest("Invalid login attempt.");
+
+            return Ok("token");
+        }
+
+
+
+
+
+
+
+
+
+
 
         [HttpPost("/createUser")]
         public IActionResult CreateUser([FromBody] EventPlannerUser user)

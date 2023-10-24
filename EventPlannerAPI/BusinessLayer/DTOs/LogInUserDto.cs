@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.DTOs
 {
-    internal class PlaceholderDto
+    public class LogInUserDto
     {
+        public string UserIdentifier { get; set; }
+        public string Password { get; set; }
     }
 }

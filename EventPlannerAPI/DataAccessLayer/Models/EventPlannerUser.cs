@@ -9,5 +9,7 @@ namespace DataAccessLayer.Models
 {
     public class EventPlannerUser : IdentityUser
     {
+
+
     }
 }

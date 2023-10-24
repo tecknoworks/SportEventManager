@@ -14,6 +14,8 @@ namespace DataAccessLayer.Contexts
         {
             base.OnModelCreating(modelBuilder);
         }
+
+      
     }   
 
 }
