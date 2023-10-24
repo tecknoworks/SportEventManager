@@ -1,4 +1,6 @@
-﻿using DataAccessLayer.Models;
+﻿using BusinessLayer.Interfaces;
+using BusinessLayer.DTOs;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +10,11 @@ namespace EventPlannerAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public UserController() { }
+        private readonly IUserLogicServices _userLogicServices;
+        public UserController(IUserLogicServices userLogicServices) 
+        {
+            _userLogicServices = userLogicServices;
+        }
 
         [HttpGet("/getUsers")] 
         public IActionResult GetUsers()
@@ -23,12 +29,15 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("/createUser")]
-        public IActionResult CreateUser([FromBody] EventPlannerUser user)
+        public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
         {
             try
             {
-                return Ok("Create user works!");
+                await _userLogicServices.CreateUserAsyncLogic(newUser);
+                return Ok();
             }
             catch (Exception ex)
             {

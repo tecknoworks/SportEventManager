@@ -1,5 +1,9 @@
+using BusinessLayer.Interfaces;
+using BusinessLayer.Services;
 using DataAccessLayer.Contexts;
+using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Services;
 using EventPlannerAPI.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +22,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddScoped<IUserLogicServices, UserLogicServices>();
+builder.Services.AddScoped<IUserServices, UserServices>();
+
 builder.Services.AddIdentity<EventPlannerUser, IdentityRole>()
     .AddEntityFrameworkStores<EventPlannerContext>()
     .AddDefaultTokenProviders();
@@ -25,7 +32,7 @@ builder.Services.AddIdentity<EventPlannerUser, IdentityRole>()
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<EventPlannerContext>(options =>
-options.UseSqlServer(builder.Configuration["ConnectionStrings:Local"]));
+    options.UseSqlServer(builder.Configuration["ConnectionStrings:Local"]));
 
 var app = builder.Build();
 
