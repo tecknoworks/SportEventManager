@@ -36,7 +36,9 @@ namespace EventPlannerAPI.Controllers
         {
             try
             {
-                await _userLogicServices.CreateUserAsyncLogic(newUser);
+                var result = await _userLogicServices.CreateUserAsyncLogic(newUser);
+
+                if (!result.Succeeded) return BadRequest(result.Errors);
                 return Ok();
             }
             catch (Exception ex)

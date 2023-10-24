@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace BusinessLayer.Interfaces
 {
     public interface IUserLogicServices
     {
-        Task CreateUserAsyncLogic(UserDto user);
+        Task<IdentityResult> CreateUserAsyncLogic(UserDto user);
     }
 }

@@ -3,6 +3,7 @@ using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,16 +22,16 @@ namespace BusinessLayer.Services
             _userServices = userServices;
             _mapper = mapper;
         }
-        public async Task CreateUserAsyncLogic(UserDto newUser)
+        public async Task<IdentityResult> CreateUserAsyncLogic(UserDto newUser)
         {
             var user = _mapper.Map<EventPlannerUser>(newUser);
             try
             {
-                await _userServices.CreateUserAsync(user, newUser.Password);
+                return await _userServices.CreateUserAsync(user, newUser.Password);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error occured in User service logic on create", ex);
+                throw new Exception(ex.Message);
             }
         }
     }
