@@ -29,15 +29,6 @@ namespace EventPlannerAPI.Controllers
         }
 
 
-
-
-
-
-
-
-
-
-
         [HttpPost("/createUser")]
         public IActionResult CreateUser([FromBody] EventPlannerUser user)
         {
