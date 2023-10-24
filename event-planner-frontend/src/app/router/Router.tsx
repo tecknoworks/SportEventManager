@@ -1,10 +1,10 @@
-import { FC } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import HomePage from 'features/homepage/HomePage'
-import NotFound from 'features/static-pages/NotFound'
-import Layout from './Layout'
-import SignUpPage from 'features/registration/SignUpPage'
-import App from 'App'
+import { FC } from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from 'features/homepage/HomePage';
+import NotFound from 'features/static-pages/NotFound';
+import Layout from './Layout';
+import SignUpPage from 'features/registration/SignUpPage';
+import App from 'App';
 
 const RouterComponent: FC = () => (
   <BrowserRouter>
@@ -17,6 +17,6 @@ const RouterComponent: FC = () => (
       <Route path="signup" element={<SignUpPage />} />
     </Routes>
   </BrowserRouter>
-)
+);
 
-export default RouterComponent
+export default RouterComponent;
