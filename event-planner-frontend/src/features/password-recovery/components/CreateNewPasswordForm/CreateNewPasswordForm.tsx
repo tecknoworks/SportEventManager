@@ -3,7 +3,7 @@ import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import React, { useEffect, useState } from 'react';
 import { validatePassword } from 'common/validators/passwordValidator';
 import { useDebounce } from 'use-debounce';
-import PasswordInput from '../PasswordInput/PasswordInput';
+import PasswordInput from '../../../../common/components/PasswordInput/PasswordInput';
 
 function CreateNewPasswordForm() {
   const [passwords, setPasswords] = useState({

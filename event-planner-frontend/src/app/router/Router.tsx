@@ -5,8 +5,8 @@ import NotFound from 'features/static-pages/NotFound';
 import Layout from './Layout';
 import SignUpPage from 'features/registration/views/SignUpPage';
 import App from 'App';
-import PasswordRecoveryPage from 'features/registration/views/PasswordRecoveryPage';
-import CreateNewPasswordPage from 'features/registration/views/CreateNewPasswordPage';
+import PasswordRecoveryPage from 'features/password-recovery/views/PasswordRecoveryPage';
+import CreateNewPasswordPage from 'features/password-recovery/views/CreateNewPasswordPage';
 
 const RouterComponent: FC = () => (
   <BrowserRouter>

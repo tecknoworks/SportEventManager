@@ -1,3 +1,3 @@
 export * from './SignUpPage';
-export * from './CreateNewPasswordPage';
-export * from './PasswordRecoveryPage';
+export * from '../../password-recovery/views/CreateNewPasswordPage';
+export * from '../../password-recovery/views/PasswordRecoveryPage';
