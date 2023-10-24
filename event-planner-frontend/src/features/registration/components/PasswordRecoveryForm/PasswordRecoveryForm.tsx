@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import 'common/styles/form.scss';
 import { isValidEmail } from 'common/validators/emailValidator';
-import PrimaryButton from 'common/buttons/PrimaryButton';
+import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { useDebounce } from 'use-debounce';
 
 function PasswordRecoveryForm() {

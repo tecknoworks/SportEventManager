@@ -1,5 +1,5 @@
 import { Box, Stack, Text } from '@chakra-ui/react';
-import PrimaryButton from 'common/buttons/PrimaryButton';
+import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import React, { useEffect, useState } from 'react';
 import { validatePassword } from 'common/validators/passwordValidator';
 import { useDebounce } from 'use-debounce';
