@@ -1,8 +1,7 @@
-﻿using BusinessLayer.Helpers;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BusinessLayer.Helpers
+namespace DataAccessLayer.Helpers
 {
     public class RoleHelper
     {

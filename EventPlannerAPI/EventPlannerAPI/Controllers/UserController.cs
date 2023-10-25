@@ -1,8 +1,7 @@
-﻿using BusinessLayer.Interfaces;
-using BusinessLayer.DTOs;
-using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Http;
+﻿﻿using BusinessLayer.DTOs;
+using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -11,63 +10,39 @@ namespace EventPlannerAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService) 
+
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
 
-        [HttpGet("/getUsers")] 
-        public IActionResult GetUsers()
-        {
-            try
-            {
-                return Ok("Get users works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [ProducesResponseType(StatusCodes.Status201Created)]
+		 [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("/createUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
         {
             var result = await _userService.CreateUserAsyncLogic(newUser);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            return Ok();  
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("User created!");  
         }
 
-        [HttpPut("/updateUser/{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] EventPlannerUser user)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
-            try
-            {
-                return Ok("Update user works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var errorMessage = await _userService.SendPasswordResetLinkAsync(forgotPasswordDto);
+            if (!errorMessage.IsNullOrEmpty()) return BadRequest(errorMessage);
+            return Ok("If there's an account associated with this email address, we've sent instructions for resetting the password.");
         }
 
-        [HttpDelete("/deleteUser/{id}")]
-        public IActionResult DeleteUsers(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("SetNewPassword")]
+        public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordDto setNewPasswordDto)
         {
-            try
-            {
-                return Ok("Delete user works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _userService.SetNewPasswordAsync(setNewPasswordDto);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("Password reset successfully.");   
         }
     }
 }
