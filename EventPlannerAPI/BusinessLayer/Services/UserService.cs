@@ -5,22 +5,25 @@ using BusinessLayer.Models;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using System.Net.Http.Headers;
 
 namespace BusinessLayer.Services
 {
     public class UserService : IUserService
     {
-        private readonly DataAccessLayer.Interfaces.IUserRepository _userService;
+        private readonly IUserRepository _userService;
         private readonly IMailService _mailService;
         private readonly IMapper _mapper;
         private readonly Serilog.ILogger _logger;
-        public UserService(DataAccessLayer.Interfaces.IUserRepository userService, IMailService mailService, IMapper mapper, Serilog.ILogger logger)
+        private readonly IConfiguration _configuration;
+        public UserService(IUserRepository userService, IMailService mailService, IMapper mapper, Serilog.ILogger logger, IConfiguration configuration)
         {
             _userService = userService;
             _mailService = mailService;
             _mapper = mapper;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto)
@@ -36,7 +39,8 @@ namespace BusinessLayer.Services
                 }
 
                 var token = await _userService.GeneratePasswordResetTokenAsync(user);
-                var resetLink = "https://eventplanner.com/reset-password?token=" + token;
+                var baseUrl = _configuration["FrontendBaseUrl"];
+                var resetLink = baseUrl + "/reset-password?token=" + token;
 
                 var mail = MailRequest.ResetPassword(user.Email, user.UserName, resetLink);
 

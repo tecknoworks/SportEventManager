@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using BusinessLayer.Helpers;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace EventPlannerAPI.Helpers
@@ -8,13 +9,13 @@ namespace EventPlannerAPI.Helpers
         public static async Task InitializeRoles(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            string[] roleNames = { "Admin", "User" };
+            var roles = RoleConstants.Roles;
 
-            foreach (var roleName in roleNames)
+            foreach (var role in roles)
             {
-                if (!await roleManager.RoleExistsAsync(roleName))
+                if (!await roleManager.RoleExistsAsync(role))
                 {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                    await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
         }
