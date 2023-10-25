@@ -1,10 +1,10 @@
 using BusinessLayer.Interfaces;
 using BusinessLayer.Services;
 using DataAccessLayer.Contexts;
+using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using DataAccessLayer.Services;
-using EventPlannerAPI.Helpers;
 using EventPlannerAPI.Settings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
