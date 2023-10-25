@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IUserService
+    public interface IUserRepository
     {
         public Task<bool> LogIn(string userIdentifier, string password);
     }

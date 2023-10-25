@@ -11,22 +11,35 @@ namespace EventPlannerAPI.Controllers
     public class UserController : ControllerBase
     {
 
-        private IUserLogicService _userLogicService;
+        private IUserService _userService;
 
-        public UserController(IUserLogicService userLogicService)
+        public UserController(IUserService userService)
         {
-            this._userLogicService = userLogicService;
+            this._userService = userService;
         }
 
         [HttpPost("/login")]
         public async Task<IActionResult> Login([FromBody]LogInUserDto logInUserDto)
         {
-            var result = await _userLogicService.LogIn(logInUserDto);
+            if(!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                return BadRequest(errors);
+            }
+            if (await _userService.LogIn(logInUserDto))
+            {
+                var tokenString = _userService.GenerateTokenString(logInUserDto);
+                return Ok(tokenString);
+            }
+            return BadRequest("bad request");
 
-            if (!result) return BadRequest("Invalid login attempt.");
-
-            return Ok("token");
         }
+
+
+
+
+
+
 
 
         [HttpPost("/createUser")]

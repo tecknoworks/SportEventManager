@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Interfaces
 {
-    public interface IUserLogicService
+    public interface IUserService
     {
+        string GenerateTokenString(LogInUserDto logInUserDto);
         public Task<bool> LogIn(LogInUserDto eventPlannerUser);
+       
     }
 }
