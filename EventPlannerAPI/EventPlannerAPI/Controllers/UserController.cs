@@ -34,17 +34,14 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("/createUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
         {
-            try
-            {
-                var result = await _userLogicServices.CreateUserAsyncLogic(newUser);
+            var result = await _userLogicServices.CreateUserAsyncLogic(newUser);
 
-                if (!result.Succeeded) return BadRequest(result.Errors);
-                return Ok();
-            }
-            catch (Exception ex)
+            if (!result.Succeeded)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(result.Errors);
             }
+
+            return Ok();  
         }
 
         [HttpPut("/updateUser/{id}")]

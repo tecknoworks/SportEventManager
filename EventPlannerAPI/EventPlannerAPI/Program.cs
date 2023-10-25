@@ -25,7 +25,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserLogicServices, UserLogicServices>();
 builder.Services.AddScoped<IUserServices, UserServices>();
 
-builder.Services.AddIdentity<EventPlannerUser, IdentityRole>()
+builder.Services.AddIdentity<EventPlannerUser, IdentityRole>(options =>
+{
+    options.Password.RequiredLength = 12;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+
+    options.User.RequireUniqueEmail = true;
+})
     .AddEntityFrameworkStores<EventPlannerContext>()
     .AddDefaultTokenProviders();
 
