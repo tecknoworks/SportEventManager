@@ -10,6 +10,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true);
+
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
