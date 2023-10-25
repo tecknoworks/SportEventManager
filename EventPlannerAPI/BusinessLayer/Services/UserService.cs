@@ -9,13 +9,13 @@ using System.Net.Http.Headers;
 
 namespace BusinessLayer.Services
 {
-    public class UserLogicService : IUserLogicService
+    public class UserService : IUserService
     {
-        private readonly IUserService _userService;
+        private readonly DataAccessLayer.Interfaces.IUserRepository _userService;
         private readonly IMailService _mailService;
         private readonly IMapper _mapper;
         private readonly Serilog.ILogger _logger;
-        public UserLogicService(IUserService userService, IMailService mailService, IMapper mapper, Serilog.ILogger logger)
+        public UserService(DataAccessLayer.Interfaces.IUserRepository userService, IMailService mailService, IMapper mapper, Serilog.ILogger logger)
         {
             _userService = userService;
             _mailService = mailService;

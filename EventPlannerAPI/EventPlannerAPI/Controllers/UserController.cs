@@ -9,9 +9,9 @@ namespace EventPlannerAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserLogicService _userLogicService;
+        private readonly IUserService _userLogicService;
 
-        public UserController(IUserLogicService userLogicService)
+        public UserController(IUserService userLogicService)
         {
             _userLogicService = userLogicService;
         }

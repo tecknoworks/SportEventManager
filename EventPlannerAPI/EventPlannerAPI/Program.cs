@@ -12,8 +12,6 @@ using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true);
-
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/event-planner.log", rollingInterval: RollingInterval.Day)
@@ -52,8 +50,8 @@ builder.Services.AddDbContext<EventPlannerContext>(options =>
 options.UseSqlServer(builder.Configuration["ConnectionStrings:Local"]));
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddTransient<IMailService, MailService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IUserLogicService, UserLogicService>();
 
 
 var app = builder.Build();

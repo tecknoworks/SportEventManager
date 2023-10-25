@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IUserService
+    public interface IUserRepository
     {
         Task<EventPlannerUser> FindByEmailAsync(string email);
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
