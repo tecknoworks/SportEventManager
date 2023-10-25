@@ -3,6 +3,7 @@ using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -14,12 +15,27 @@ namespace BusinessLayer.Services
         private readonly IMailService _mailService;
         private readonly Serilog.ILogger _logger;
         private readonly IConfiguration _configuration;
-        public UserService(IUserRepository userRepository, IMailService mailService, Serilog.ILogger logger, IConfiguration configuration)
+		private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMailService mailService, Serilog.ILogger logger, IConfiguration configuration,  IMapper mapper)
         {
             _userRepository = userRepository;
             _mailService = mailService;
             _logger = logger;
             _configuration = configuration;
+			_mapper = mapper;
+        }
+
+		 public async Task<IdentityResult> CreateUserAsyncLogic(UserDto newUser)
+        {
+            var user = _mapper.Map<EventPlannerUser>(newUser);
+            try
+            {
+                return await _userRepository.CreateUserAsync(user, newUser.Password);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto)

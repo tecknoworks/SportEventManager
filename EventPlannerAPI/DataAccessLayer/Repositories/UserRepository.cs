@@ -1,19 +1,55 @@
 ﻿using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
-
+using DataAccessLayer.Helpers;
 
 namespace DataAccessLayer.Services
 {
     public class UserRepository : IUserRepository
     {
+		private readonly EventPlannerContext _eventPlannerContext;
         private readonly UserManager<EventPlannerUser> _userManager;
         private readonly Serilog.ILogger _logger;
+        private readonly SignInManager<EventPlannerUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserRepository(UserManager<EventPlannerUser> userManager, Serilog.ILogger logger)
+        public UserRepository(EventPlannerContext eventPlannerContext, UserManager<EventPlannerUser> userManager, Serilog.ILogger logger, SignInManager<EventPlannerUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
+			_eventPlannerContext = eventPlannerContext;
             _userManager = userManager;
             _logger = logger;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+        }
+
+ 		public async Task<IdentityResult> CreateUserAsync (EventPlannerUser user, string password)
+        {
+            try
+            {
+                var userRole = RoleConstants.USER_ROLE;
+                bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
+                if (!userRoleExists)
+                {
+ 					_logger.Error("Error in user role management!");
+                	var error = new IdentityError() { Description = "Error while creating user!" };
+                    return IdentityResult.Failed(error);
+                }
+
+                var result = await _userManager.CreateAsync(user, password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(user, userRole);
+                }
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error while creating user!");
+                var error = new IdentityError() { Description = "Error while creating user!" };
+                return IdentityResult.Failed(error);
+            }
         }
 
         public async Task<EventPlannerUser> FindByEmailAsync(string email)

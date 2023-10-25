@@ -1,4 +1,4 @@
-﻿using BusinessLayer.DTOs;
+﻿﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -11,9 +11,19 @@ namespace EventPlannerAPI.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController(IUserService userLogicService)
+        public UserController(IUserService userService)
         {
-            _userService = userLogicService;
+            _userService = userService;
+        }
+
+		 [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("/createUser")]
+        public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
+        {
+            var result = await _userService.CreateUserAsyncLogic(newUser);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("User created!");  
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]

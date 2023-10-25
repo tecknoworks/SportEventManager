@@ -5,6 +5,7 @@ namespace DataAccessLayer.Interfaces
 {
     public interface IUserRepository
     {
+		Task<IdentityResult> CreateUserAsync(EventPlannerUser user, string password);
         Task<EventPlannerUser> FindByEmailAsync(string email);
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
         Task<IdentityResult> ResetPasswordAsync(EventPlannerUser user, string token, string newPassword);
