@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Contexts;
+﻿using BusinessLayer.Helpers;
+using DataAccessLayer.Contexts;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
@@ -28,18 +29,16 @@ namespace DataAccessLayer.Services
             try
             {
                 var result = await _userManager.CreateAsync(user, password);
+                var userRole = RoleConstants.USER_ROLE;
                 if (result.Succeeded)
                 {
-                    bool userRoleExists = await _roleManager.RoleExistsAsync("User");
+                    bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
                     if (!userRoleExists)
                     {
-                       var roleResult = await _roleManager.CreateAsync(new IdentityRole("User"));
-                       if (!roleResult.Succeeded) {
-                            throw new Exception("User role does not exist and could not be created");
-                       }
+                       throw new Exception("User role does not exist");
                     }
 
-                    await _userManager.AddToRoleAsync(user, "User");
+                    await _userManager.AddToRoleAsync(user, userRole);
                 }
                 return result;
             }
