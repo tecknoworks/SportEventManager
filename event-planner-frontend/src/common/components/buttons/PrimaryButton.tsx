@@ -5,9 +5,10 @@ type Props = {
   text: string;
   isDisabled: boolean;
   className?: string;
+  onClick: any;
 };
 
-function PrimaryButton({ text, isDisabled, className }: Props) {
+function PrimaryButton({ text, isDisabled, className, onClick }: Props) {
   return (
     <Button
       className={className}
@@ -15,6 +16,7 @@ function PrimaryButton({ text, isDisabled, className }: Props) {
       colorScheme="purple"
       size="md"
       variant="solid"
+      onClick={onClick}
     >
       {text}
     </Button>

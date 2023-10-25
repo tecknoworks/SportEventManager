@@ -92,7 +92,11 @@ function CreateNewPasswordForm() {
             placeholder="Confirm password"
             errorMessage={confirmPasswordErrorMessage}
           />
-          <PrimaryButton isDisabled={isDisabled} text="Set new password" />
+          <PrimaryButton
+            isDisabled={isDisabled}
+            text="Set new password"
+            onClick={() => {}}
+          />
         </Stack>
       </form>
     </Box>

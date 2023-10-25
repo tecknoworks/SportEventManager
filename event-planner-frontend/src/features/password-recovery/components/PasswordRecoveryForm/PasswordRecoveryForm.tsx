@@ -6,18 +6,25 @@ import {
   Input,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import 'common/styles/form.scss';
 import { isValidEmail } from 'common/validators/emailValidator';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { useDebounce } from 'use-debounce';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'redux/store';
+import { resetLinkThunk } from 'features/password-recovery/store/thunks/resetLinkThunk';
+import { ForgotPasswordDto } from 'features/password-recovery/api/dtos';
 
 function PasswordRecoveryForm() {
   const [email, setEmail] = useState<string>('');
   const [debouncedEmail] = useDebounce(email, 700);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
     if (!debouncedEmail) return;
@@ -29,6 +36,13 @@ function PasswordRecoveryForm() {
       setErrorMessage('Please enter a valid email address.');
     }
   }, [debouncedEmail]);
+
+  const handleSubmit = () => {
+    let forgetPasswordDto: ForgotPasswordDto = {
+      email: debouncedEmail,
+    };
+    dispatch(resetLinkThunk(forgetPasswordDto));
+  };
 
   return (
     <Box
@@ -42,7 +56,6 @@ function PasswordRecoveryForm() {
       <Text color="black.500" as="b" fontSize="3xl">
         Recover password
       </Text>
-
       <form className="form-container">
         <Stack spacing={5}>
           <Text color="gray.500" fontSize="md">
@@ -59,7 +72,11 @@ function PasswordRecoveryForm() {
             <FormErrorMessage>{errorMessage}</FormErrorMessage>
           </FormControl>
 
-          <PrimaryButton isDisabled={isDisabled} text="Recover password" />
+          <PrimaryButton
+            isDisabled={isDisabled}
+            text="Recover password"
+            onClick={() => handleSubmit()}
+          />
         </Stack>
       </form>
     </Box>
