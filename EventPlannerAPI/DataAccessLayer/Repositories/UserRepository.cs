@@ -34,15 +34,13 @@ namespace DataAccessLayer.Services
                 {
                     throw new Exception("User role does not exist");
                 }
-                else
+
+                var result = await _userManager.CreateAsync(user, password);
+                if (result.Succeeded)
                 {
-                    var result = await _userManager.CreateAsync(user, password);
-                    if (result.Succeeded)
-                    {
-                        await _userManager.AddToRoleAsync(user, userRole);
-                    }
-                    return result;
+                    await _userManager.AddToRoleAsync(user, userRole);
                 }
+                return result;
 
             }
             catch (Exception ex)
