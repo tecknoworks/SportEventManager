@@ -28,19 +28,22 @@ namespace DataAccessLayer.Services
         {
             try
             {
-                var result = await _userManager.CreateAsync(user, password);
                 var userRole = RoleConstants.USER_ROLE;
-                if (result.Succeeded)
+                bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
+                if (!userRoleExists)
                 {
-                    bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
-                    if (!userRoleExists)
-                    {
-                       throw new Exception("User role does not exist");
-                    }
-
-                    await _userManager.AddToRoleAsync(user, userRole);
+                    throw new Exception("User role does not exist");
                 }
-                return result;
+                else
+                {
+                    var result = await _userManager.CreateAsync(user, password);
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, userRole);
+                    }
+                    return result;
+                }
+
             }
             catch (Exception ex)
             {
