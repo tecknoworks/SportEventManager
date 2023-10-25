@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.Text;
 
-namespace BusinessLayer.Models
+namespace DataAccessLayer.Helpers
 {
     public class MailRequest
     {

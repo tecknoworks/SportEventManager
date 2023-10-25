@@ -1,5 +1,5 @@
 ﻿using BusinessLayer.Interfaces;
-using BusinessLayer.Models;
+using DataAccessLayer.Helpers;
 using EventPlannerAPI.Settings;
 using MailKit.Net.Smtp;
 using MailKit.Security;

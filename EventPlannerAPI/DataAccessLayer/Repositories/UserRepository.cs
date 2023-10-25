@@ -1,5 +1,4 @@
-﻿using DataAccessLayer.Contexts;
-using DataAccessLayer.Interfaces;
+﻿using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,16 +7,12 @@ namespace DataAccessLayer.Services
 {
     public class UserRepository : IUserRepository
     {
-        private readonly EventPlannerContext _eventPlannerContext;
         private readonly UserManager<EventPlannerUser> _userManager;
-        private readonly SignInManager<EventPlannerUser> _signInManager;
         private readonly Serilog.ILogger _logger;
 
-        public UserRepository(UserManager<EventPlannerUser> userManager, SignInManager<EventPlannerUser> signInManager, EventPlannerContext eventPlannerContext, Serilog.ILogger logger)
+        public UserRepository(UserManager<EventPlannerUser> userManager, Serilog.ILogger logger)
         {
-            _eventPlannerContext = eventPlannerContext;
             _userManager = userManager;
-            _signInManager = signInManager;
             _logger = logger;
         }
 

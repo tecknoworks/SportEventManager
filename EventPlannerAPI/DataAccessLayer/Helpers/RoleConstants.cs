@@ -1,4 +1,4 @@
-﻿namespace BusinessLayer.Helpers
+﻿namespace DataAccessLayer.Helpers
 {
     static class RoleConstants
     {

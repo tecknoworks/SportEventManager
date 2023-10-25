@@ -1,27 +1,23 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
-using BusinessLayer.Models;
+using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
-using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System.Net.Http.Headers;
 
 namespace BusinessLayer.Services
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IMailService _mailService;
-        private readonly IMapper _mapper;
         private readonly Serilog.ILogger _logger;
         private readonly IConfiguration _configuration;
-        public UserService(IUserRepository userService, IMailService mailService, IMapper mapper, Serilog.ILogger logger, IConfiguration configuration)
+        public UserService(IUserRepository userRepository, IMailService mailService, Serilog.ILogger logger, IConfiguration configuration)
         {
-            _userService = userService;
+            _userRepository = userRepository;
             _mailService = mailService;
-            _mapper = mapper;
             _logger = logger;
             _configuration = configuration;
         }
@@ -30,7 +26,7 @@ namespace BusinessLayer.Services
         {
             try 
             {
-                var user = await _userService.FindByEmailAsync(forgotPasswordDto.Email);
+                var user = await _userRepository.FindByEmailAsync(forgotPasswordDto.Email);
 
                 if (user == null)
                 {
@@ -38,8 +34,8 @@ namespace BusinessLayer.Services
                     return string.Empty;
                 }
 
-                var token = await _userService.GeneratePasswordResetTokenAsync(user);
-                var baseUrl = _configuration["FrontendBaseUrl"];
+                var token = await _userRepository.GeneratePasswordResetTokenAsync(user);
+                var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
                 var resetLink = baseUrl + "/reset-password?token=" + token;
 
                 var mail = MailRequest.ResetPassword(user.Email, user.UserName, resetLink);
@@ -58,7 +54,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                var user = await _userService.FindByEmailAsync(setNewPasswordDto.Email);
+                var user = await _userRepository.FindByEmailAsync(setNewPasswordDto.Email);
 
                 if (user == null)
                 {
@@ -66,7 +62,7 @@ namespace BusinessLayer.Services
                     return IdentityResult.Failed(error);
                 }
 
-                return await _userService.ResetPasswordAsync(user, setNewPasswordDto.Token, setNewPasswordDto.Password);
+                return await _userRepository.ResetPasswordAsync(user, setNewPasswordDto.Token, setNewPasswordDto.Password);
             }
             catch (Exception ex)
             {
