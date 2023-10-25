@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Services
 {
-    public class UserLogicServices : IUserLogicServices
+    public class UserService : IUserService
     {
-        private readonly IUserServices _userServices;
+        private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
 
-        public UserLogicServices(IUserServices userServices, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper)
         {
-            _userServices = userServices;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
         public async Task<IdentityResult> CreateUserAsyncLogic(UserDto newUser)
@@ -27,7 +27,7 @@ namespace BusinessLayer.Services
             var user = _mapper.Map<EventPlannerUser>(newUser);
             try
             {
-                return await _userServices.CreateUserAsync(user, newUser.Password);
+                return await _userRepository.CreateUserAsync(user, newUser.Password);
             }
             catch (Exception ex)
             {

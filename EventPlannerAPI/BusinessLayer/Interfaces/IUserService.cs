@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Interfaces
 {
-    public interface IUserLogicServices
+    public interface IUserService
     {
         Task<IdentityResult> CreateUserAsyncLogic(UserDto user);
     }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Interfaces
 {
-    public interface IUserServices
+    public interface IUserRepository
     {
         public Task<IdentityResult> CreateUserAsync(EventPlannerUser user, string password);
     }

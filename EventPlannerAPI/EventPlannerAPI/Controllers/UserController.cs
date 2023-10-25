@@ -10,10 +10,10 @@ namespace EventPlannerAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IUserLogicServices _userLogicServices;
-        public UserController(IUserLogicServices userLogicServices) 
+        private readonly IUserService _userService;
+        public UserController(IUserService userService) 
         {
-            _userLogicServices = userLogicServices;
+            _userService = userService;
         }
 
         [HttpGet("/getUsers")] 
@@ -34,7 +34,7 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("/createUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
         {
-            var result = await _userLogicServices.CreateUserAsyncLogic(newUser);
+            var result = await _userService.CreateUserAsyncLogic(newUser);
 
             if (!result.Succeeded)
             {

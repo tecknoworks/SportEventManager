@@ -8,14 +8,14 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DataAccessLayer.Services
 {
-    public class UserServices: IUserServices
+    public class UserRepository : IUserRepository
     {
         private readonly EventPlannerContext _eventPlannerContext;
         private readonly UserManager<EventPlannerUser> _userManager;
         private readonly SignInManager<EventPlannerUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
-        public UserServices(EventPlannerContext eventPlannerContext, UserManager<EventPlannerUser> userManager, SignInManager<EventPlannerUser> signInManager, RoleManager<IdentityRole> roleManager)
+        public UserRepository(EventPlannerContext eventPlannerContext, UserManager<EventPlannerUser> userManager, SignInManager<EventPlannerUser> signInManager, RoleManager<IdentityRole> roleManager)
         {
             _eventPlannerContext = eventPlannerContext;
             _userManager = userManager;

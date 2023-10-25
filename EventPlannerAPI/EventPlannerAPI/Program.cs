@@ -24,8 +24,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserLogicServices, UserLogicServices>();
-builder.Services.AddScoped<IUserServices, UserServices>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddIdentity<EventPlannerUser, IdentityRole>(options =>
 {
