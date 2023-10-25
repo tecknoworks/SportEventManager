@@ -10,6 +10,7 @@ import {
   InputLeftAddon,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import PasswordInput from 'common/components/PasswordInput/PasswordInput';
@@ -17,6 +18,11 @@ import { useDebounce } from 'use-debounce';
 import { errorPassword } from 'common/validators/passwordValidator';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
+import { UserDto } from 'features/registration/api/Dtos';
+import { useAppDispatch } from 'redux/store';
+import { createUser } from 'features/registration/thunks/signupThunks';
+import { selectUser } from 'features/registration/store/signupPageSelector';
+import { useSelector } from 'react-redux';
 
 interface Account {
   userName: string;
@@ -30,6 +36,9 @@ interface Account {
 
 const SignupForm = () => {
   const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
+  const dispatch = useAppDispatch();
+  const userInfo = useSelector(selectUser);
+  const toast = useToast();
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
@@ -115,10 +124,36 @@ const SignupForm = () => {
     );
   }, [debouncedAccount]);
 
+  useEffect(() => {
+    if (userInfo.status === 'pending') {
+      console.log('loading');
+    }
+    if (userInfo.status === 'succeeded') {
+      toast({
+        title: 'Account created.',
+        description: "We've created your account for you.",
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+
+    if (userInfo.status === 'failed') {
+      console.log('failed');
+    }
+  }, [userInfo]);
+
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
 
-    console.log('Account created', account);
+    const data: UserDto = {
+      userName: account.userName,
+      email: account.email,
+      phoneNumber: account.phoneNumber,
+      password: account.password,
+    };
+
+    dispatch(createUser(data));
   }
 
   return (
