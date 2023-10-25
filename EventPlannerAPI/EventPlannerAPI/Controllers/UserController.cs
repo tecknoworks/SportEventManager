@@ -1,8 +1,7 @@
-﻿using BusinessLayer.DTOs;
+﻿﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
-using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -10,75 +9,60 @@ namespace EventPlannerAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
-        private IUserService _userService;
+        private readonly IUserService _userService;
 
         public UserController(IUserService userService)
         {
-            this._userService = userService;
+            _userService = userService;
         }
 
-        [HttpPost("/login")]
-        public async Task<IActionResult> Login([FromBody]LogInUserDto logInUserDto)
+		[ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("CreateUser")]
+        public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
         {
-            if(!ModelState.IsValid)
+            var result = await _userService.CreateUserAsyncLogic(newUser);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("User created!");  
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginAsync([FromBody] LogInUserDto logInUserDto)
+        {
+            if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 return BadRequest(errors);
             }
-            if (await _userService.LogIn(logInUserDto))
+            var resposnse = await _userService.LogInAsync(logInUserDto);
+            if (!resposnse)
             {
-                var tokenString = _userService.GenerateTokenString(logInUserDto);
-                return Ok(tokenString);
+                return BadRequest();
             }
-            return BadRequest("bad request");
+            var tokenString = _userService.GenerateTokenString(logInUserDto);
+            return Ok(tokenString);
 
         }
 
-
-
-
-
-
-
-
-        [HttpPost("/createUser")]
-        public IActionResult CreateUser([FromBody] EventPlannerUser user)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
-            try
-            {
-                return Ok("Create user works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var errorMessage = await _userService.SendPasswordResetLinkAsync(forgotPasswordDto);
+            if (!errorMessage.IsNullOrEmpty()) return BadRequest(errorMessage);
+            return Ok("If there's an account associated with this email address, we've sent instructions for resetting the password.");
         }
 
-        [HttpPut("/updateUser/{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] EventPlannerUser user)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("SetNewPassword")]
+        public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordDto setNewPasswordDto)
         {
-            try
-            {
-                return Ok("Update user works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("/deleteUser/{id}")]
-        public IActionResult DeleteUsers(int id)
-        {
-            try
-            {
-                return Ok("Delete user works!");
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            var result = await _userService.SetNewPasswordAsync(setNewPasswordDto);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("Password reset successfully.");   
         }
     }
 }

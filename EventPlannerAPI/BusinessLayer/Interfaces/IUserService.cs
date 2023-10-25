@@ -1,17 +1,15 @@
 ﻿using BusinessLayer.DTOs;
-using DataAccessLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace BusinessLayer.Interfaces
 {
     public interface IUserService
     {
+		Task<IdentityResult> CreateUserAsyncLogic(UserDto user);
+        Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto);
+        Task<IdentityResult> SetNewPasswordAsync(SetNewPasswordDto setNewPasswordDto);
         string GenerateTokenString(LogInUserDto logInUserDto);
-        public Task<bool> LogIn(LogInUserDto eventPlannerUser);
+        Task<bool> LogInAsync(LogInUserDto eventPlannerUser);
        
     }
 }

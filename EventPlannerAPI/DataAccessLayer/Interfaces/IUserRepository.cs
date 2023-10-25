@@ -1,14 +1,14 @@
 ﻿using DataAccessLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccessLayer.Interfaces
 {
     public interface IUserRepository
     {
-        public Task<bool> LogIn(string userIdentifier, string password);
+		Task<IdentityResult> CreateUserAsync(EventPlannerUser user, string password);
+        Task<EventPlannerUser> FindByEmailAsync(string email);
+        Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
+        Task<IdentityResult> ResetPasswordAsync(EventPlannerUser user, string token, string newPassword);
+        Task<bool> LogInAsync(string userIdentifier, string password);
     }
 }
