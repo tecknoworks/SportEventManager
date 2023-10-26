@@ -16,7 +16,7 @@ namespace EventPlannerAPI.Controllers
             _userService = userService;
         }
 
-		[ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
