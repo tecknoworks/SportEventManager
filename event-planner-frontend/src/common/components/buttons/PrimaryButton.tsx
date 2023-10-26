@@ -1,14 +1,14 @@
 import { Button } from '@chakra-ui/react';
-import React from 'react';
 
 type Props = {
   text: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   className?: string;
+  onClick?: any;
   type?: 'submit' | 'reset' | 'button' | undefined;
 };
 
-function PrimaryButton({ text, isDisabled, className, type }: Props) {
+function PrimaryButton({ text, isDisabled, className, onClick, type }: Props) {
   return (
     <Button
       type={type}
@@ -17,6 +17,7 @@ function PrimaryButton({ text, isDisabled, className, type }: Props) {
       colorScheme="purple"
       size="md"
       variant="solid"
+      onClick={onClick}
     >
       {text}
     </Button>
