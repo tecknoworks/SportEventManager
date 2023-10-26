@@ -1,19 +1,12 @@
+import { SendResetLinkDto, SetNewPasswordDto } from 'features/password-recovery/api/dtos';
 import CommonService from './commonService';
 
-export default class UserServices extends CommonService {
-  getUsers(params?: object) {
-    return this.get('/getUsers', params);
+export default class UserService extends CommonService {
+  sendResetLink(data: SendResetLinkDto) {
+    return this.post('/User/ResetPassword', data);
   }
 
-  createUser(data: object) {
-    return this.post('/createUser', data);
-  }
-
-  updateUser(id: number, data: object) {
-    return this.put(`/updateUser/${id}`, data);
-  }
-
-  deleteUser(id: number) {
-    return this.delete(`/deleteUser/${id}`);
+  setNewPassword(data: SetNewPasswordDto) {
+    return this.post('/User/SetNewPassword', data);
   }
 }

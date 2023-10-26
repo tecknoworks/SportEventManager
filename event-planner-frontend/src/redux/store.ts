@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import homePageReducer from 'features/homepage/store/homepageSlice';
-import passwordRecoveryReducer from 'features/password-recovery/store/passwordRecoverySlice';
+import newPasswordReducer from 'features/password-recovery/store/slices/newPasswordSlice';
+import resetLinkReducer from 'features/password-recovery/store/slices/resetLinkSlice';
 
 export const store = configureStore({
   reducer: {
     homePage: homePageReducer,
-    passwordRecovery: passwordRecoveryReducer,
+    resetLink: resetLinkReducer,
+    newPassword: newPasswordReducer,
   },
 });
 

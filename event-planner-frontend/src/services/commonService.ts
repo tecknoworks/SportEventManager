@@ -1,19 +1,19 @@
-import { axiosInstance } from "common/api/setAxiosInstance";
+import { axiosInstance } from 'common/api/setAxiosInstance';
 
 export default class CommonService {
-    get(url: string, querryParams?: object) {
-        return axiosInstance.get(url, { params: querryParams });
-    }
+  get(url: string, querryParams?: object) {
+    return axiosInstance.get(url, { params: querryParams });
+  }
 
-    post(url: string, data: object) {
-        return axiosInstance.post(url, data);
-    }
+  post(url: string, data: object) {
+    return axiosInstance.post(url, data);
+  }
 
-    put(url: string, data: object) {
-        return axiosInstance.put(url, data);
-    }
+  put(url: string, data: object) {
+    return axiosInstance.put(url, data);
+  }
 
-    delete(url: string){
-        return axiosInstance.delete(url);
-    }
+  delete(url: string) {
+    return axiosInstance.delete(url);
+  }
 }

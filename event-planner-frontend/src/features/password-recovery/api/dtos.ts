@@ -1,5 +1,12 @@
-interface ForgotPasswordDto {
+type SendResetLinkDto = {
   email: string;
-}
+};
 
-export type { ForgotPasswordDto };
+type SetNewPasswordDto = {
+  password: string;
+  confirmPassword: string;
+  email: string | null;
+  token: string | null;
+};
+
+export type { SendResetLinkDto, SetNewPasswordDto };

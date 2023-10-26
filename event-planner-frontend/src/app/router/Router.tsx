@@ -15,7 +15,7 @@ const RouterComponent: FC = () => (
         <Route index element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
         <Route path="recover-password" element={<PasswordRecoveryPage />} />
-        <Route path="create-new-password" element={<CreateNewPasswordPage />} />
+        <Route path="reset-password" element={<CreateNewPasswordPage />} />
         <Route path="test" element={<App />} />
         <Route path="*" element={<NotFound />} />
       </Route>

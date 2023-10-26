@@ -3,9 +3,9 @@ import React from 'react';
 
 type Props = {
   text: string;
-  isDisabled: boolean;
+  isDisabled?: boolean;
   className?: string;
-  onClick: any;
+  onClick?: any;
 };
 
 function PrimaryButton({ text, isDisabled, className, onClick }: Props) {
