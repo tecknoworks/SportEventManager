@@ -87,5 +87,10 @@ namespace BusinessLayer.Services
                 return IdentityResult.Failed(error);
             }
         }
+
+        public async Task<UserProfileDetails?> GetUserProfileDetailsAsync(string userId)
+        {
+            return await _userRepository.GetUserProfileDetailsAsync(userId);
+        }
     }
 }

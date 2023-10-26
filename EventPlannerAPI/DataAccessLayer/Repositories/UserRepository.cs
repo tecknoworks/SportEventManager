@@ -3,6 +3,7 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Services
 {
@@ -90,6 +91,11 @@ namespace DataAccessLayer.Services
                 var error = new IdentityError() { Description = "Something went wrong when setting the new password." };
                 return IdentityResult.Failed(error);
             }
+        }
+
+        public async Task<UserProfileDetails?> GetUserProfileDetailsAsync(string userId)
+        {
+            return await _eventPlannerContext.UserProfileDetails.FirstOrDefaultAsync(profile => profile.UserId == userId);
         }
     }
 }

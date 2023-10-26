@@ -16,7 +16,7 @@ namespace EventPlannerAPI.Controllers
             _userService = userService;
         }
 
-		 [ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("/createUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
@@ -43,6 +43,14 @@ namespace EventPlannerAPI.Controllers
             var result = await _userService.SetNewPasswordAsync(setNewPasswordDto);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("Password reset successfully.");   
+        }
+
+        [HttpGet("ProfileDetails{userId}")]
+        public async Task<ActionResult<UserProfileDetailsDto>> GetUserProfileDetails(string userId)
+        {
+            var profile = _userService.GetUserProfileDetailsAsync(userId);
+            if (profile == null) return BadRequest("User does not have an associated profile.");
+            return Ok(_mapp profile);
         }
     }
 }

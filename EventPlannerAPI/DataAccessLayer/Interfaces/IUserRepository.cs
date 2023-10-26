@@ -9,5 +9,6 @@ namespace DataAccessLayer.Interfaces
         Task<EventPlannerUser> FindByEmailAsync(string email);
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
         Task<IdentityResult> ResetPasswordAsync(EventPlannerUser user, string token, string newPassword);
+        Task<UserProfileDetails?> GetUserProfileDetailsAsync(string userId);
     }
 }
