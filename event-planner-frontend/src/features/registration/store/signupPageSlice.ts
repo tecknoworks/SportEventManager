@@ -1,14 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { UserDto } from '../api/Dtos';
-import { createUser } from '../thunks/signupThunks';
+import { createAction, createSlice } from '@reduxjs/toolkit';
+import { createUser, resetStore } from '../thunks/signupThunks';
+import { BeErrorDto } from 'common/dtos/BeErrorDto';
+
+type State = {
+  user: object | null;
+  status: string;
+  error: BeErrorDto[];
+};
+
+const initialState: State = {
+  user: null,
+  status: 'idle',
+  error: [],
+};
+
+const clearState = createAction('clearState');
 
 const signupPageSlice = createSlice({
-  name: 'signuppageSlice',
-  initialState: {
-    user: null,
-    status: 'idle',
-    error: null as unknown | undefined,
-  },
+  name: 'signupPageSlice',
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -16,13 +26,14 @@ const signupPageSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(createUser.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = 'succeded';
         state.user = action.payload;
       })
       .addCase(createUser.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message || undefined;
-      });
+        state.error = action.payload as BeErrorDto[];
+      })
+      .addCase(resetStore, () => initialState);
   },
 });
 

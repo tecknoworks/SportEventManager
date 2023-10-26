@@ -19,10 +19,17 @@ import { errorPassword } from 'common/validators/passwordValidator';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import { UserDto } from 'features/registration/api/Dtos';
-import { useAppDispatch } from 'redux/store';
-import { createUser } from 'features/registration/thunks/signupThunks';
-import { selectUser } from 'features/registration/store/signupPageSelector';
-import { useSelector } from 'react-redux';
+import {
+  createUser,
+  resetStore,
+} from 'features/registration/thunks/signupThunks';
+import {
+  selectUserError,
+  selectUserStatus,
+} from 'features/registration/store/signupPageSelector';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { AppDispatch } from 'redux/store';
 
 interface Account {
   userName: string;
@@ -36,9 +43,12 @@ interface Account {
 
 const SignupForm = () => {
   const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
-  const dispatch = useAppDispatch();
-  const userInfo = useSelector(selectUser);
+  const dispatch: AppDispatch = useDispatch();
+  const userStatus = useSelector(selectUserStatus);
+  const userError = useSelector(selectUserError);
+  const [errorBe, setErrorBe] = useState<object[]>([]);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
@@ -125,10 +135,13 @@ const SignupForm = () => {
   }, [debouncedAccount]);
 
   useEffect(() => {
-    if (userInfo.status === 'pending') {
-      console.log('loading');
-    }
-    if (userInfo.status === 'succeeded') {
+    setErrorBe([]);
+  }, []);
+
+  useEffect(() => {
+    if (userStatus === 'succeded') {
+      dispatch(resetStore());
+      navigate('/homepage');
       toast({
         title: 'Account created.',
         description: "We've created your account for you.",
@@ -136,12 +149,10 @@ const SignupForm = () => {
         duration: 9000,
         isClosable: true,
       });
+    } else {
+      setErrorBe(userError);
     }
-
-    if (userInfo.status === 'failed') {
-      console.log('failed');
-    }
-  }, [userInfo]);
+  }, [userStatus]);
 
   function handleSubmit(event: FormEvent): void {
     event.preventDefault();
@@ -245,6 +256,18 @@ const SignupForm = () => {
             errorMessage={confirmPasswordErrorMessage}
             isRequired={true}
           />
+          {errorBe.map((err: any) => (
+            <Text
+              key={err.code}
+              color="red.500"
+              as="b"
+              fontSize="sm"
+              textAlign="center"
+            >
+              {err.description}
+            </Text>
+          ))}
+
           <PrimaryButton
             type="submit"
             isDisabled={isDisabled ? true : false}
