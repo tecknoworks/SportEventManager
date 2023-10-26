@@ -6,6 +6,7 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using System.Web;
 
 namespace BusinessLayer.Services
 {
@@ -52,11 +53,11 @@ namespace BusinessLayer.Services
 
                 var token = await _userRepository.GeneratePasswordResetTokenAsync(user);
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
-                var resetLink = baseUrl + "/reset-password?token=" + token;
+                var resetLink = baseUrl + "/reset-password?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
 
                 var mail = MailRequest.ResetPassword(user.Email, user.UserName, resetLink);
 
-                await _mailService.SendEmailAsync(mail);
+                _mailService.SendEmailAsync(mail);
                 return string.Empty;
             } 
             catch (Exception ex) 
