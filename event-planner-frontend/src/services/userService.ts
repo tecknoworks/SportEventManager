@@ -1,8 +1,9 @@
 import { SendResetLinkDto, SetNewPasswordDto } from 'features/password-recovery/api/dtos';
 import CommonService from './commonService';
+import { UserDto } from 'features/registration/api/Dtos';
 
 export default class UserService extends CommonService {
-  createUser(data: object) {
+  createUser(data: UserDto) {
     return this.post('/User/CreateUser', data);
   }
 
