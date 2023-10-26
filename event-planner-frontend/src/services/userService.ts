@@ -2,6 +2,10 @@ import { SendResetLinkDto, SetNewPasswordDto } from 'features/password-recovery/
 import CommonService from './commonService';
 
 export default class UserService extends CommonService {
+  createUser(data: object) {
+    return this.post('/User/CreateUser', data);
+  }
+
   sendResetLink(data: SendResetLinkDto) {
     return this.post('/User/ResetPassword', data);
   }

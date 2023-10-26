@@ -85,6 +85,7 @@ function NewPasswordForm() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPasswords({ ...passwords, password: e.target.value })
               }
+              isRequired={true}
               show={showPassword}
               onToggleShow={() => setShowPassword(!showPassword)}
               placeholder="Enter password"
@@ -94,6 +95,7 @@ function NewPasswordForm() {
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setPasswords({ ...passwords, confirmPassword: e.target.value })
               }
+              isRequired={true}
               show={showConfirmPassword}
               onToggleShow={() => setShowConfirmPassword(!showConfirmPassword)}
               placeholder="Confirm password"

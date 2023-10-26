@@ -14,25 +14,15 @@ type Props = {
   onToggleShow: () => void;
   placeholder: string;
   errorMessage: string;
+  isRequired: boolean;
 };
 
-function PasswordInput({
-  onChange,
-  show,
-  onToggleShow,
-  placeholder,
-  errorMessage,
-}: Props) {
+function PasswordInput({ onChange, show, onToggleShow, placeholder, errorMessage, isRequired }: Props) {
   return (
-    <FormControl isInvalid={errorMessage.length > 0}>
+    <FormControl isRequired={isRequired} isInvalid={errorMessage.length > 0}>
       <FormLabel>{placeholder}</FormLabel>
       <InputGroup size="md">
-        <Input
-          pr="75px"
-          type={show ? 'text' : 'password'}
-          placeholder={placeholder}
-          onChange={onChange}
-        />
+        <Input pr="75px" type={show ? 'text' : 'password'} placeholder={placeholder} onChange={onChange} />
         <InputRightElement width="75px">
           <Button h="28px" size="sm" onClick={onToggleShow}>
             {show ? 'Hide' : 'Show'}

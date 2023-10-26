@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Box, useToast } from '@chakra-ui/react';
 import PasswordRecoveryForm from '../components/ResetLinkForm/ResetLinkForm';
 import 'common/styles/form-page.scss';
