@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import homePageReducer from 'features/homepage/store/homepageSlice'
+import logInReducer from 'features/login/store/slices/logInSlice'
 
 export const store = configureStore({
   reducer: {
     homePage: homePageReducer,
+    logIn: logInReducer,
   },
 })
 
