@@ -23,5 +23,4 @@ namespace DataAccessLayer.Contexts
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }   
-
 }

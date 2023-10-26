@@ -9,6 +9,7 @@ namespace BusinessLayer.Interfaces
 		Task<IdentityResult> CreateUserAsyncLogic(UserDto user);
         Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto);
         Task<IdentityResult> SetNewPasswordAsync(SetNewPasswordDto setNewPasswordDto);
+        Task<bool> LogInAsync(LogInUserDto eventPlannerUser);
         Task<UserProfileDetails?> GetUserProfileDetailsAsync(string userId);
     }
 }
