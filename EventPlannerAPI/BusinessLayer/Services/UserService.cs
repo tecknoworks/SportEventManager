@@ -104,27 +104,5 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-
-        public string GenerateTokenString(LogInUserDto logInUserDto)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, logInUserDto.UserIdentifier),
-            };
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
-
-            var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
-
-            var securityToken = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(60),
-                issuer: _configuration.GetSection("Jwt:Issuer").Value,
-                audience: _configuration.GetSection("Jwt:Audience").Value,
-                signingCredentials: signingCred);
-
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
-            return tokenString;
-        }
     }
 }

@@ -55,16 +55,15 @@ namespace DataAccessLayer.Services
 
         public async Task<bool> LogInAsync(string userIdentifier, string password)
         {
-               
-            var userByEmail = await _userManager.FindByEmailAsync(userIdentifier);
-            var userByUsername = await _userManager.FindByNameAsync(userIdentifier);
-            if (userByEmail == null && userByUsername == null)
+            var userByEmailOrUsername = await _userManager.FindByEmailAsync(userIdentifier)
+                            ?? await _userManager.FindByNameAsync(userIdentifier);
+
+            if (userByEmailOrUsername == null)
             {
                 _logger.Error("An error occurred while validating credentials");
                 throw new BadHttpRequestException("Unable to find the user.");
             }
-            var goodUser = userByEmail == null ? userByUsername : userByEmail;
-            return await _userManager.CheckPasswordAsync(goodUser, password);
+            return await _userManager.CheckPasswordAsync(userByEmailOrUsername, password);
         }
 
         public async Task<EventPlannerUser> FindByEmailAsync(string email)

@@ -10,10 +10,12 @@ namespace EventPlannerAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService _userService, IAuthService _authService)
         {
-            _userService = userService;
+            this._userService = _userService;
+            this._authService = _authService;
         }
 
 		[ProducesResponseType(StatusCodes.Status201Created)]
@@ -31,17 +33,13 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LogInUserDto logInUserDto)
         {
-            if (!ModelState.IsValid)
-            {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                return BadRequest(errors);
-            }
+ 
             var resposnse = await _userService.LogInAsync(logInUserDto);
             if (!resposnse)
             {
-                return BadRequest();
+                return BadRequest("Invalid credentials.");
             }
-            var tokenString = _userService.GenerateTokenString(logInUserDto);
+            var tokenString =await _authService.GenerateTokenString(logInUserDto);
             return Ok(tokenString);
 
         }
