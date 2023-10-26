@@ -6,6 +6,10 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using System.Web;
 
 namespace BusinessLayer.Services
@@ -86,6 +90,19 @@ namespace BusinessLayer.Services
                 _logger.Error(ex, $"Error when reseting password for user with email {setNewPasswordDto.Email}");
                 var error = new IdentityError() { Description = "Something went wrong when resetting the password." };
                 return IdentityResult.Failed(error);
+            }
+        }
+
+        public async Task<bool> LogInAsync(LogInUserDto userDto)
+        {
+            try
+            {
+                return await _userRepository.LogInAsync(userDto.UserIdentifier, userDto.Password);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "An error occurred while logging in");
+                throw;
             }
         }
     }

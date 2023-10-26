@@ -3,6 +3,7 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace DataAccessLayer.Services
 {
@@ -50,6 +51,19 @@ namespace DataAccessLayer.Services
                 var error = new IdentityError() { Description = "Error while creating user!" };
                 return IdentityResult.Failed(error);
             }
+        }
+
+        public async Task<bool> LogInAsync(string userIdentifier, string password)
+        {
+            var userByEmailOrUsername = await _userManager.FindByEmailAsync(userIdentifier)
+                            ?? await _userManager.FindByNameAsync(userIdentifier);
+
+            if (userByEmailOrUsername == null)
+            {
+                _logger.Error("An error occurred while validating credentials");
+                throw new BadHttpRequestException("Unable to find the user.");
+            }
+            return await _userManager.CheckPasswordAsync(userByEmailOrUsername, password);
         }
 
         public async Task<EventPlannerUser> FindByEmailAsync(string email)
