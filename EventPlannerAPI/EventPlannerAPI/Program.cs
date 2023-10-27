@@ -43,10 +43,10 @@ builder.Services.AddIdentity<EventPlannerUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
 
 	options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
 })
     .AddEntityFrameworkStores<EventPlannerContext>()
     .AddDefaultTokenProviders();
-
 
 builder.Host.UseSerilog();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -30,5 +30,20 @@ namespace DataAccessLayer.Helpers
 
             return new MailRequest(ToEmail, "Password Reset Request", mailBody.ToString());
         }
+        public static MailRequest ConfirmAccount(string ToEmail, string username, string confirmationLink)
+        {
+            StringBuilder mailBody = new StringBuilder();
+            mailBody.AppendLine("<h1>Account Confirmation Requested</h1>");
+            mailBody.AppendLine("<p>Dear " + username + ",</p>");
+            mailBody.AppendLine("<p>We sent you a link to confirm your account.</p>");
+            mailBody.AppendLine("<p>If you didn't make this request, just ignore this email. Otherwise, you can confirm your account using this link:</p>");
+            mailBody.AppendLine("<a href='" + confirmationLink + "'>Click here to confirm your account</a>");
+            mailBody.AppendLine("<p>If you can't click the above link, copy and paste the following URL into your browser:</p>");
+            mailBody.AppendLine("<p>" + confirmationLink + "</p>");
+            mailBody.AppendLine("<p>Thanks,</p>");
+            mailBody.AppendLine("<p>The Tecknohomies Team</p>");
+
+            return new MailRequest(ToEmail, "Account Confirmation Request", mailBody.ToString());
+        }
     }
 }

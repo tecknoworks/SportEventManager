@@ -4,8 +4,12 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using System.Security.Policy;
+using System.Text;
 
 namespace BusinessLayer.Services
 {
@@ -30,7 +34,15 @@ namespace BusinessLayer.Services
             var user = _mapper.Map<EventPlannerUser>(newUser);
             try
             {
+                var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
+
+                var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
+                var confirmLink = baseUrl + "/confirma-account?token=" + token;
+                var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
+
+                await _mailService.SendEmailAsync(mail);
                 return await _userRepository.CreateUserAsync(user, newUser.Password);
+                
             }
             catch (Exception ex)
             {
@@ -66,6 +78,28 @@ namespace BusinessLayer.Services
             }
         }
 
+        public async Task<IdentityResult> ConfirmEmailAsyncLogic(ConfirmEmailDto confirmEmailDto)
+        {
+            try
+            {
+                var user = await _userRepository.FindByEmailAsync(confirmEmailDto.Email);
+                if (user == null)
+                {
+                    _logger.Error($"Error confirming: User with email {confirmEmailDto.Email} does not exist");
+                    var error = new IdentityError() { Description = "Error while confirming user!" };
+                    return IdentityResult.Failed(error); ;
+                }
+
+                var result = await _userRepository.ConfirmEmailAsync(user, confirmEmailDto.Token);
+                return result;
+
+            }
+            catch (Exception ex) 
+            {
+                throw new Exception (ex.Message);
+            
+            }
+        }
         public async Task<IdentityResult> SetNewPasswordAsync(SetNewPasswordDto setNewPasswordDto)
         {
             try

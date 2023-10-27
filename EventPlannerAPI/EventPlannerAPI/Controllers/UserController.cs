@@ -27,6 +27,15 @@ namespace EventPlannerAPI.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost("/confirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmailDto)
+        {
+            var errorMessage = await _userService.ConfirmEmailAsyncLogic(confirmEmailDto);
+            if (!errorMessage.Succeeded) return BadRequest(errorMessage);
+            return Ok("If there's an account associated with this email address, we've activated your account.");
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
