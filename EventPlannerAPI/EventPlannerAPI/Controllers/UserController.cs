@@ -1,5 +1,6 @@
-﻿﻿using BusinessLayer.DTOs;
+﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
+using DataAccessLayer.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -21,9 +22,9 @@ namespace EventPlannerAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("CreateUser")]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
+        public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto newUser)
         {
-            var result = await _userService.CreateUserAsyncLogic(newUser);
+            var result = await _userService.CreateUserAsync(newUser);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("User created!");  
         }
@@ -63,12 +64,62 @@ namespace EventPlannerAPI.Controllers
             return Ok("Password reset successfully.");   
         }
 
-        [HttpGet("ProfileDetails{userId}")]
-        public async Task<ActionResult<UserProfileDetailsDto>> GetUserProfileDetails(string userId)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("GetUserProfileDetails/{userId}")]
+        public async Task<ActionResult<GetUserProfileDetailsDto>> GetUserProfileDetails(string userId)
         {
-            var profile = _userService.GetUserProfileDetailsAsync(userId);
-            if (profile == null) return BadRequest("User does not have an associated profile.");
-            return Ok(_mapp profile);
+            try
+            {
+                return Ok(await _userService.GetUserProfileDetailsAsync(userId));
+            }
+            catch (EventPlannerException ex) 
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception) 
+            {
+                return Problem("Something went wrong.");
+            }
         }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("CreateUserProfileDetails/{userId}")]
+        public async Task<ActionResult<GetUserProfileDetailsDto>> CreateUserProfileDetails(string userId, UpsertUserProfileDetailsDto userDetails)
+        {
+            try
+            {
+                return Ok(await _userService.CreateUserProfileDetailsAsync(userId, userDetails));
+            }
+            catch(EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch(Exception)
+            {
+                return Problem("Something went wrong.");
+            }
+        }
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPut("UpdateUserProfileDetails/{userId}")]
+        public async Task<ActionResult<GetUserProfileDetailsDto>> UpdateUserProfileDetails(string userId, UpsertUserProfileDetailsDto userDetails)
+        {
+            try
+            {
+                return Ok(await _userService.UpdateUserProfileDetailsAsync(userId, userDetails));
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
+            }
+        }
+
     }
 }

@@ -6,10 +6,12 @@ namespace BusinessLayer.Interfaces
 {
     public interface IUserService
     {
-		Task<IdentityResult> CreateUserAsyncLogic(UserDto user);
+		Task<IdentityResult> CreateUserAsync(RegisterUserDto user);
         Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto);
         Task<IdentityResult> SetNewPasswordAsync(SetNewPasswordDto setNewPasswordDto);
         Task<bool> LogInAsync(LogInUserDto eventPlannerUser);
-        Task<UserProfileDetails?> GetUserProfileDetailsAsync(string userId);
+        Task<GetUserProfileDetailsDto> GetUserProfileDetailsAsync(string userId);
+        Task<GetUserProfileDetailsDto> CreateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails);
+        Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails);
     }
 }
