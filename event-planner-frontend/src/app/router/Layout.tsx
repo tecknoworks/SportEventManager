@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
@@ -9,7 +9,7 @@ const Layout = () => {
       </div>
       {/* <Footer className={cn.mainFooter} /> */}
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;
