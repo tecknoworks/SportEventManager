@@ -8,7 +8,13 @@ export const logInSlice = createSlice({
     user: null,
     error: null as unknown,
   },
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.loading = false;
+      state.user = null;
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(logInThunk.pending, (state) => {
       state.loading = true;
@@ -33,4 +39,7 @@ export const logInSlice = createSlice({
   },
 });
 
+
+export const { logout } = logInSlice.actions
 export default logInSlice.reducer;
+

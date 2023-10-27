@@ -13,18 +13,18 @@ import {
   FormErrorMessage,
   useToast
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInThunk } from 'features/login/store/thunks/logInThunk';
 import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
+import { useNavigate } from 'react-router-dom';
+import { logout } from 'features/login/store/slices/logInSlice';
 
 const LogInForm = () => {
-  const navigate = useNavigate();
+
   const dispatch: AppDispatch = useDispatch();
   const toast = useToast()
-
-  // const { loading, error } = useSelector((state: any) => state.user) 
+  const navigate = useNavigate()
 
   const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -43,15 +43,11 @@ const LogInForm = () => {
 
   React.useEffect(() => {
     let tempErrors = { userIdentifier: '', password: '' };
-
     const regex = /^[a-zA-Z0-9.@_-]+$/;
-
     tempErrors.userIdentifier = !regex.test(userIdentifier) ? 'Enter a valid username or email' : '';
-
     tempErrors.password = !password ? 'Required' : '';
 
     setErrors(tempErrors);
-
     setIsDisabled(Object.values(tempErrors).some((error) => error !== ''));
   }, [userIdentifier, password]);
 
@@ -63,15 +59,32 @@ const LogInForm = () => {
       userIdentifier,
       password,
     };
-    dispatch(logInThunk(userCredentials));
-    toast({
-      title: 'LogIn succesfully.',
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    })
-    navigate("/")
+    dispatch(logInThunk(userCredentials)).then((response) => {
+      if (response.payload) {
+        navigate("/");
+        toast({
+          title: 'LogIn succesfully.',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+        })
+      }
+      else {
+        toast({
+          title: 'There was an error with your E-Mail/Password combination. Please try again',
+          status: 'error',
+          duration: 2000,
+          isClosable: true,
+        })
+      }
+    });
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("user");
+  };
+
 
   return (
     <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
@@ -131,6 +144,14 @@ const LogInForm = () => {
             }}
           >
             Forgot password?
+          </Button>
+
+          <Button
+            variant="text"
+            size="sm"
+            onClick={handleLogout}
+          >
+            Logout
           </Button>
         </Stack>
       </form>

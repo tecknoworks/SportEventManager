@@ -3,7 +3,7 @@ import resetLinkReducer from 'features/password-recovery/store/slices/resetLinkS
 import logInReducer from 'features/login/store/slices/logInSlice'
 import { configureStore } from '@reduxjs/toolkit';
 import signupPageReducer from 'features/registration/store/signupPageSlice';
-import logInReducer from 'features/login/store/slices/logInSlice';
+
 
 export const store = configureStore({
   reducer: {
@@ -11,7 +11,6 @@ export const store = configureStore({
     logIn: logInReducer,
     newPassword: newPasswordReducer,
     signupPage: signupPageReducer,
-               logIn: logInReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),

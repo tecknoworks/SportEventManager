@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { log } from 'console';
 import { LogInDto } from 'features/login/api/dtos';
 
 export const logInThunk = createAsyncThunk('logIn/logInThunk', async (userCredentials: LogInDto) => {
