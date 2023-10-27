@@ -10,15 +10,17 @@ namespace EventPlannerAPI.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService _userService, IAuthService _authService)
         {
-            _userService = userService;
+            this._userService = _userService;
+            this._authService = _authService;
         }
 
-		 [ProducesResponseType(StatusCodes.Status201Created)]
+		[ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("/createUser")]
+        [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] UserDto newUser)
         {
             var result = await _userService.CreateUserAsyncLogic(newUser);
@@ -27,7 +29,22 @@ namespace EventPlannerAPI.Controllers
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [HttpPost("/confirmEmail")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginAsync([FromBody] LogInUserDto logInUserDto)
+        {
+ 
+            var resposnse = await _userService.LogInAsync(logInUserDto);
+            if (!resposnse)
+            {
+                return BadRequest("Invalid credentials.");
+            }
+            var tokenString =await _authService.GenerateTokenString(logInUserDto);
+            return Ok(tokenString);
+
+        }
+
+        [HttpPost("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmailDto)
         {
             var errorMessage = await _userService.ConfirmEmailAsyncLogic(confirmEmailDto);

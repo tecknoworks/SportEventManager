@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Helpers;
 using Azure.Core;
 using System.Security.Policy;
+using Microsoft.AspNetCore.Http;
 
 namespace DataAccessLayer.Services
 {
@@ -56,6 +57,19 @@ namespace DataAccessLayer.Services
             }
         }
 
+        public async Task<bool> LogInAsync(string userIdentifier, string password)
+        {
+            var userByEmailOrUsername = await _userManager.FindByEmailAsync(userIdentifier)
+                            ?? await _userManager.FindByNameAsync(userIdentifier);
+
+            if (userByEmailOrUsername == null)
+            {
+                _logger.Error("An error occurred while validating credentials");
+                throw new BadHttpRequestException("Unable to find the user.");
+            }
+            return await _userManager.CheckPasswordAsync(userByEmailOrUsername, password);
+        }
+
         public async Task<IdentityResult> ConfirmEmailAsync(EventPlannerUser user, string token)
         {
             try
@@ -69,7 +83,6 @@ namespace DataAccessLayer.Services
                 return IdentityResult.Failed(error);
             }
         }
-
         public async Task<EventPlannerUser> FindByEmailAsync(string email)
         {
             try
@@ -100,7 +113,7 @@ namespace DataAccessLayer.Services
         {
             try
             {
-                return await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                return await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

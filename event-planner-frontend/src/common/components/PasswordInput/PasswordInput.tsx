@@ -17,24 +17,12 @@ type Props = {
   isRequired: boolean;
 };
 
-function PasswordInput({
-  onChange,
-  show,
-  onToggleShow,
-  placeholder,
-  errorMessage,
-  isRequired,
-}: Props) {
+function PasswordInput({ onChange, show, onToggleShow, placeholder, errorMessage, isRequired }: Props) {
   return (
     <FormControl isRequired={isRequired} isInvalid={errorMessage.length > 0}>
       <FormLabel>{placeholder}</FormLabel>
       <InputGroup size="md">
-        <Input
-          pr="75px"
-          type={show ? 'text' : 'password'}
-          placeholder={placeholder}
-          onChange={onChange}
-        />
+        <Input pr="75px" type={show ? 'text' : 'password'} placeholder={placeholder} onChange={onChange} />
         <InputRightElement width="75px">
           <Button h="28px" size="sm" onClick={onToggleShow}>
             {show ? 'Hide' : 'Show'}

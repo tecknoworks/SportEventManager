@@ -15,18 +15,12 @@ import {
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import PasswordInput from 'common/components/PasswordInput/PasswordInput';
 import { useDebounce } from 'use-debounce';
-import { errorPassword } from 'common/validators/passwordValidator';
+import { validatePassword } from 'common/validators/passwordValidator';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import { UserDto } from 'features/registration/api/Dtos';
-import {
-  createUser,
-  resetStore,
-} from 'features/registration/thunks/signupThunks';
-import {
-  selectUserError,
-  selectUserStatus,
-} from 'features/registration/store/signupPageSelector';
+import { createUser, resetStore } from 'features/registration/thunks/signupThunks';
+import { selectUserError, selectUserStatus } from 'features/registration/store/signupPageSelector';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch } from 'redux/store';
@@ -51,11 +45,9 @@ const SignupForm = () => {
   const navigate = useNavigate();
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
-  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] =
-    useState<string>('');
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState<string>('');
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
-  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] =
-    useState<string>('');
+  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>('');
   const [userNameErrorMessage, setUserNameErrorMessage] = useState<string>('');
 
   const [account, setAccount] = useState<Account>({
@@ -83,41 +75,27 @@ const SignupForm = () => {
     return true;
   };
 
-  const isCPasswordEqualToConfirmPassword: boolean =
-    account.password === account.confirmPassword;
+  const isCPasswordEqualToConfirmPassword: boolean = account.password === account.confirmPassword;
 
   useEffect(() => {
-    const errorPasswordMessage = errorPassword(debouncedAccount.password);
+    const errorPasswordMessage = validatePassword(debouncedAccount.password);
     const isPasswordValid: boolean = !errorPasswordMessage;
     setPasswordErrorMessage(debouncedAccount.password && errorPasswordMessage);
 
-    const isConfirmPasswordMatchingPassword: boolean =
-      debouncedAccount.password === debouncedAccount.confirmPassword;
+    const isConfirmPasswordMatchingPassword: boolean = debouncedAccount.password === debouncedAccount.confirmPassword;
     const errorConfirmPasswordMessage = isConfirmPasswordMatchingPassword
       ? ''
       : 'Confirm password must match the password!';
-    setConfirmPasswordErrorMessage(
-      debouncedAccount.confirmPassword && errorConfirmPasswordMessage
-    );
+    setConfirmPasswordErrorMessage(debouncedAccount.confirmPassword && errorConfirmPasswordMessage);
 
-    const errorEmailMessage = isValidEmail(debouncedAccount.email)
-      ? ''
-      : 'Not a valid email!';
+    const errorEmailMessage = isValidEmail(debouncedAccount.email) ? '' : 'Not a valid email!';
     setEmailErrorMessage(debouncedAccount.email && errorEmailMessage);
 
-    const errorPhoneNumberMessage = isValidPhoneNumber(
-      debouncedAccount.phoneNumber
-    )
-      ? ''
-      : 'Not a valid phone number!';
-    setPhoneNumberErrorMessage(
-      debouncedAccount.phoneNumber && errorPhoneNumberMessage
-    );
+    const errorPhoneNumberMessage = isValidPhoneNumber(debouncedAccount.phoneNumber) ? '' : 'Not a valid phone number!';
+    setPhoneNumberErrorMessage(debouncedAccount.phoneNumber && errorPhoneNumberMessage);
 
     const isUserNameValid = debouncedAccount.userName.length >= 2;
-    const errorUserNameMessage = isUserNameValid
-      ? ''
-      : 'User name not valid! (length must be greater than 2)';
+    const errorUserNameMessage = isUserNameValid ? '' : 'User name not valid! (length must be greater than 2)';
 
     setUserNameErrorMessage(debouncedAccount.userName && errorUserNameMessage);
 
@@ -168,21 +146,11 @@ const SignupForm = () => {
   }
 
   return (
-    <Box
-      className="form-wrapper"
-      display="flex"
-      width="500px"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-    >
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
       <Text color="gray.500" as="b" fontSize="3xl">
         Signup
       </Text>
-      <form
-        className="form-container"
-        onSubmit={(event) => handleSubmit(event)}
-      >
+      <form className="form-container" onSubmit={(event) => handleSubmit(event)}>
         <Stack spacing={5}>
           <FormControl isRequired isInvalid={userNameErrorMessage.length > 0}>
             <FormLabel>User name</FormLabel>
@@ -200,16 +168,11 @@ const SignupForm = () => {
             <Input
               type="email"
               placeholder="Email"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setAccount({ ...account, email: e.target.value })
-              }
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccount({ ...account, email: e.target.value })}
             />
             <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
           </FormControl>
-          <FormControl
-            isRequired
-            isInvalid={phoneNumberErrorMessage.length > 0}
-          >
+          <FormControl isRequired isInvalid={phoneNumberErrorMessage.length > 0}>
             <FormLabel>Phone number</FormLabel>
             <InputGroup>
               <InputLeftAddon children="tel" />
@@ -227,9 +190,7 @@ const SignupForm = () => {
             <FormErrorMessage>{phoneNumberErrorMessage}</FormErrorMessage>
           </FormControl>
           <PasswordInput
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setAccount({ ...account, password: e.target.value })
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccount({ ...account, password: e.target.value })}
             show={account.showPassword}
             onToggleShow={() =>
               setAccount({
@@ -257,22 +218,12 @@ const SignupForm = () => {
             isRequired={true}
           />
           {errorBe.map((err: any) => (
-            <Text
-              key={err.code}
-              color="red.500"
-              as="b"
-              fontSize="sm"
-              textAlign="center"
-            >
+            <Text key={err.code} color="red.500" as="b" fontSize="sm" textAlign="center">
               {err.description}
             </Text>
           ))}
 
-          <PrimaryButton
-            type="submit"
-            isDisabled={isDisabled ? true : false}
-            text="Create account"
-          />
+          <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
         </Stack>
       </form>
     </Box>

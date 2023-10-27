@@ -8,8 +8,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using System.Security.Policy;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
+using System.Web;
+using System.Security.Policy;
 
 namespace BusinessLayer.Services
 {
@@ -35,13 +39,18 @@ namespace BusinessLayer.Services
             try
             {
                 var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
-
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
-                var confirmLink = baseUrl + "/confirma-account?token=" + token;
+                var confirmLink = baseUrl + "/confirma-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
                 var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
+ 
+                var userCreated = await _userRepository.CreateUserAsync(user, newUser.Password);
+                if(userCreated != null)
+                {
+                    await _mailService.SendEmailAsync(mail);
+                    
+                }
 
-                await _mailService.SendEmailAsync(mail);
-                return await _userRepository.CreateUserAsync(user, newUser.Password);
+                return userCreated;
                 
             }
             catch (Exception ex)
@@ -64,11 +73,11 @@ namespace BusinessLayer.Services
 
                 var token = await _userRepository.GeneratePasswordResetTokenAsync(user);
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
-                var resetLink = baseUrl + "/reset-password?token=" + token;
+                var resetLink = baseUrl + "/reset-password?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
 
                 var mail = MailRequest.ResetPassword(user.Email, user.UserName, resetLink);
 
-                await _mailService.SendEmailAsync(mail);
+                _mailService.SendEmailAsync(mail);
                 return string.Empty;
             } 
             catch (Exception ex) 
@@ -90,7 +99,7 @@ namespace BusinessLayer.Services
                     return IdentityResult.Failed(error); ;
                 }
 
-                var result = await _userRepository.ConfirmEmailAsync(user, confirmEmailDto.Token);
+                var result = await _userRepository.ConfirmEmailAsync(user, HttpUtility.UrlEncode(confirmEmailDto.Token));
                 return result;
 
             }
@@ -119,6 +128,19 @@ namespace BusinessLayer.Services
                 _logger.Error(ex, $"Error when reseting password for user with email {setNewPasswordDto.Email}");
                 var error = new IdentityError() { Description = "Something went wrong when resetting the password." };
                 return IdentityResult.Failed(error);
+            }
+        }
+
+        public async Task<bool> LogInAsync(LogInUserDto userDto)
+        {
+            try
+            {
+                return await _userRepository.LogInAsync(userDto.UserIdentifier, userDto.Password);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "An error occurred while logging in");
+                throw;
             }
         }
     }
