@@ -24,7 +24,7 @@ const LogInForm = () => {
   const dispatch: AppDispatch = useDispatch();
   const toast = useToast()
 
-  // const { loading, error } = useSelector((state: any) => state.user)
+  // const { loading, error } = useSelector((state: any) => state.user) 
 
   const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
