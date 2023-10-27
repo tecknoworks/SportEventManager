@@ -1,6 +1,6 @@
 interface LogInDto {
-    userNameOrEmail: string,
-    password: string
+  userIdentifier: string;
+  password: string;
 }
 
 export type { LogInDto };

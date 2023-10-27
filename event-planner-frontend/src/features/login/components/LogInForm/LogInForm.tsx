@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   FormErrorMessage,
+  useToast
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,11 +21,12 @@ import { LogInDto } from 'features/login/api/dtos';
 
 const LogInForm = () => {
   const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch: AppDispatch = useDispatch();
+  const toast = useToast()
 
   // const { loading, error } = useSelector((state: any) => state.user)
 
-  const [userNameOrEmail, setUserNameOrEmail] = React.useState<string>('');
+  const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
 
   const [showPw, setShowPw] = React.useState<boolean>(false);
@@ -33,63 +35,63 @@ const LogInForm = () => {
   const [usernameTouched, setUsernameTouched] = React.useState(false);
   const [passwordTouched, setPasswordTouched] = React.useState(false);
 
-
-  type FormErrorMessage = { userNameOrEmail: string; password: string };
+  type FormErrorMessage = { userIdentifier: string; password: string };
   const [errors, setErrors] = React.useState<FormErrorMessage>({
-    userNameOrEmail: '',
+    userIdentifier: '',
     password: '',
   });
 
   React.useEffect(() => {
-    let tempErrors = { userNameOrEmail: '', password: '' };
+    let tempErrors = { userIdentifier: '', password: '' };
 
     const regex = /^[a-zA-Z0-9.@_-]+$/;
 
-    tempErrors.userNameOrEmail = !regex.test(userNameOrEmail) ? 'Enter a valid username or email' : "";
+    tempErrors.userIdentifier = !regex.test(userIdentifier) ? 'Enter a valid username or email' : '';
 
-    tempErrors.password = (!password) ? 'Required' : "";
+    tempErrors.password = !password ? 'Required' : '';
 
     setErrors(tempErrors);
 
     setIsDisabled(Object.values(tempErrors).some((error) => error !== ''));
-  }, [userNameOrEmail, password]);
+  }, [userIdentifier, password]);
 
   const handleClickShowPw = () => setShowPw(!showPw);
 
   const handelLogInEvent = (e: FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     let userCredentials: LogInDto = {
-      userNameOrEmail, password
-    }
-    dispatch(logInThunk(userCredentials))
-  }
+      userIdentifier,
+      password,
+    };
+    dispatch(logInThunk(userCredentials));
+    toast({
+      title: 'LogIn succesfully.',
+      status: 'success',
+      duration: 9000,
+      isClosable: true,
+    })
+    navigate("/")
+  };
 
   return (
-    <Box
-      className="form-wrapper"
-      display="flex"
-      width="500px"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-    >
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
       <Text color="gray.500" as="b" fontSize="3xl">
         Log In
       </Text>
       <form className="form-container" onSubmit={(event) => handelLogInEvent(event)}>
         <Stack spacing={5}>
-          <FormControl isRequired isInvalid={usernameTouched && !!errors.userNameOrEmail}>
+          <FormControl isRequired isInvalid={usernameTouched && !!errors.userIdentifier}>
             <FormLabel>User name / Email</FormLabel>
             <Input
               type="text"
               placeholder="User name / Email"
-              value={userNameOrEmail}
+              value={userIdentifier}
               onChange={(e) => {
-                setUserNameOrEmail(e.target.value);
-                setUsernameTouched(true)
+                setUserIdentifier(e.target.value);
+                setUsernameTouched(true);
               }}
             />
-            <FormErrorMessage>{errors.userNameOrEmail}</FormErrorMessage>
+            <FormErrorMessage>{errors.userIdentifier}</FormErrorMessage>
           </FormControl>
 
           <FormControl isRequired isInvalid={passwordTouched && !!errors.password}>
@@ -102,7 +104,7 @@ const LogInForm = () => {
                 value={password}
                 onChange={(e) => {
                   setPassword(e.target.value);
-                  setPasswordTouched(true)
+                  setPasswordTouched(true);
                 }}
               />
               <InputRightElement width="75px">
@@ -114,19 +116,13 @@ const LogInForm = () => {
             <FormErrorMessage>{errors.password}</FormErrorMessage>
           </FormControl>
 
-
           {/* {
             error && (<div>{error}</div>)
           } */}
-          <Button
-            type='submit'
-            color="#610C9F"
-            size="md"
-            variant="solid"
-            isDisabled={isDisabled}
-          >
+          <Button type="submit" colorScheme="purple" size="md" variant="solid" isDisabled={isDisabled}>
             Log In
           </Button>
+
           <Button
             variant="text"
             size="sm"
