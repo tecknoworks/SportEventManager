@@ -1,15 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { logInThunk } from '../thunks/logInThunk';
 
+const initialState={
+  loading: false,
+  user: null,
+  error: null as unknown,
+}
+
 export const logInSlice = createSlice({
   name: 'logIn',
-  initialState: {
-    loading: false,
-    user: null,
-    error: null as unknown,
-  },
+  initialState,
   reducers: {
     logout: (state) => {
+      localStorage.removeItem('user');
       state.loading = false;
       state.user = null;
       state.error = null;

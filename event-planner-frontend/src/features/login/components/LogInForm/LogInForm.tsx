@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
   FormErrorMessage,
-  useToast
+  useToast,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInThunk } from 'features/login/store/thunks/logInThunk';
@@ -19,13 +19,15 @@ import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'features/login/store/slices/logInSlice';
+import { logInStateLoading } from 'features/login/store/selectors/logInSelectors';
 
 const LogInForm = () => {
-
   const dispatch: AppDispatch = useDispatch();
-  const toast = useToast()
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const toast = useToast();
 
+  const loading = useSelector(logInStateLoading);
+  
   const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
 
@@ -61,30 +63,34 @@ const LogInForm = () => {
     };
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
-        navigate("/");
+        navigate('/');
         toast({
-          title: 'LogIn succesfully.',
+          title: 'Log In succesfully.',
           status: 'success',
           duration: 2000,
           isClosable: true,
-        })
-      }
-      else {
+        });
+      } else {
         toast({
           title: 'There was an error with your E-Mail/Password combination. Please try again',
           status: 'error',
           duration: 2000,
           isClosable: true,
-        })
+        });
       }
     });
   };
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.removeItem("user");
+    navigate('/');
+    toast({
+      title: 'Log Out succesfully.',
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    });
   };
-
 
   return (
     <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
@@ -106,7 +112,6 @@ const LogInForm = () => {
             />
             <FormErrorMessage>{errors.userIdentifier}</FormErrorMessage>
           </FormControl>
-
           <FormControl isRequired isInvalid={passwordTouched && !!errors.password}>
             <FormLabel>Password</FormLabel>
             <InputGroup size="md">
@@ -128,14 +133,9 @@ const LogInForm = () => {
             </InputGroup>
             <FormErrorMessage>{errors.password}</FormErrorMessage>
           </FormControl>
-
-          {/* {
-            error && (<div>{error}</div>)
-          } */}
-          <Button type="submit" colorScheme="purple" size="md" variant="solid" isDisabled={isDisabled}>
+          <Button type="submit" colorScheme="purple" size="md" variant="solid" isDisabled={isDisabled} isLoading={loading}>
             Log In
           </Button>
-
           <Button
             variant="text"
             size="sm"
@@ -145,12 +145,7 @@ const LogInForm = () => {
           >
             Forgot password?
           </Button>
-
-          <Button
-            variant="text"
-            size="sm"
-            onClick={handleLogout}
-          >
+          <Button variant="text" size="sm" onClick={handleLogout}>
             Logout
           </Button>
         </Stack>
