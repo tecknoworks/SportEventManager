@@ -6,7 +6,7 @@ using DataAccessLayer.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace DataAccessLayer.Services
+namespace DataAccessLayer.Repositories
 {
     public class UserRepository : IUserRepository
     {

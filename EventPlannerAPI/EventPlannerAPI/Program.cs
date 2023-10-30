@@ -4,7 +4,7 @@ using DataAccessLayer.Contexts;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using DataAccessLayer.Services;
+using DataAccessLayer.Repositories;
 using EventPlannerAPI.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
