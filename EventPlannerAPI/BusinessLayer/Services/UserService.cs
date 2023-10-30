@@ -23,17 +23,17 @@ namespace BusinessLayer.Services
         private readonly IMailService _mailService;
         private readonly Serilog.ILogger _logger;
         private readonly IConfiguration _configuration;
-		private readonly IMapper _mapper;
-        public UserService(IUserRepository userRepository, IMailService mailService, Serilog.ILogger logger, IConfiguration configuration,  IMapper mapper)
+        private readonly IMapper _mapper;
+        public UserService(IUserRepository userRepository, IMailService mailService, Serilog.ILogger logger, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
             _mailService = mailService;
             _logger = logger;
             _configuration = configuration;
-			_mapper = mapper;
+            _mapper = mapper;
         }
 
-		 public async Task<IdentityResult> CreateUserAsyncLogic(UserDto newUser)
+        public async Task<IdentityResult> CreateUserAsync(RegisterUserDto newUser)
         {
             try
             {
@@ -85,8 +85,8 @@ namespace BusinessLayer.Services
 
                 _mailService.SendEmailAsync(mail);
                 return string.Empty;
-            } 
-            catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 _logger.Error(ex, $"Error when sending reset link for user with email {forgotPasswordDto.Email}");
                 return "Something went wrong when trying to send the reset link";
@@ -148,6 +148,53 @@ namespace BusinessLayer.Services
             catch (Exception ex)
             {
                 _logger.Error(ex, "An error occurred while logging in");
+                throw;
+            }
+        }
+
+        public async Task<GetUserProfileDetailsDto> GetUserProfileDetailsAsync(string userId)
+        {
+            try
+            {
+                return _mapper.Map<GetUserProfileDetailsDto>(await _userRepository.GetUserProfileDetailsAsync(userId));
+            }
+            catch(Exception ex) 
+            {
+                _logger.Error(ex, $"Something went wrong when trying to retrieve user with id {userId}");
+                throw;
+            }
+        }
+
+        public async Task<GetUserProfileDetailsDto> CreateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails)
+        {
+            try
+            {
+                var user = await _userRepository.GetUserByIdAsync(userId);
+                var userDetailsEntity = _mapper.Map<UserProfileDetails>(userDetails);
+                userDetailsEntity.UserId = userId;
+                userDetailsEntity.User = user;
+
+                return _mapper.Map<GetUserProfileDetailsDto>(await _userRepository.CreateUserProfileDetailsAsync(userId, userDetailsEntity));
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex, $"Something went wrong while creating user profile for user with id {userId}");
+                throw;
+            }
+        }
+
+        public async Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto newUserDetails)
+        {
+            try
+            {
+                var detailsToUpdate = await _userRepository.GetUserProfileDetailsAsync(userId);
+                _mapper.Map(newUserDetails, detailsToUpdate);
+                await _userRepository.SaveChangesAsync();
+                return _mapper.Map<GetUserProfileDetailsDto>(detailsToUpdate);
+            }
+            catch (Exception ex) 
+            {
+                _logger.Error(ex, $"Something went wrong while updating user profile for user with id ${userId}");
                 throw;
             }
         }

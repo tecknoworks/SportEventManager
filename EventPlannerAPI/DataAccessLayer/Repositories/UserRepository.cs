@@ -6,6 +6,8 @@ using DataAccessLayer.Helpers;
 using Azure.Core;
 using System.Security.Policy;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using DataAccessLayer.Exceptions;
 
 namespace DataAccessLayer.Services
 {
@@ -133,6 +135,52 @@ namespace DataAccessLayer.Services
                 var error = new IdentityError() { Description = "Something went wrong when setting the new password." };
                 return IdentityResult.Failed(error);
             }
+        }
+
+        public async Task<EventPlannerUser> GetUserByIdAsync(string userId) 
+        {
+            var user = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            if (user == null)
+            {
+                throw new EventPlannerException($"User with id {userId} does not exist.");
+            }
+            return user;
+        }
+
+        public async Task<UserProfileDetails> GetUserProfileDetailsAsync(string userId)
+        {
+            var userProfile = await _eventPlannerContext.UserProfileDetails
+                .Include(profile => profile.User)
+                .FirstOrDefaultAsync(profile => profile.UserId == userId);
+
+            if (userProfile == null ) 
+            {
+                throw new EventPlannerException($"User with id {userId} does not have an associated profile.");
+            }
+
+            return userProfile;
+        }
+
+        public async Task<bool> UserHasProfileAsync(string userId)
+        {
+            return await _eventPlannerContext.UserProfileDetails.AnyAsync(profile => profile.UserId == userId);
+        }
+
+        public async Task<UserProfileDetails> CreateUserProfileDetailsAsync(string userId, UserProfileDetails userDetails) 
+        {
+            if (await UserHasProfileAsync(userId))
+            {
+                throw new EventPlannerException($"User with id {userId} already has a profile.");
+            }
+            await _eventPlannerContext.UserProfileDetails.AddAsync(userDetails);
+            await _eventPlannerContext.SaveChangesAsync();
+            return userDetails;
+        }
+
+        public async Task<string> SaveChangesAsync()
+        {
+            await _eventPlannerContext.SaveChangesAsync();
+            return "Changes saved to the database";
         }
     }
 }
