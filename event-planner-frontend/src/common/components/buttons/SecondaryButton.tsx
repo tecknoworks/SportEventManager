@@ -9,7 +9,7 @@ type Props = {
   w?: string;
 };
 
-function PrimaryButton({ text, isDisabled, className, onClick, type, w }: Props) {
+function SecondaryButton({ text, isDisabled, className, onClick, type, w }: Props) {
   return (
     <Button
       type={type}
@@ -17,7 +17,7 @@ function PrimaryButton({ text, isDisabled, className, onClick, type, w }: Props)
       isDisabled={isDisabled}
       colorScheme="purple"
       size="md"
-      variant="solid"
+      variant="outline"
       onClick={onClick}
       w={w}
     >
@@ -26,4 +26,4 @@ function PrimaryButton({ text, isDisabled, className, onClick, type, w }: Props)
   );
 }
 
-export default PrimaryButton;
+export default SecondaryButton;
