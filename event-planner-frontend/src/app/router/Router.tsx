@@ -7,6 +7,7 @@ import SignUpPage from 'features/registration/views/SignUpPage';
 import LoginPage from 'features/login/LoginPage'
 import PasswordRecoveryPage from 'features/password-recovery/views/PasswordRecoveryPage';
 import CreateNewPasswordPage from 'features/password-recovery/views/CreateNewPasswordPage';
+import AccountConfirmationPage from 'features/account-confirmation/views/AccountConfirmationPage';
 import AdminPage from 'features/admin-management/AdminPage';
 
 
@@ -16,7 +17,7 @@ const RouterComponent: FC = () => (
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="signup" element={<SignUpPage />} />
-        <Route path='login' element={<LoginPage />} />
+        <Route path="confirm-account" element={<AccountConfirmationPage />} />
         <Route path="recover-password" element={<PasswordRecoveryPage />} />
         <Route path="reset-password" element={<CreateNewPasswordPage />} />
         <Route path='admin' element={<AdminPage />} />

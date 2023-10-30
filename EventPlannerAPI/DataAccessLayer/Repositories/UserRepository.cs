@@ -3,8 +3,11 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Helpers;
+using Azure.Core;
+using System.Security.Policy;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using DataAccessLayer.Exceptions;
 
 namespace DataAccessLayer.Repositories
 {
@@ -25,12 +28,13 @@ namespace DataAccessLayer.Repositories
             _roleManager = roleManager;
         }
 
- 		public async Task<IdentityResult> CreateUserAsync (EventPlannerUser user, string password)
+        public async Task<IdentityResult> CreateUserAsync(EventPlannerUser user, string password)
         {
             try
             {
                 var userRole = RoleConstants.USER_ROLE;
                 bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
+
                 if (!userRoleExists)
                 {
  					_logger.Error("Error in user role management!");
@@ -39,12 +43,12 @@ namespace DataAccessLayer.Repositories
                 }
 
                 var result = await _userManager.CreateAsync(user, password);
+
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, userRole);
                 }
                 return result;
-
             }
             catch (Exception ex)
             {
@@ -85,6 +89,20 @@ namespace DataAccessLayer.Repositories
            return  await _userManager.GetRolesAsync(user);
         }
 
+
+        public async Task<IdentityResult> ConfirmEmailAsync(EventPlannerUser user, string token)
+        {
+            try
+            {
+                 return await _userManager.ConfirmEmailAsync(user, token);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error confirming user with email {user.Email}");
+                var error = new IdentityError() { Description = "Error while confirming user!" };
+                return IdentityResult.Failed(error);
+            }
+        }
         public async Task<EventPlannerUser> FindByEmailAsync(string email)
         {
             try
@@ -111,6 +129,19 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<string> GenerateConfirmEmailTokenAsync(EventPlannerUser user)
+        {
+            try
+            {
+                return await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error generating password reset token for user.");
+                return string.Empty;
+            }
+        }
+
         public async Task<IdentityResult> ResetPasswordAsync(EventPlannerUser user, string token, string newPassword)
         {
             try
@@ -123,6 +154,52 @@ namespace DataAccessLayer.Repositories
                 var error = new IdentityError() { Description = "Something went wrong when setting the new password." };
                 return IdentityResult.Failed(error);
             }
+        }
+
+        public async Task<EventPlannerUser> GetUserByIdAsync(string userId) 
+        {
+            var user = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            if (user == null)
+            {
+                throw new EventPlannerException($"User with id {userId} does not exist.");
+            }
+            return user;
+        }
+
+        public async Task<UserProfileDetails> GetUserProfileDetailsAsync(string userId)
+        {
+            var userProfile = await _eventPlannerContext.UserProfileDetails
+                .Include(profile => profile.User)
+                .FirstOrDefaultAsync(profile => profile.UserId == userId);
+
+            if (userProfile == null ) 
+            {
+                throw new EventPlannerException($"User with id {userId} does not have an associated profile.");
+            }
+
+            return userProfile;
+        }
+
+        public async Task<bool> UserHasProfileAsync(string userId)
+        {
+            return await _eventPlannerContext.UserProfileDetails.AnyAsync(profile => profile.UserId == userId);
+        }
+
+        public async Task<UserProfileDetails> CreateUserProfileDetailsAsync(string userId, UserProfileDetails userDetails) 
+        {
+            if (await UserHasProfileAsync(userId))
+            {
+                throw new EventPlannerException($"User with id {userId} already has a profile.");
+            }
+            await _eventPlannerContext.UserProfileDetails.AddAsync(userDetails);
+            await _eventPlannerContext.SaveChangesAsync();
+            return userDetails;
+        }
+
+        public async Task<string> SaveChangesAsync()
+        {
+            await _eventPlannerContext.SaveChangesAsync();
+            return "Changes saved to the database";
         }
     }
 }

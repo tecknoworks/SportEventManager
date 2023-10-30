@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 
 type Props = {
+  value?: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   show: boolean;
   onToggleShow: () => void;
@@ -17,12 +18,18 @@ type Props = {
   isRequired: boolean;
 };
 
-function PasswordInput({ onChange, show, onToggleShow, placeholder, errorMessage, isRequired }: Props) {
+function PasswordInput({ value, onChange, show, onToggleShow, placeholder, errorMessage, isRequired }: Props) {
   return (
     <FormControl isRequired={isRequired} isInvalid={errorMessage.length > 0}>
       <FormLabel>{placeholder}</FormLabel>
       <InputGroup size="md">
-        <Input pr="75px" type={show ? 'text' : 'password'} placeholder={placeholder} onChange={onChange} />
+        <Input
+          value={value}
+          pr="75px"
+          type={show ? 'text' : 'password'}
+          placeholder={placeholder}
+          onChange={onChange}
+        />
         <InputRightElement width="75px">
           <Button h="28px" size="sm" onClick={onToggleShow}>
             {show ? 'Hide' : 'Show'}

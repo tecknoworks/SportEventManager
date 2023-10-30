@@ -1,4 +1,4 @@
-import { createAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { createUser, resetStore } from '../thunks/signupThunks';
 import { BeErrorDto } from 'common/dtos/BeErrorDto';
 
@@ -13,8 +13,6 @@ const initialState: State = {
   status: 'idle',
   error: [],
 };
-
-const clearState = createAction('clearState');
 
 const signupPageSlice = createSlice({
   name: 'signupPageSlice',

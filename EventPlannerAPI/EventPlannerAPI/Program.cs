@@ -25,7 +25,6 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 builder.Services.AddSingleton<Serilog.ILogger>(provider => Log.Logger);
 
-
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -45,7 +44,10 @@ builder.Services.AddIdentity<EventPlannerUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
 
-	options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    options.User.RequireUniqueEmail = true;
+    options.SignIn.RequireConfirmedEmail = true;
 })
     .AddEntityFrameworkStores<EventPlannerContext>()
     .AddDefaultTokenProviders();
@@ -69,8 +71,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
-
 builder.Host.UseSerilog();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddDbContext<EventPlannerContext>(options =>
@@ -80,7 +80,6 @@ builder.Services.AddTransient<IMailService, MailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
-
 
 var app = builder.Build();
 
