@@ -3,6 +3,7 @@ import newPasswordReducer from 'features/password-recovery/store/slices/newPassw
 import resetLinkReducer from 'features/password-recovery/store/slices/resetLinkSlice';
 import signupPageReducer from 'features/registration/store/signupPageSlice';
 import profileReducer from 'features/profile/store/slices/profileSlice';
+import accountConfirmationReducer from 'features/account-confirmation/store/slices/accountConfirmationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     newPasswordPage: newPasswordReducer,
     signupPage: signupPageReducer,
     profilePage: profileReducer,
+    confirmAccount: accountConfirmationReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),

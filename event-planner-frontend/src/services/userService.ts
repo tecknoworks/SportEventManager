@@ -2,12 +2,17 @@ import { SendResetLinkDto, SetNewPasswordDto } from 'features/password-recovery/
 import CommonService from './commonService';
 import { UserDto } from 'features/registration/api/Dtos';
 import { UpdateUserProfileDto } from 'features/profile/api/dtos';
+import { ConfirmEmailDto } from 'features/account-confirmation/api/dtos';
 
 const MOCK_USER_ID = '5a56cef4-71b6-4301-a69b-f0a60ed5bcdf'; //TODO: get user id from JWT token
 
 export default class UserService extends CommonService {
   createUser(data: UserDto) {
     return this.post('/User/CreateUser', data);
+  }
+
+  confirmEmail(data: ConfirmEmailDto) {
+    return this.get('/User/ConfirmEmail', data);
   }
 
   sendResetLink(data: SendResetLinkDto) {
