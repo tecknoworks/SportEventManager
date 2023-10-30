@@ -1,29 +1,30 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
+using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using DataAccessLayer.Services;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using System.Web;
 
 namespace BusinessLayer.Services
 {
     public class AdminService : IAdminService
     {
         private readonly IAdminRepository _adminRepository;
+        private readonly IMailService _mailService;
+        private readonly IConfiguration _configuration;
         private readonly Serilog.ILogger _logger;
         private readonly IMapper _mapper;
 
-        public AdminService(IAdminRepository adminRepository, Serilog.ILogger logger, IMapper mapper)
+        public AdminService(IAdminRepository adminRepository, Serilog.ILogger logger, IMapper mapper, IMailService mailService, IConfiguration configuration)
         {
             _adminRepository = adminRepository;
             _logger = logger;
             _mapper = mapper;
+            _mailService = mailService;
+            _configuration = configuration;
         }
 
         public async Task <List<UserDetailsDto>> GetUsersAsyncLogic()
@@ -33,6 +34,7 @@ namespace BusinessLayer.Services
                 var users = await _adminRepository.GetUsersAsync();
                 var usersDto = users.Select(u => new UserDetailsDto
                 {
+                    UserId = u.Id,
                     UserName = u.UserName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber
@@ -52,7 +54,25 @@ namespace BusinessLayer.Services
             try
             {
                 var user = _mapper.Map<EventPlannerUser>(newUser);
-                return await _adminRepository.AddUserAsync(user, newUser.Password, role);
+                var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
+                var userCreated = await _adminRepository.AddUserAsync(user, newUser.Password, role);
+                if (userCreated == null)
+                {
+                    _logger.Error("Error creating user");
+                    var error = new IdentityError() { Description = "Error while creating user!" };
+                    return IdentityResult.Failed(error); ;
+                }
+
+                var token = await _adminRepository.GenerateConfirmEmailTokenAsync(user);
+                var confirmLink = baseUrl + "/confirm-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
+                var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
+
+                if (userCreated != null)
+                {
+                    await _mailService.SendEmailAsync(mail);
+                }
+
+                return userCreated;
             }
             catch (Exception ex)
             {

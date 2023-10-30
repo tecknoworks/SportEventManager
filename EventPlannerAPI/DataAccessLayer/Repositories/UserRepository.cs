@@ -7,7 +7,7 @@ using Azure.Core;
 using System.Security.Policy;
 using Microsoft.AspNetCore.Http;
 
-namespace DataAccessLayer.Services
+namespace DataAccessLayer.Repositories
 {
     public class UserRepository : IUserRepository
     {

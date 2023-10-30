@@ -42,8 +42,8 @@ namespace EventPlannerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPut("EditUser/{id}")]
-        public async Task<IActionResult> EditUser()
+        [HttpPut("EditUser")]
+        public async Task<IActionResult> EditUser([FromBody] EdittedUserDetails newUserEdited, string userId)
         {
             return Ok("User editted!");
         }

@@ -12,5 +12,7 @@ namespace DataAccessLayer.Interfaces
     {
         Task<List<EventPlannerUser>> GetUsersAsync();
         Task<IdentityResult> AddUserAsync(EventPlannerUser user, string password, string role);
+
+        Task<string> GenerateConfirmEmailTokenAsync(EventPlannerUser user);
     }
 }

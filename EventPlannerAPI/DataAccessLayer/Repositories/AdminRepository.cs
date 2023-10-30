@@ -74,6 +74,19 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task<string> GenerateConfirmEmailTokenAsync(EventPlannerUser user)
+        {
+            try
+            {
+                return await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error generating password reset token for user.");
+                return string.Empty;
+            }
+        }
 
+        //public async Task<string> EditUserAsync
     }
 }
