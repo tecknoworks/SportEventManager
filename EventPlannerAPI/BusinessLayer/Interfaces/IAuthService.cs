@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.DTOs;
+using DataAccessLayer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace BusinessLayer.Interfaces
 {
     public interface IAuthService
     {
-        Task<string> GenerateTokenString(LogInUserDto logInUserDto);
+        Task<string> GenerateTokenString(EventPlannerUser user, IList<string> roles);
     }
 }

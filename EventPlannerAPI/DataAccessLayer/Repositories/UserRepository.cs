@@ -4,6 +4,7 @@ using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Helpers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Services
 {
@@ -64,6 +65,24 @@ namespace DataAccessLayer.Services
                 throw new BadHttpRequestException("Unable to find the user.");
             }
             return await _userManager.CheckPasswordAsync(userByEmailOrUsername, password);
+        }
+
+        public async Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier)
+        {
+            var userByEmailOrUsername = await _userManager.FindByEmailAsync(userIdentifier)
+                           ?? await _userManager.FindByNameAsync(userIdentifier);
+
+            if (userByEmailOrUsername == null)
+            {
+                _logger.Error("An error occurred while validating credentials");
+                throw new BadHttpRequestException("Unable to find the user.");
+            }
+            return userByEmailOrUsername;
+        }
+
+        public async Task<IList<string>> GetRolesAsync(EventPlannerUser user )
+        {
+           return  await _userManager.GetRolesAsync(user);
         }
 
         public async Task<EventPlannerUser> FindByEmailAsync(string email)

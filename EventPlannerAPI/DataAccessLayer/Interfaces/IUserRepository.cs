@@ -10,5 +10,8 @@ namespace DataAccessLayer.Interfaces
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
         Task<IdentityResult> ResetPasswordAsync(EventPlannerUser user, string token, string newPassword);
         Task<bool> LogInAsync(string userIdentifier, string password);
+        Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier);
+        Task<IList<string>> GetRolesAsync(EventPlannerUser user);
+
     }
 }

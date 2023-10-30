@@ -105,5 +105,24 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
+        public async Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier)
+        {
+            try
+            {
+                return await _userRepository.GetUserByIdentifier(userIdentifier);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "An error occurred while getting the user");
+                throw;
+            }
+        }
+
+        public async Task<IList<string>> GetRolesAsync(EventPlannerUser user)
+        {
+            return await _userRepository.GetRolesAsync(user);
+        }
+
     }
 }
