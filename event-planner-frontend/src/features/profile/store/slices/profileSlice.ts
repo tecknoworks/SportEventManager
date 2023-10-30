@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getProfileThunk } from '../thunks/getProfileThunk';
 import { GetUserProfileDto } from 'features/profile/api/dtos';
+import { updateProfileThunk } from '../thunks/updateProfileThunk';
 
 type State = {
-  loading: boolean;
+  isLoading: boolean;
   isSuccess: boolean;
   isDone: boolean;
   error: string;
@@ -11,7 +12,7 @@ type State = {
 };
 
 const initialState: State = {
-  loading: false,
+  isLoading: false,
   isSuccess: false,
   isDone: false,
   error: '',
@@ -24,18 +25,31 @@ const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getProfileThunk.pending, (state) => {
-      state.loading = true;
+      state.isLoading = true;
     });
 
     builder.addCase(getProfileThunk.fulfilled, (state, action) => {
-      state.loading = false;
-      state.isSuccess = true;
-      state.isDone = true;
+      state.isLoading = false;
       state.profile = action.payload as GetUserProfileDto;
     });
 
     builder.addCase(getProfileThunk.rejected, (state, action) => {
-      state.loading = false;
+      state.isLoading = false;
+      state.error = action.payload as string;
+    });
+
+    builder.addCase(updateProfileThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(updateProfileThunk.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isDone = true;
+    });
+
+    builder.addCase(updateProfileThunk.rejected, (state, action) => {
+      state.isLoading = false;
       state.isSuccess = false;
       state.isDone = true;
       state.error = action.payload as string;
