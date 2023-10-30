@@ -4,7 +4,7 @@ import UserService from 'services/userService';
 
 const userService = new UserService();
 
-export const accountConfirmationThuk = createAsyncThunk(
+export const accountConfirmationThunk = createAsyncThunk(
   'users/confirmEmail',
   async (requestData: ConfirmEmailDto, { rejectWithValue }) => {
     try {

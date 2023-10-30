@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { accountConfirmationThuk } from '../thunks/accountConfirmationThunk';
+import { accountConfirmationThunk } from '../thunks/accountConfirmationThunk';
 
 type State = {
   loading: boolean;
@@ -20,17 +20,17 @@ const accountConfirmationSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(accountConfirmationThuk.pending, (state) => {
+    builder.addCase(accountConfirmationThunk.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(accountConfirmationThuk.fulfilled, (state) => {
+    builder.addCase(accountConfirmationThunk.fulfilled, (state) => {
       state.loading = false;
       state.isSuccess = true;
       state.isDone = true;
     });
 
-    builder.addCase(accountConfirmationThuk.rejected, (state, action) => {
+    builder.addCase(accountConfirmationThunk.rejected, (state, action) => {
       state.loading = false;
       state.isSuccess = false;
       state.isDone = true;
