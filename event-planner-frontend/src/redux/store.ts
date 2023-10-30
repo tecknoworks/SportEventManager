@@ -2,12 +2,14 @@ import newPasswordReducer from 'features/password-recovery/store/slices/newPassw
 import resetLinkReducer from 'features/password-recovery/store/slices/resetLinkSlice';
 import { configureStore } from '@reduxjs/toolkit';
 import signupPageReducer from 'features/registration/store/signupPageSlice';
+import accountConfirmationReducer from 'features/account-confirmation/store/slices/accountConfirmationSlice';
 
 export const store = configureStore({
   reducer: {
     resetLink: resetLinkReducer,
     newPassword: newPasswordReducer,
     signupPage: signupPageReducer,
+    confirmAccount: accountConfirmationReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
