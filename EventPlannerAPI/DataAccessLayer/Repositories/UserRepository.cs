@@ -3,6 +3,8 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Contexts;
 using Microsoft.AspNetCore.Identity;
 using DataAccessLayer.Helpers;
+using Azure.Core;
+using System.Security.Policy;
 using Microsoft.AspNetCore.Http;
 
 namespace DataAccessLayer.Services
@@ -24,12 +26,13 @@ namespace DataAccessLayer.Services
             _roleManager = roleManager;
         }
 
- 		public async Task<IdentityResult> CreateUserAsync (EventPlannerUser user, string password)
+        public async Task<IdentityResult> CreateUserAsync(EventPlannerUser user, string password)
         {
             try
             {
                 var userRole = RoleConstants.USER_ROLE;
                 bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
+
                 if (!userRoleExists)
                 {
  					_logger.Error("Error in user role management!");
@@ -38,12 +41,12 @@ namespace DataAccessLayer.Services
                 }
 
                 var result = await _userManager.CreateAsync(user, password);
+
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, userRole);
                 }
                 return result;
-
             }
             catch (Exception ex)
             {
@@ -66,6 +69,19 @@ namespace DataAccessLayer.Services
             return await _userManager.CheckPasswordAsync(userByEmailOrUsername, password);
         }
 
+        public async Task<IdentityResult> ConfirmEmailAsync(EventPlannerUser user, string token)
+        {
+            try
+            {
+                 return await _userManager.ConfirmEmailAsync(user, token);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error confirming user with email {user.Email}");
+                var error = new IdentityError() { Description = "Error while confirming user!" };
+                return IdentityResult.Failed(error);
+            }
+        }
         public async Task<EventPlannerUser> FindByEmailAsync(string email)
         {
             try
@@ -88,6 +104,19 @@ namespace DataAccessLayer.Services
             catch (Exception ex)
             {
                 _logger.Error(ex, $"Error generating password reset token for user {user.Id}");
+                return string.Empty;
+            }
+        }
+
+        public async Task<string> GenerateConfirmEmailTokenAsync(EventPlannerUser user)
+        {
+            try
+            {
+                return await _userManager.GenerateEmailConfirmationTokenAsync(user).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error generating password reset token for user.");
                 return string.Empty;
             }
         }
