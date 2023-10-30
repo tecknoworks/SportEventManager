@@ -19,15 +19,15 @@ import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'features/login/store/slices/logInSlice';
-import { logInStateLoading } from 'features/login/store/selectors/logInSelectors';
+import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
 
 const LogInForm = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const toast = useToast();
 
-  const loading = useSelector(logInStateLoading);
-  
+  const loading = useSelector(selectLogInStateLoading);
+
   const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
 

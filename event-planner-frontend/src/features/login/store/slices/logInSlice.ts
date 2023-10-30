@@ -1,7 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { logInThunk } from '../thunks/logInThunk';
 
-const initialState={
+type State = {
+  loading: boolean,
+  user: any,
+  error: unknown | null,
+}
+
+const initialState: State = {
   loading: false,
   user: null,
   error: null as unknown,
@@ -32,7 +38,6 @@ export const logInSlice = createSlice({
     builder.addCase(logInThunk.rejected, (state, action) => {
       state.loading = false;
       state.user = null;
-      console.log(action.error.message);
       if (action.error.message === 'Unable to find the user.') {
         state.error = 'Access denied! Invalid credentials';
       } else {
