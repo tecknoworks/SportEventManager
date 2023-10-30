@@ -47,7 +47,6 @@ namespace DataAccessLayer.Services
                     await _userManager.AddToRoleAsync(user, userRole);
                 }
                 return result;
-                
             }
             catch (Exception ex)
             {
