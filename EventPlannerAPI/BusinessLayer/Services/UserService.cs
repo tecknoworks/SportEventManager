@@ -38,16 +38,16 @@ namespace BusinessLayer.Services
             var user = _mapper.Map<EventPlannerUser>(newUser);
             try
             {
-                var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
-                var confirmLink = baseUrl + "/confirma-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
-                var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
- 
                 var userCreated = await _userRepository.CreateUserAsync(user, newUser.Password);
-                if(userCreated != null)
+
+                var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
+                var confirmLink = baseUrl + "/confirm-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
+                var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
+                if (userCreated != null)
                 {
                     await _mailService.SendEmailAsync(mail);
-                    
+
                 }
 
                 return userCreated;
@@ -61,7 +61,7 @@ namespace BusinessLayer.Services
 
         public async Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto)
         {
-            try 
+            try
             {
                 var user = await _userRepository.FindByEmailAsync(forgotPasswordDto.Email);
 
@@ -72,6 +72,7 @@ namespace BusinessLayer.Services
                 }
 
                 var token = await _userRepository.GeneratePasswordResetTokenAsync(user);
+
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
                 var resetLink = baseUrl + "/reset-password?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
 
@@ -91,7 +92,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                var user = await _userRepository.FindByEmailAsync(confirmEmailDto.Email);
+                var user = await _userRepository.FindByEmailAsync(HttpUtility.UrlDecode(confirmEmailDto.Email));
                 if (user == null)
                 {
                     _logger.Error($"Error confirming: User with email {confirmEmailDto.Email} does not exist");
@@ -99,7 +100,7 @@ namespace BusinessLayer.Services
                     return IdentityResult.Failed(error); ;
                 }
 
-                var result = await _userRepository.ConfirmEmailAsync(user, HttpUtility.UrlEncode(confirmEmailDto.Token));
+                var result = await _userRepository.ConfirmEmailAsync(user, HttpUtility.UrlDecode(confirmEmailDto.Token));
                 return result;
 
             }

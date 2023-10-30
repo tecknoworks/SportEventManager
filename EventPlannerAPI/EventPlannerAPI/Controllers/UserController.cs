@@ -44,8 +44,8 @@ namespace EventPlannerAPI.Controllers
 
         }
 
-        [HttpPost("ConfirmEmail")]
-        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmailDto)
+        [HttpGet("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto confirmEmailDto)
         {
             var errorMessage = await _userService.ConfirmEmailAsyncLogic(confirmEmailDto);
             if (!errorMessage.Succeeded) return BadRequest(errorMessage);
