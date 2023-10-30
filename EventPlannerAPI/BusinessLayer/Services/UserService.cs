@@ -4,13 +4,16 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Web;
+using System.Security.Policy;
 
 namespace BusinessLayer.Services
 {
@@ -32,10 +35,29 @@ namespace BusinessLayer.Services
 
         public async Task<IdentityResult> CreateUserAsync(RegisterUserDto newUser)
         {
-            var user = _mapper.Map<EventPlannerUser>(newUser);
             try
             {
-                return await _userRepository.CreateUserAsync(user, newUser.Password);
+                var user = _mapper.Map<EventPlannerUser>(newUser);
+                var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
+                var userCreated = await _userRepository.CreateUserAsync(user, newUser.Password);
+                if (userCreated == null)
+                {
+                    _logger.Error("Error creating user");
+                    var error = new IdentityError() { Description = "Error while creating user!" };
+                    return IdentityResult.Failed(error); ;
+                }
+
+                var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
+                var confirmLink = baseUrl + "/confirm-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
+                var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
+
+                if (userCreated != null)
+                {
+                    await _mailService.SendEmailAsync(mail);
+                }
+
+                return userCreated;
+                
             }
             catch (Exception ex)
             {
@@ -48,7 +70,6 @@ namespace BusinessLayer.Services
             try
             {
                 var user = await _userRepository.FindByEmailAsync(forgotPasswordDto.Email);
-
                 if (user == null)
                 {
                     _logger.Error($"Error sending reset link: User with email {forgotPasswordDto.Email} does not exist");
@@ -56,6 +77,7 @@ namespace BusinessLayer.Services
                 }
 
                 var token = await _userRepository.GeneratePasswordResetTokenAsync(user);
+
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
                 var resetLink = baseUrl + "/reset-password?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
 
@@ -71,6 +93,30 @@ namespace BusinessLayer.Services
             }
         }
 
+        public async Task<IdentityResult> ConfirmEmailAsyncLogic(ConfirmEmailDto confirmEmailDto)
+        {
+            try
+            {
+                var user = await _userRepository.FindByEmailAsync(HttpUtility.UrlDecode(confirmEmailDto.Email));
+                if (user == null)
+                {
+                    _logger.Error($"Error confirming: User with email {confirmEmailDto.Email} does not exist");
+                    var error = new IdentityError() { Description = "Error while confirming user!" };
+                    return IdentityResult.Failed(error); ;
+                }
+
+                var result = await _userRepository.ConfirmEmailAsync(user, HttpUtility.UrlDecode(confirmEmailDto.Token));
+                return result;
+
+            }
+            catch (Exception ex) 
+            {
+                _logger.Error(ex, "Error confirm user email");
+                var error = new IdentityError() { Description = "Error while confirming user email" };
+                return IdentityResult.Failed(error);
+
+            }
+        }
         public async Task<IdentityResult> SetNewPasswordAsync(SetNewPasswordDto setNewPasswordDto)
         {
             try

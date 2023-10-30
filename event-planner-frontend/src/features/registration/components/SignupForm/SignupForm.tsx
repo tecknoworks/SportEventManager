@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
 import 'common/styles/form.scss';
 import {
   Box,
@@ -22,7 +22,6 @@ import { UserDto } from 'features/registration/api/Dtos';
 import { createUser, resetStore } from 'features/registration/thunks/signupThunks';
 import { selectUserError, selectUserStatus } from 'features/registration/store/signupPageSelector';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { AppDispatch } from 'redux/store';
 
 interface Account {
@@ -42,7 +41,6 @@ const SignupForm = () => {
   const userError = useSelector(selectUserError);
   const [errorBe, setErrorBe] = useState<object[]>([]);
   const toast = useToast();
-  const navigate = useNavigate();
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState<string>('');
@@ -116,13 +114,26 @@ const SignupForm = () => {
     setErrorBe([]);
   }, []);
 
+  const resetInputValues = () => {
+    setErrorBe([]);
+    setAccount({
+      userName: '',
+      email: '',
+      phoneNumber: '',
+      password: '',
+      confirmPassword: '',
+      showPassword: false,
+      showConfirmPassword: false,
+    });
+  };
+
   useEffect(() => {
     if (userStatus === 'succeded') {
       dispatch(resetStore());
-      navigate('/homepage');
+      resetInputValues();
       toast({
         title: 'Account created.',
-        description: "We've created your account for you.",
+        description: "We've created your account for you. Check your email to confirm your account",
         status: 'success',
         duration: 9000,
         isClosable: true,
@@ -156,6 +167,7 @@ const SignupForm = () => {
             <FormLabel>User name</FormLabel>
             <Input
               type="text"
+              value={account.userName}
               placeholder="User name"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 setAccount({ ...account, userName: e.target.value })
@@ -166,6 +178,7 @@ const SignupForm = () => {
           <FormControl isRequired isInvalid={emailErrorMessage.length > 0}>
             <FormLabel>Email address</FormLabel>
             <Input
+              value={account.email}
               type="email"
               placeholder="Email"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccount({ ...account, email: e.target.value })}
@@ -177,6 +190,7 @@ const SignupForm = () => {
             <InputGroup>
               <InputLeftAddon children="tel" />
               <Input
+                value={account.phoneNumber}
                 type="text"
                 placeholder="Phone number"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -190,6 +204,7 @@ const SignupForm = () => {
             <FormErrorMessage>{phoneNumberErrorMessage}</FormErrorMessage>
           </FormControl>
           <PasswordInput
+            value={account.password}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAccount({ ...account, password: e.target.value })}
             show={account.showPassword}
             onToggleShow={() =>
@@ -203,6 +218,7 @@ const SignupForm = () => {
             isRequired={true}
           />
           <PasswordInput
+            value={account.confirmPassword}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               setAccount({ ...account, confirmPassword: e.target.value })
             }
@@ -217,7 +233,7 @@ const SignupForm = () => {
             errorMessage={confirmPasswordErrorMessage}
             isRequired={true}
           />
-          {errorBe.map((err: any) => (
+          {errorBe?.map((err: any) => (
             <Text key={err.code} color="red.500" as="b" fontSize="sm" textAlign="center">
               {err.description}
             </Text>
