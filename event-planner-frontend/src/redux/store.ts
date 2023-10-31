@@ -2,7 +2,6 @@ import { configureStore } from '@reduxjs/toolkit';
 import newPasswordReducer from 'features/password-recovery/store/slices/newPasswordSlice';
 import resetLinkReducer from 'features/password-recovery/store/slices/resetLinkSlice';
 import logInReducer from 'features/login/store/slices/logInSlice'
-import { configureStore } from '@reduxjs/toolkit';
 import signupPageReducer from 'features/registration/store/signupPageSlice';
 import profileReducer from 'features/profile/store/slices/profileSlice';
 import accountConfirmationReducer from 'features/account-confirmation/store/slices/accountConfirmationSlice';
@@ -10,9 +9,9 @@ import accountConfirmationReducer from 'features/account-confirmation/store/slic
 
 export const store = configureStore({
   reducer: {
-    newPassword: newPasswordReducer,
+    newPasswordPage: newPasswordReducer,
+    resetLinkPage: resetLinkReducer,
     logIn: logInReducer,
-    newPassword: newPasswordReducer,
     signupPage: signupPageReducer,
     profilePage: profileReducer,
     confirmAccount: accountConfirmationReducer,
