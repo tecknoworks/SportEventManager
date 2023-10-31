@@ -28,6 +28,24 @@ namespace DataAccessLayer.Repositories
             _roleManager = roleManager;
         }
 
+        public async Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier)
+        {
+            var userByEmailOrUsername = await _userManager.FindByEmailAsync(userIdentifier)
+                           ?? await _userManager.FindByNameAsync(userIdentifier);
+
+            if (userByEmailOrUsername == null)
+            {
+                _logger.Error("An error occurred while validating credentials");
+                throw new BadHttpRequestException("Unable to find the user.");
+            }
+            return userByEmailOrUsername;
+        }
+
+        public async Task<IList<string>> GetRolesAsync(EventPlannerUser user)
+        {
+            return await _userManager.GetRolesAsync(user);
+        }
+       
         public async Task<IdentityResult> CreateUserAsync(EventPlannerUser user, string password)
         {
             try
@@ -84,10 +102,7 @@ namespace DataAccessLayer.Repositories
                 return IdentityResult.Failed(error);
             }
         }
-        public async Task<IList<string>> GetRolesAsync(EventPlannerUser user )
-        {
-           return  await _userManager.GetRolesAsync(user);
-        }
+       
         public async Task<EventPlannerUser> FindByEmailAsync(string email)
         {
             try

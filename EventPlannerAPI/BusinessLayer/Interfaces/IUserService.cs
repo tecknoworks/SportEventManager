@@ -13,7 +13,8 @@ namespace BusinessLayer.Interfaces
         Task<bool> LogInAsync(LogInUserDto eventPlannerUser);
        
 		Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier);
-		Task<IList<string>> GetRolesAsync(EventPlannerUser user);
+        Task<GetUserProfileDetailsDto> GetUserProfileDetailsAsync(string userId);
+        Task<IList<string>> GetRolesAsync(EventPlannerUser user);
         Task<GetUserProfileDetailsDto> CreateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails);
         Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto newUserDetails);
 
