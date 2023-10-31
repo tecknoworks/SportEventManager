@@ -20,6 +20,7 @@ const RouterComponent: FC = () => (
         <Route path="confirm-account" element={<AccountConfirmationPage />} />
         <Route path="recover-password" element={<PasswordRecoveryPage />} />
         <Route path="reset-password" element={<CreateNewPasswordPage />} />
+        <Route path='login' element={<LoginPage/>}/>
         <Route path='admin' element={<AdminPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>

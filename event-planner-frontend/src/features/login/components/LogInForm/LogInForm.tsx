@@ -19,7 +19,7 @@ import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
 import { useNavigate } from 'react-router-dom';
 import { logout } from 'features/login/store/slices/logInSlice';
-import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
+import { selectLogInStateLoading, selectLogInStateUser } from 'features/login/store/selectors/logInSelectors';
 
 const LogInForm = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -27,6 +27,7 @@ const LogInForm = () => {
   const toast = useToast();
 
   const loading = useSelector(selectLogInStateLoading);
+  const user = useSelector(selectLogInStateUser);
 
   const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -133,7 +134,14 @@ const LogInForm = () => {
             </InputGroup>
             <FormErrorMessage>{errors.password}</FormErrorMessage>
           </FormControl>
-          <Button type="submit" colorScheme="purple" size="md" variant="solid" isDisabled={isDisabled} isLoading={loading}>
+          <Button
+            type="submit"
+            colorScheme="purple"
+            size="md"
+            variant="solid"
+            isDisabled={isDisabled}
+            isLoading={loading}
+          >
             Log In
           </Button>
           <Button
@@ -145,9 +153,12 @@ const LogInForm = () => {
           >
             Forgot password?
           </Button>
-          <Button variant="text" size="sm" onClick={handleLogout}>
-            Logout
-          </Button>
+
+          {user && (
+            <Button variant="text" size="sm" onClick={handleLogout}>
+              Logout
+            </Button>
+          )}
         </Stack>
       </form>
     </Box>
