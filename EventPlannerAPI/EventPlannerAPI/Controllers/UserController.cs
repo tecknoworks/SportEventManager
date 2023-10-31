@@ -26,18 +26,9 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto newUser)
         {
-            try
-            {
-                return Ok(await _userService.CreateUserAsyncLogic(newUser));
-            }
-            catch (EventPlannerException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Something went wrong.");
-            }
+            var result = await _userService.CreateUserAsyncLogic(newUser);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("User created!");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -60,36 +51,18 @@ namespace EventPlannerAPI.Controllers
         [HttpGet("ConfirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto confirmEmailDto)
         {
-            try
-            {
-                return Ok(await _userService.ConfirmEmailAsyncLogic(confirmEmailDto));
-            }
-            catch (EventPlannerException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Something went wrong.");
-            }
+            var errorMessage = await _userService.ConfirmEmailAsyncLogic(confirmEmailDto);
+            if (!errorMessage.Succeeded) return BadRequest(errorMessage);
+            return Ok("If there's an account associated with this email address, we've sent you an email to activate your account.");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
-            try
-            {
-                return Ok(await _userService.SendPasswordResetLinkAsync(forgotPasswordDto));
-            }
-            catch (EventPlannerException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Something went wrong.");
-            }
+            var errorMessage = await _userService.SendPasswordResetLinkAsync(forgotPasswordDto);
+            if (!errorMessage.IsNullOrEmpty()) return BadRequest(errorMessage);
+            return Ok("If there's an account associated with this email address, we've sent instructions for resetting the password.");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -97,18 +70,9 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("SetNewPassword")]
         public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordDto setNewPasswordDto)
         {
-            try
-            {
-                return Ok(await _userService.SetNewPasswordAsync(setNewPasswordDto));
-            }
-            catch (EventPlannerException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Something went wrong.");
-            }
+            var result = await _userService.SetNewPasswordAsync(setNewPasswordDto);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("Password reset successfully.");
         }
 
         [ProducesResponseType(StatusCodes.Status200OK)]
