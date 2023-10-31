@@ -18,6 +18,5 @@ namespace DataAccessLayer.Interfaces
         Task<bool> UserHasProfileAsync(string userId);  
         Task<string> SaveChangesAsync();
  		Task<IList<string>> GetRolesAsync(EventPlannerUser user);
-        Task<EventPlannerUser> GetUserByIdAsync(string userId);
     }
 }
