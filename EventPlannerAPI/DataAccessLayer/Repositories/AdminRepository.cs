@@ -38,24 +38,18 @@ namespace DataAccessLayer.Repositories
         {
             try
             {
-                var userRole = RoleConstants.ADMIN_ROLE;
-                if (role == RoleConstants.USER_ROLE)
-                {
-                   userRole = RoleConstants.USER_ROLE;
-                }
-
-                bool userRoleExists = await _roleManager.RoleExistsAsync(userRole);
+                bool userRoleExists = await _roleManager.RoleExistsAsync(role);
                 if (!userRoleExists)
                 {
                     _logger.Error("Error in user role management!");
-                    var error = new IdentityError() { Description = "Error while creating user as admin!" };
+                    var error = new IdentityError() { Description = "Error while creating user!" };
                     return IdentityResult.Failed(error);
                 }
 
                 var result = await _userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, userRole);
+                    await _userManager.AddToRoleAsync(user, role);
                 }
                 return result;
 
