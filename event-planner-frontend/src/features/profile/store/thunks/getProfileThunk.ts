@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { handleApiError } from 'services/errorHandlingService';
+import { handleApiError } from 'services/notificationHandlingService';
 import UserService from 'services/userService';
 
 const userService = new UserService();

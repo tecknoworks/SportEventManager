@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { SendResetLinkDto } from 'features/password-recovery/api/dtos';
-import { handleApiError } from 'services/errorHandlingService';
+import { handleApiError } from 'services/notificationHandlingService';
 import UserService from 'services/userService';
 
 const userService = new UserService();

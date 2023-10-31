@@ -1,25 +1,16 @@
-import { Box, useToast } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import EditProfileForm from './components/EditProfileForm';
 import { selectProfileIsSuccess } from './store/selectors/profileSelector';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { handleGenericSuccess } from 'services/notificationHandlingService';
 
 function ProfilePage() {
   const isSuccess = useSelector(selectProfileIsSuccess);
 
-  const toast = useToast();
-
   useEffect(() => {
-    if (isSuccess) {
-      toast({
-        title: 'Success',
-        description: 'You have successfully updated your profile.',
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      });
-    }
-  }, [isSuccess, toast]);
+    if (isSuccess) handleGenericSuccess('You have successfully updated your profile.');
+  }, [isSuccess]);
   return (
     <Box display="flex" justifyContent="center" alignItems="center" bgGradient="linear(to-r, #610C9F, #E95793)">
       <EditProfileForm />

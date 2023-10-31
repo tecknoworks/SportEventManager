@@ -9,7 +9,7 @@ import CreateNewPasswordPage from 'features/password-recovery/views/CreateNewPas
 import EditProfilePage from 'features/profile/ProfilePage';
 import AccountConfirmationPage from 'features/account-confirmation/views/AccountConfirmationPage';
 import { useToast } from '@chakra-ui/react';
-import { initializeErrorHandlingService } from 'services/errorHandlingService';
+import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
