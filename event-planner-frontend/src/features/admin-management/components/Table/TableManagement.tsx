@@ -1,23 +1,30 @@
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Text, Button, Input, Select, useToast } from '@chakra-ui/react';
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  TableContainer,
+  Text,
+  Button,
+  useToast,
+  useDisclosure,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import UserRow from '../User/UserRow';
-import PasswordInput from 'common/components/PasswordInput/PasswordInput';
-import { isValidEmail } from 'common/validators/emailValidator';
-import { validatePassword } from 'common/validators/passwordValidator';
-import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import { useDebounce } from 'use-debounce';
+import CreateUserModal from '../Moldal/CreateUserModal';
 
 const TableManagement: React.FC = () => {
   const initialUsers = [{ id: 1, name: 'ion', email: 'ion@gmail.com', phoneNumber: '0747545789' }];
 
   const [users, setUsers] = useState(initialUsers);
   const [editingUser, setEditingUser] = useState(null);
-  const [showFields, setShowFields] = useState<boolean>(false);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
     phoneNumber: '',
-    password: ''
+    password: '',
   });
   const [touchedFields, setTouchedFields] = useState({
     name: false,
@@ -26,37 +33,32 @@ const TableManagement: React.FC = () => {
     phoneNumber: false,
   });
 
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [emailError, setEmailError] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
-  const [phoneError, setPhoneError] = useState<string>("");
+ 
+  const [emailError, setEmailError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+  const [phoneError, setPhoneError] = useState<string>('');
 
-  const toast = useToast()
+  const toast = useToast();
   const [debouncedNewUser] = useDebounce(newUser, 2000);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const validateFields = () => {
-    setEmailError(isValidEmail(newUser.email) ? "" : "Invalid Email");
-    setPasswordError(validatePassword(newUser.password));
-    setPhoneError(isValidPhoneNumber(newUser.phoneNumber) ? "" : "Invalid Phone Number");
-  };
+
 
   const isValid = !emailError && !passwordError && !phoneError;
 
   useEffect(() => {
-    validateFields();
+    
     // Trigger toast if there are errors
     if (emailError && touchedFields.email) {
-      toast({ description: emailError, status: "error" });
+      toast({ description: emailError, status: 'error' });
     }
     if (passwordError && touchedFields.password) {
-      toast({ description: passwordError, status: "error" });
+      toast({ description: passwordError, status: 'error' });
     }
     if (phoneError && touchedFields.phoneNumber) {
-      toast({ description: phoneError, status: "error" });
+      toast({ description: phoneError, status: 'error' });
     }
   }, [debouncedNewUser, toast]);
-
-
 
   const addUser = () => {
     let isValid = true;
@@ -80,9 +82,8 @@ const TableManagement: React.FC = () => {
   };
 
   return (
-    <Box className="form-wrapper" display="flex" width="100%" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Text fontSize="5xl">Admin Page</Text>
-      <TableContainer pt={9} width="100%">
+    <TableContainer pt={9} width="100%">
+      {users.length > 0 ? (
         <Table>
           <Thead>
             <Tr>
@@ -96,56 +97,22 @@ const TableManagement: React.FC = () => {
             {users.map((user) => (
               <UserRow key={user.id} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} />
             ))}
-            {showFields && (
-              <Tr>
-                <Td>
-                  <Input placeholder="Name" value={newUser.name} onChange={(e) => { setNewUser({ ...newUser, name: e.target.value }); setTouchedFields({ ...touchedFields, name: true }) }} />
-                </Td>
-                <Td>
-                  <Input placeholder="Email" value={newUser.email} onChange={(e) => {
-                    setNewUser({ ...newUser, email: e.target.value });
-                    setTouchedFields({ ...touchedFields, email: true });
-                  }} />
-                </Td>
-                <Td>
-                  <Input placeholder="Phone" value={newUser.phoneNumber} onChange={(e) => { setNewUser({ ...newUser, phoneNumber: e.target.value }); setTouchedFields({ ...touchedFields, phoneNumber: true }) }} />
-                </Td>
-              </Tr>
-            )}
 
-            {showFields && (
-              <Tr>
-                <Td>
-                  <Select placeholder="Roles:">
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
-                  </Select>
-                </Td>
-                <Td>
-                  <PasswordInput
-                    value={newUser.password}
-                    onChange={(e) => { setNewUser({ ...newUser, password: e.target.value }); setTouchedFields({ ...touchedFields, password: true }) }}
-                    show={showPassword}
-                    onToggleShow={() => { setShowPassword(!showPassword) }}
-                    placeholder="Password"
-                    errorMessage={""}
-                    isRequired={true}
-                  />
-                </Td>
-                <Td>
-                  <Button onClick={() => { setShowFields(!showFields); addUser() }} isDisabled={!isValid}>Confirm</Button>
-                </Td>
-              </Tr>
-            )}
-            <Tr>
-              <Td colSpan={5}>
-                <Button onClick={() => { setShowFields(!showFields) }}>Add User</Button>
-              </Td>
-            </Tr>
+            <CreateUserModal
+              isOpen={isOpen}
+              onClose={onClose}
+              addUser={addUser}
+              isValid={isValid}
+              newUser={newUser}
+              setNewUser={setNewUser}
+            />
+            <Button mt="6" onClick={onOpen}>Add User</Button>
           </Tbody>
         </Table>
-      </TableContainer>
-    </Box>
+      ) : (
+        <Text fontSize="2xl">We have 0 users</Text>
+      )}
+    </TableContainer>
   );
 };
 
