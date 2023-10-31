@@ -10,5 +10,6 @@ namespace BusinessLayer.Interfaces
         Task<string> SendPasswordResetLinkAsync(ForgotPasswordDto forgotPasswordDto);
         Task<IdentityResult> SetNewPasswordAsync(SetNewPasswordDto setNewPasswordDto);
         Task<bool> LogInAsync(LogInUserDto eventPlannerUser); 
+
     }
 }

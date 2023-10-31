@@ -87,6 +87,68 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        //public async Task<string> EditUserAsync
+        public async Task<EventPlannerUser> GetUserByIdAsync(string userId)
+        {
+            var user = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            if (user == null)
+            {
+                throw new Exception($"User with id {userId} does not exist.");
+            }
+            return user;
+        }
+
+        public async Task<IdentityResult> EditUserAsync(EventPlannerUser user)
+        {
+            try
+            {
+                return await _userManager.UpdateAsync(user);
+            }
+            catch(Exception ex)
+            {
+                _logger.Error(ex, $"Error editing user with id {user.Id}");
+                var error = new IdentityError() { Description = "Error while editing user!" };
+                return IdentityResult.Failed(error);
+            }
+        }
+
+        public async Task<IdentityResult> DeleteUserAsync(EventPlannerUser user)
+        {
+            try
+            {
+                return await _userManager.DeleteAsync(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error deleting user with id {user.Id}");
+                var error = new IdentityError() { Description = "Error while deleting user!" };
+                return IdentityResult.Failed(error);
+            }
+        }
+
+        public async Task<EventPlannerUser> FindByEmailAsync(string email)
+        {
+            try
+            {
+                return await _userManager.FindByEmailAsync(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error finding user with email {email}");
+                return null;
+            }
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user)
+        {
+            try
+            {
+                return await _userManager.GeneratePasswordResetTokenAsync(user);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error generating password reset token for user {user.Id}");
+                return string.Empty;
+            }
+        }
     }
 }

@@ -102,7 +102,7 @@ namespace BusinessLayer.Services
                 {
                     _logger.Error($"Error confirming: User with email {confirmEmailDto.Email} does not exist");
                     var error = new IdentityError() { Description = "Error while confirming user!" };
-                    return IdentityResult.Failed(error); ;
+                    return IdentityResult.Failed(error);
                 }
 
                 var result = await _userRepository.ConfirmEmailAsync(user, HttpUtility.UrlDecode(confirmEmailDto.Token));

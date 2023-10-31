@@ -2,6 +2,7 @@
 using BusinessLayer.Interfaces;
 using BusinessLayer.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -45,23 +46,29 @@ namespace EventPlannerAPI.Controllers
         [HttpPut("EditUser")]
         public async Task<IActionResult> EditUser([FromBody] EdittedUserDetails newUserEdited, string userId)
         {
-            return Ok("User editted!");
+            var result = await _adminService.EditUserAsyncLogic(newUserEdited, userId);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("User edited!");
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpDelete("DeleteUser/{id}")]
-        public async Task<IActionResult> DeleteUser()
+        [HttpDelete("DeleteUser")]
+        public async Task<IActionResult> DeleteUser([FromBody] string userId)
         {
-            return Ok("User deleted");
+            var result = await _adminService.DeleteUserAsyncLogic(userId);
+            if (!result.Succeeded) return BadRequest(result.Errors);
+            return Ok("User deleted!");
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("SendRecoverPasswordEmail/{id}")]
-        public async Task<IActionResult> SendRecoverPasswordEmail()
+        [HttpPost("SendRecoverPasswordEmail")]
+        public async Task<IActionResult> SendRecoverPasswordEmail([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
-            return Ok("Email sent");
+            var errorMessage = await _adminService.SendRecoverPasswordEmailAsyncLogic(forgotPasswordDto);
+            if (!errorMessage.IsNullOrEmpty()) return BadRequest(errorMessage);
+            return Ok("If there's an account associated with this email address, we've sent instructions for resetting the password.");
         }
     }
 }
