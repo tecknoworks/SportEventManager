@@ -12,6 +12,7 @@ import {
   Text,
   FormErrorMessage,
   useToast,
+  Link,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInThunk } from 'features/login/store/thunks/logInThunk';
@@ -144,15 +145,22 @@ const LogInForm = () => {
           >
             Log In
           </Button>
+          <Text>
+            Don't have an account?{' '}
+            <Link color="purple" href="/signup">
+              Sign up
+            </Link>
+          </Text>
           <Button
             variant="text"
             size="sm"
             onClick={() => {
-              navigate('/');
+              navigate('/recover-password');
             }}
           >
             Forgot password?
           </Button>
+
 
           {user && (
             <Button variant="text" size="sm" onClick={handleLogout}>
