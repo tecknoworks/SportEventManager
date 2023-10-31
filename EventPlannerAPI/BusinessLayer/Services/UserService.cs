@@ -198,7 +198,6 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-
         public async Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier)
         {
             try

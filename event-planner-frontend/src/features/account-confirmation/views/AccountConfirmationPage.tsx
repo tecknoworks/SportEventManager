@@ -10,7 +10,7 @@ import {
   selectAccountConfirmationIsDone,
   selectAccountConfirmationIsSuccess,
 } from '../store/selectors/accountConfirmationSelectors';
-import { accountConfirmationThunk } from '../store/thunks/accountConfirmationThunk';
+import { accountConfirmationThuk } from '../store/thunks/accountConfirmationThunk';
 
 const useURLParams = () => {
   const location = useLocation();
@@ -30,7 +30,7 @@ const AccountConfirmationPage = () => {
 
   useEffect(() => {
     dispatch(
-      accountConfirmationThunk({
+      accountConfirmationThuk({
         email,
         token,
       })
