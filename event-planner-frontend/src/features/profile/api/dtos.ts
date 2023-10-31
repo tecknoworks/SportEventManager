@@ -11,19 +11,6 @@ export type GetUserProfileDto = {
   profilePhoto?: string;
 };
 
-export const defaultProfile: GetUserProfileDto = {
-  firstName: '',
-  lastName: '',
-  userName: '',
-  email: '',
-  phoneNumber: '',
-  dateOfBirth: new Date(1976),
-  country: '',
-  county: '',
-  city: '',
-  profilePhoto: '',
-};
-
 export type UpdateUserProfileDto = {
   phoneNumber?: string;
   firstName?: string;

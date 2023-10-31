@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { SendResetLinkDto } from 'features/password-recovery/api/dtos';
+import { handleApiError } from 'services/errorHandlingService';
 import UserService from 'services/userService';
 
 const userService = new UserService();
@@ -11,6 +12,7 @@ export const resetLinkThunk = createAsyncThunk(
       const response = await userService.sendResetLink(requestData);
       return response.data;
     } catch (error: any) {
+      handleApiError(error);
       return rejectWithValue(error.response?.data || 'An error occurred');
     }
   }

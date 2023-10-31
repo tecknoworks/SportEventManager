@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { handleApiError } from 'services/errorHandlingService';
 import UserService from 'services/userService';
 
 const userService = new UserService();
@@ -8,6 +9,7 @@ export const getProfileThunk = createAsyncThunk('users/getProfile', async (userI
     const response = await userService.getUserProfile(userId);
     return response.data;
   } catch (error: any) {
+    handleApiError(error);
     return rejectWithValue(error.response?.data || 'An error occured while getting the profile.');
   }
 });

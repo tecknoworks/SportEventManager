@@ -19,14 +19,6 @@ function PasswordRecoveryPage() {
         duration: 9000,
         isClosable: true,
       });
-    } else if (!isSuccess && isDone) {
-      toast({
-        title: 'Error',
-        description: 'Something went wrong. Please try again later.',
-        status: 'error',
-        duration: 9000,
-        isClosable: true,
-      });
     }
   }, [isSuccess, isDone, toast]);
 

@@ -32,7 +32,6 @@ import { getProfileThunk } from '../store/thunks/getProfileThunk';
 import { useEffect, useState } from 'react';
 import { selectProfile, selectProfileIsLoading } from '../store/selectors/profileSelector';
 import { GetUserProfileDto, UpdateUserProfileDto } from '../api/dtos';
-import { defaultProfile } from '../api/dtos';
 import { formatDate } from 'common/helpers/dateFormatter';
 import { updateProfileThunk } from '../store/thunks/updateProfileThunk';
 import Loader from 'common/components/Loader/Loader';
@@ -44,7 +43,18 @@ const EditProfileForm = () => {
   const dispatch: AppDispatch = useDispatch();
   const profile = useSelector(selectProfile);
   const isLoading = useSelector(selectProfileIsLoading);
-
+  const defaultProfile: GetUserProfileDto = {
+    firstName: '',
+    lastName: '',
+    userName: '',
+    email: '',
+    phoneNumber: '',
+    dateOfBirth: new Date(1976),
+    country: '',
+    county: '',
+    city: '',
+    profilePhoto: '',
+  };
   const [currentProfile, setCurrentProfile] = useState<GetUserProfileDto>(defaultProfile);
   const [isImageWidgetLoading, setImageWidgetLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);

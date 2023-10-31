@@ -39,7 +39,6 @@ const SignupForm = () => {
   const dispatch: AppDispatch = useDispatch();
   const userStatus = useSelector(selectUserStatus);
   const userError = useSelector(selectUserError);
-  const [errorBe, setErrorBe] = useState<object[]>([]);
   const toast = useToast();
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
@@ -110,12 +109,7 @@ const SignupForm = () => {
     );
   }, [debouncedAccount]);
 
-  useEffect(() => {
-    setErrorBe([]);
-  }, []);
-
   const resetInputValues = () => {
-    setErrorBe([]);
     setAccount({
       userName: '',
       email: '',
@@ -138,8 +132,6 @@ const SignupForm = () => {
         duration: 9000,
         isClosable: true,
       });
-    } else {
-      setErrorBe(userError);
     }
   }, [userStatus]);
 
@@ -233,12 +225,6 @@ const SignupForm = () => {
             errorMessage={confirmPasswordErrorMessage}
             isRequired={true}
           />
-          {errorBe?.map((err: any) => (
-            <Text key={err.code} color="red.500" as="b" fontSize="sm" textAlign="center">
-              {err.description}
-            </Text>
-          ))}
-
           <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
         </Stack>
       </form>
