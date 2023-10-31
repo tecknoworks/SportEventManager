@@ -1,6 +1,8 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -34,15 +36,16 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LogInUserDto logInUserDto)
         {
- 
             var resposnse = await _userService.LogInAsync(logInUserDto);
             if (!resposnse)
             {
                 return BadRequest("Invalid credentials.");
             }
-            var tokenString =await _authService.GenerateTokenString(logInUserDto);
-            return Ok(tokenString);
+            var user = await _userService.GetUserByIdentifier(logInUserDto.UserIdentifier);
+            var roles = await _userService.GetRolesAsync(user);
 
+            var tokenString =await _authService.GenerateTokenString(user, roles);
+            return Ok(tokenString);
         }
 
         [HttpGet("ConfirmEmail")]
