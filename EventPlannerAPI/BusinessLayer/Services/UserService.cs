@@ -4,16 +4,9 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Web;
-using System.Security.Policy;
 
 namespace BusinessLayer.Services
 {
@@ -33,7 +26,7 @@ namespace BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<IdentityResult> CreateUserAsync(RegisterUserDto newUser)
+        public async Task<IdentityResult> CreateUserAsyncLogic(RegisterUserDto newUser)
         {
             try
             {
@@ -50,11 +43,7 @@ namespace BusinessLayer.Services
                 var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
                 var confirmLink = baseUrl + "/confirm-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
                 var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
-
-                if (userCreated != null)
-                {
-                    await _mailService.SendEmailAsync(mail);
-                }
+                await _mailService.SendEmailAsync(mail);
 
                 return userCreated;
                 
@@ -102,7 +91,7 @@ namespace BusinessLayer.Services
                 {
                     _logger.Error($"Error confirming: User with email {confirmEmailDto.Email} does not exist");
                     var error = new IdentityError() { Description = "Error while confirming user!" };
-                    return IdentityResult.Failed(error); ;
+                    return IdentityResult.Failed(error);
                 }
 
                 var result = await _userRepository.ConfirmEmailAsync(user, HttpUtility.UrlDecode(confirmEmailDto.Token));
