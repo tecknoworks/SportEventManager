@@ -20,9 +20,10 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
             <Td>{user.email}</Td>
             <Td>{user.phoneNumber}</Td>
             <Td>
-                <Button>Edit</Button>
-                <Button onClick={() => deleteUser(user.id)}>Delete</Button>
-                <Button onClick={() => sendRecoveryEmail(user.email)}>Send Recovery Email</Button>
+                <Button mr='3' bg={'blue.300'}>Edit</Button>
+                <Button mr='3' bg={'green.300'} onClick={() => sendRecoveryEmail(user.email)}>Send Recovery Email</Button>
+                <Button bg={'red.300'} onClick={() => deleteUser(user.id)}>Delete</Button>
+
             </Td>
         </Tr>
     );
