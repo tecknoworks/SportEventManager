@@ -43,11 +43,7 @@ namespace BusinessLayer.Services
                 var token = await _userRepository.GenerateConfirmEmailTokenAsync(user);
                 var confirmLink = baseUrl + "/confirm-account?token=" + HttpUtility.UrlEncode(token) + "&email=" + HttpUtility.UrlEncode(user.Email);
                 var mail = MailRequest.ConfirmAccount(user.Email, user.UserName, confirmLink);
-
-                if (userCreated != null)
-                {
-                    await _mailService.SendEmailAsync(mail);
-                }
+                await _mailService.SendEmailAsync(mail);
 
                 return userCreated;
                 
