@@ -49,7 +49,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IdentityResult> AddUserAsyncLogic(RegisterUserDto newUser, string role)
+        public async Task<IdentityResult> AddUserAsyncLogic(RegisterUserDto newUser, RoleType role)
         {
             try
             {

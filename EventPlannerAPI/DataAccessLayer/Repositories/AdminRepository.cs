@@ -34,11 +34,12 @@ namespace DataAccessLayer.Repositories
             }
         }
 
-        public async Task<IdentityResult> AddUserAsync(EventPlannerUser user, string password, string role)
+        public async Task<IdentityResult> AddUserAsync(EventPlannerUser user, string password, RoleType role)
         {
             try
             {
-                bool userRoleExists = await _roleManager.RoleExistsAsync(role);
+                var roleToCheck = role.ToString();
+                bool userRoleExists = await _roleManager.RoleExistsAsync(roleToCheck);
                 if (!userRoleExists)
                 {
                     _logger.Error("Error in user role management!");
@@ -49,7 +50,7 @@ namespace DataAccessLayer.Repositories
                 var result = await _userManager.CreateAsync(user, password);
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, role);
+                    await _userManager.AddToRoleAsync(user, roleToCheck);
                 }
                 return result;
 

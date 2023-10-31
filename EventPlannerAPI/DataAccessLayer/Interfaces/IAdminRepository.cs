@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Models;
+﻿using DataAccessLayer.Helpers;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace DataAccessLayer.Interfaces
@@ -6,7 +7,7 @@ namespace DataAccessLayer.Interfaces
     public interface IAdminRepository
     {
         Task<List<EventPlannerUser>> GetUsersAsync();
-        Task<IdentityResult> AddUserAsync(EventPlannerUser user, string password, string role);
+        Task<IdentityResult> AddUserAsync(EventPlannerUser user, string password, RoleType role);
         Task<string> GenerateConfirmEmailTokenAsync(EventPlannerUser user);
         Task<EventPlannerUser> GetUserByIdAsync(string userId);
         Task<IdentityResult> EditUserAsync(EventPlannerUser user);

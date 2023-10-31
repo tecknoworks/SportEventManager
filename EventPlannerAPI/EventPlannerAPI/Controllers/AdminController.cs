@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
+using DataAccessLayer.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventPlannerAPI.Controllers
@@ -33,7 +34,7 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromBody] RegisterUserDto newUser, string role)
+        public async Task<IActionResult> AddUser([FromBody] RegisterUserDto newUser, RoleType role)
         {
             try
             {
