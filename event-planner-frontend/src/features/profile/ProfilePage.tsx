@@ -1,12 +1,12 @@
 import { Box, useToast } from '@chakra-ui/react';
 import EditProfileForm from './components/EditProfileForm';
-import { selectProfileIsDone, selectProfileIsSuccess } from './store/selectors/profileSelector';
+import { selectProfileIsSuccess } from './store/selectors/profileSelector';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 function ProfilePage() {
   const isSuccess = useSelector(selectProfileIsSuccess);
-  const isDone = useSelector(selectProfileIsDone);
+
   const toast = useToast();
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function ProfilePage() {
         isClosable: true,
       });
     }
-  }, [isSuccess, isDone, toast]);
+  }, [isSuccess, toast]);
   return (
     <Box display="flex" justifyContent="center" alignItems="center" bgGradient="linear(to-r, #610C9F, #E95793)">
       <EditProfileForm />
