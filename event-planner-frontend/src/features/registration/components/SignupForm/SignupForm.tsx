@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   useToast,
+  Link,
 } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import PasswordInput from 'common/components/PasswordInput/PasswordInput';
@@ -238,7 +239,12 @@ const SignupForm = () => {
               {err.description}
             </Text>
           ))}
-
+          <Text>
+            Already have an account?{' '}
+            <Link color="purple" href="/login">
+              Login here
+            </Link>
+          </Text>
           <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
         </Stack>
       </form>
