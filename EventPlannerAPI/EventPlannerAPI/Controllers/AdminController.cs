@@ -1,8 +1,7 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
-using BusinessLayer.Services;
+using DataAccessLayer.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -34,11 +33,20 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromBody] UserDto newUser, string role)
+        public async Task<IActionResult> AddUser([FromBody] RegisterUserDto newUser, string role)
         {
-            var result = await _adminService.AddUserAsyncLogic(newUser, role);
-            if (!result.Succeeded) return BadRequest(result.Errors);
-            return Ok("User created!");
+            try
+            {
+                return Ok(await _adminService.AddUserAsyncLogic(newUser, role));
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
+            }
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -46,9 +54,18 @@ namespace EventPlannerAPI.Controllers
         [HttpPut("EditUser")]
         public async Task<IActionResult> EditUser([FromBody] EdittedUserDetails newUserEdited, string userId)
         {
-            var result = await _adminService.EditUserAsyncLogic(newUserEdited, userId);
-            if (!result.Succeeded) return BadRequest(result.Errors);
-            return Ok("User edited!");
+            try
+            {
+                return Ok(await _adminService.EditUserAsyncLogic(newUserEdited, userId));
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
+            }
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -56,9 +73,18 @@ namespace EventPlannerAPI.Controllers
         [HttpDelete("DeleteUser")]
         public async Task<IActionResult> DeleteUser([FromBody] string userId)
         {
-            var result = await _adminService.DeleteUserAsyncLogic(userId);
-            if (!result.Succeeded) return BadRequest(result.Errors);
-            return Ok("User deleted!");
+            try
+            {
+                return Ok(await _adminService.DeleteUserAsyncLogic(userId));
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
+            }
         }
 
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -66,9 +92,18 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("SendRecoverPasswordEmail")]
         public async Task<IActionResult> SendRecoverPasswordEmail([FromBody] ForgotPasswordDto forgotPasswordDto)
         {
-            var errorMessage = await _adminService.SendRecoverPasswordEmailAsyncLogic(forgotPasswordDto);
-            if (!errorMessage.IsNullOrEmpty()) return BadRequest(errorMessage);
-            return Ok("If there's an account associated with this email address, we've sent instructions for resetting the password.");
+            try
+            {
+                return Ok(await _adminService.SendRecoverPasswordEmailAsyncLogic(forgotPasswordDto));
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
+            }
         }
     }
 }

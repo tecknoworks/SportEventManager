@@ -1,23 +1,26 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs;
 using DataAccessLayer.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BusinessLayer.Profiles
 {
-    public class UserProfiles : Profile
+    public class UserProfile : Profile
     {
-        public UserProfiles()
+        public UserProfile()
         {
-            CreateMap<EventPlannerUser, UserDto>()
+            CreateMap<EventPlannerUser, RegisterUserDto>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
                 .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
                 .ReverseMap();
+
+            CreateMap<UserProfileDetails, GetUserProfileDetailsDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.User.PhoneNumber))
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email));
+
+            CreateMap<UpsertUserProfileDetailsDto, UserProfileDetails>();
+
         }
     }
 }

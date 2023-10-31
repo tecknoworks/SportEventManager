@@ -4,7 +4,6 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using System.Web;
@@ -50,7 +49,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IdentityResult> AddUserAsyncLogic(UserDto newUser, string role)
+        public async Task<IdentityResult> AddUserAsyncLogic(RegisterUserDto newUser, string role)
         {
             try
             {
