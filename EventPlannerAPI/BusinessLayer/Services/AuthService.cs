@@ -1,5 +1,7 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
+using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -19,14 +21,22 @@ namespace BusinessLayer.Services
         public AuthService(IConfiguration _configuration)
         {
             this._configuration = _configuration;
+
         }
 
-        public async Task<string> GenerateTokenString(LogInUserDto logInUserDto)
+        public async Task<string> GenerateTokenString(EventPlannerUser user, IList<string> roles)
         {
+
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Email, logInUserDto.UserIdentifier),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName)
             };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
 
@@ -42,7 +52,5 @@ namespace BusinessLayer.Services
             string tokenString = new JwtSecurityTokenHandler().WriteToken(securityToken);
             return await Task.FromResult<string>(tokenString);
         }
-
-
     }
 }
