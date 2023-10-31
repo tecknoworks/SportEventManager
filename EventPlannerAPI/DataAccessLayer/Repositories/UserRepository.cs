@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using DataAccessLayer.Exceptions;
 
-namespace DataAccessLayer.Services
+namespace DataAccessLayer.Repositories
 {
     public class UserRepository : IUserRepository
     {

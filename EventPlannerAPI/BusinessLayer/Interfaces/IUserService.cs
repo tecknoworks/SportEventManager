@@ -13,5 +13,6 @@ namespace BusinessLayer.Interfaces
         Task<GetUserProfileDetailsDto> GetUserProfileDetailsAsync(string userId);
         Task<GetUserProfileDetailsDto> CreateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails);
         Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto newUserDetails);
+
     }
 }
