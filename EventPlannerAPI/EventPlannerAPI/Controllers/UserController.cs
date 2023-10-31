@@ -24,7 +24,7 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("CreateUser")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterUserDto newUser)
         {
-            var result = await _userService.CreateUserAsync(newUser);
+            var result = await _userService.CreateUserAsyncLogic(newUser);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("User created!");  
         }

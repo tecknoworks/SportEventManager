@@ -33,7 +33,7 @@ namespace BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public async Task<IdentityResult> CreateUserAsync(RegisterUserDto newUser)
+        public async Task<IdentityResult> CreateUserAsyncLogic(RegisterUserDto newUser)
         {
             try
             {
