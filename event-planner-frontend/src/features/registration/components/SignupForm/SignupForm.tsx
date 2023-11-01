@@ -242,7 +242,7 @@ const SignupForm = () => {
           <Text>
             Already have an account?{' '}
             <Link color="purple" href="/login">
-              Login here
+              Go to Login
             </Link>
           </Text>
           <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
