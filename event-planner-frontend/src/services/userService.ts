@@ -39,4 +39,11 @@ export default class UserService extends CommonService {
   getAllUsers() {
     return this.get('/Admin/GetUsers')
   }
+  
+  deleteUser(userId: string) {
+    return this.delete('/Admin/DeleteUser', { userId });
+}
+
+
+
 }

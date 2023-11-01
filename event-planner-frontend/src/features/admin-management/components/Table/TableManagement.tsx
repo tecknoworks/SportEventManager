@@ -16,12 +16,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
 import { selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
+import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUserThunk';
 
 const TableManagement: React.FC = () => {
-  const initialUsers = [{ id: 1, name: 'ion', email: 'ion@gmail.com', phoneNumber: '0747545789' }];
 
   const [users, setUsers] = useState([]);
-
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
@@ -34,7 +33,6 @@ const TableManagement: React.FC = () => {
   // const addUser = () => {
   //   const newUserData = { id: users.length + 1, ...newUser };
   //   setUsers([...users, newUserData]);
-
   // };
   const dispatch: AppDispatch = useDispatch();
 
@@ -61,9 +59,9 @@ const TableManagement: React.FC = () => {
   //     setEditingUser(null);
   // };
 
-  const deleteUser = (id: number) => {
-    // setUsers(users.filter((user) => user.id !== id));
-  };
+  const deleteUser = (userId: any) => {
+    dispatch(deleteUserThunk(userId));
+  }
 
   const sendRecoveryEmail = (email: string) => {
     console.log(`Sending recovery email to ${email}`);
