@@ -201,5 +201,10 @@ namespace DataAccessLayer.Repositories
             await _eventPlannerContext.SaveChangesAsync();
             return "Changes saved to the database";
         }
+
+        public async Task<bool> UserExistsAsync(string userId)
+        {
+            return await _eventPlannerContext.Users.AnyAsync(user => user.Id == userId);
+        }
     }
 }

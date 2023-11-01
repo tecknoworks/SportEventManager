@@ -19,5 +19,6 @@ namespace DataAccessLayer.Interfaces
         Task<string> SaveChangesAsync();
  		Task<IList<string>> GetRolesAsync(EventPlannerUser user);
         Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier);
+        Task<bool> UserExistsAsync(string userId);
     }
 }

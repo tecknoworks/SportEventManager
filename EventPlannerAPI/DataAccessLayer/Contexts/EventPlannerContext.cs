@@ -92,6 +92,21 @@ namespace DataAccessLayer.Contexts
                 .HasForeignKey(participant => participant.EventPositionId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Seed SportType data for Football
+            var footballId = Guid.NewGuid();  // Generate a unique identifier for Football
+            modelBuilder.Entity<SportType>().HasData(new SportType
+            {
+                Id = footballId,
+                Name = "Football"
+            });
+
+            // Seed Position data for Football
+            modelBuilder.Entity<Position>().HasData(
+                new Position { Id = Guid.NewGuid(), Name = "quarterback", SportTypeId = footballId },
+                new Position { Id = Guid.NewGuid(), Name = "midfielder", SportTypeId = footballId },
+                new Position { Id = Guid.NewGuid(), Name = "attacker", SportTypeId = footballId }
+            );
         }
     }   
 }
