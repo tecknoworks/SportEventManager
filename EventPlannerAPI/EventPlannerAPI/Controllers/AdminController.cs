@@ -21,7 +21,7 @@ namespace EventPlannerAPI.Controllers
 
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("GetUsers")]
+        [HttpGet("GetUsers")]
         public async Task<IList<UserDetailsDto>> GetUsers()
         {
             try
