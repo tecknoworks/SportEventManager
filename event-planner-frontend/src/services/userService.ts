@@ -31,7 +31,12 @@ export default class UserService extends CommonService {
   updateUserProfile(data: UpdateUserProfileDto) {
     return this.put('/User/UpdateUserProfileDetails/' + MOCK_USER_ID, data);
   }
+
   logInUser(data: LogInDto) {
     return this.post('/User/Login', data);
+  }
+
+  getAllUsers() {
+    return this.get('/Admin/GetUsers')
   }
 }

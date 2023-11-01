@@ -7,66 +7,54 @@ import {
   TableContainer,
   Text,
   Button,
-  useToast,
   useDisclosure,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import UserRow from '../User/UserRow';
-import { useDebounce } from 'use-debounce';
 import CreateUserModal from '../Moldal/CreateUserModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from 'redux/store';
+import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
+import { selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
 
 const TableManagement: React.FC = () => {
   const initialUsers = [{ id: 1, name: 'ion', email: 'ion@gmail.com', phoneNumber: '0747545789' }];
 
-  const [users, setUsers] = useState(initialUsers);
-  const [editingUser, setEditingUser] = useState(null);
+  const [users, setUsers] = useState([]);
+
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
     phoneNumber: '',
     password: '',
   });
-  const [touchedFields, setTouchedFields] = useState({
-    name: false,
-    email: false,
-    password: false,
-    phoneNumber: false,
-  });
 
- 
-  const [emailError, setEmailError] = useState<string>('');
-  const [passwordError, setPasswordError] = useState<string>('');
-  const [phoneError, setPhoneError] = useState<string>('');
-
-  const toast = useToast();
-  const [debouncedNewUser] = useDebounce(newUser, 2000);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // const addUser = () => {
+  //   const newUserData = { id: users.length + 1, ...newUser };
+  //   setUsers([...users, newUserData]);
+
+  // };
+  const dispatch: AppDispatch = useDispatch();
 
 
-  const isValid = !emailError && !passwordError && !phoneError;
+  const allUsers = useSelector(selectAllUsers)
+  console.log(allUsers);
+
+
 
   useEffect(() => {
-    
-    // Trigger toast if there are errors
-    if (emailError && touchedFields.email) {
-      toast({ description: emailError, status: 'error' });
-    }
-    if (passwordError && touchedFields.password) {
-      toast({ description: passwordError, status: 'error' });
-    }
-    if (phoneError && touchedFields.phoneNumber) {
-      toast({ description: phoneError, status: 'error' });
-    }
-  }, [debouncedNewUser, toast]);
+    dispatch(getAllUsersThunk())
+    setUsers(allUsers)
 
-  const addUser = () => {
-    let isValid = true;
-    if (isValid) {
-      const newUserData = { id: users.length + 1, ...newUser };
-      setUsers([...users, newUserData]);
-    }
-  };
+  }, [])
+
+  useEffect(() => {
+    setUsers(allUsers)
+  }, [allUsers])
+
+
 
   // const editUser = (id: number, updatedUser: any) => {
   //     setUsers(users.map(user => (user.id === id ? updatedUser : user)));
@@ -74,7 +62,7 @@ const TableManagement: React.FC = () => {
   // };
 
   const deleteUser = (id: number) => {
-    setUsers(users.filter((user) => user.id !== id));
+    // setUsers(users.filter((user) => user.id !== id));
   };
 
   const sendRecoveryEmail = (email: string) => {
@@ -82,37 +70,39 @@ const TableManagement: React.FC = () => {
   };
 
   return (
-    <TableContainer pt={9} width="100%">
-      {users.length > 0 ? (
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Email</Th>
-              <Th>Phone Number</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {users.map((user) => (
-              <UserRow key={user.id} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} />
-            ))}
+    <>
+      <TableContainer pt={9} width="100%">
+        {users.length > 0 ? (
+          <Table>
+            <Thead>
+              <Tr>
+                <Th>Name</Th>
+                <Th>Email</Th>
+                <Th>Phone Number</Th>
+                <Th display='flex' justifyContent='flex-end'>Actions</Th>
+              </Tr>
+            </Thead>
+            <Tbody>
+              {users.map((user, index: number) => (
+                <UserRow key={index} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} />
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <Text fontSize="2xl">We have 0 users</Text>
+        )}
+      </TableContainer>
+      <Button mt="6" onClick={onOpen}>Add User</Button>
+      <CreateUserModal
+        isOpen={isOpen}
+        onClose={onClose}
+        // addUser={addUser}
+        newUser={newUser}
+        setNewUser={setNewUser}
+      />
+    </>
 
-            <CreateUserModal
-              isOpen={isOpen}
-              onClose={onClose}
-              addUser={addUser}
-              isValid={isValid}
-              newUser={newUser}
-              setNewUser={setNewUser}
-            />
-            <Button mt="6" onClick={onOpen}>Add User</Button>
-          </Tbody>
-        </Table>
-      ) : (
-        <Text fontSize="2xl">We have 0 users</Text>
-      )}
-    </TableContainer>
+
   );
 };
 
