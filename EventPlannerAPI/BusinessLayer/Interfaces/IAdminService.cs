@@ -12,8 +12,8 @@ namespace BusinessLayer.Interfaces
     public interface IAdminService
     {
         Task<List<UserDetailsDto>> GetUsersAsyncLogic();
-        Task<IdentityResult> AddUserAsyncLogic(RegisterUserDto newUser, RoleType role);
-        Task<IdentityResult> EditUserAsyncLogic(EdittedUserDetails newUserEdited, string userId);
+        Task<IdentityResult> AddUserAsyncLogic(RegisterWithRoleDto newUser);
+        Task<IdentityResult> EditUserAsyncLogic(EditedUserWithIdDto newUserEdited);
         Task<IdentityResult> DeleteUserAsyncLogic(string userId);
         Task<string> SendRecoverPasswordEmailAsyncLogic(ForgotPasswordDto forgotPasswordDto);
     }

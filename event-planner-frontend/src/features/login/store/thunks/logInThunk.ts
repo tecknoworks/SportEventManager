@@ -8,9 +8,9 @@ export const logInThunk = createAsyncThunk('logIn/logInThunk', async (userCreden
   try {
     const request = await userService.logInUser(userCredentials);
     const response = await request.data;
-    localStorage.setItem('user', JSON.stringify(response));
+    localStorage.setItem('token', JSON.stringify(response));
     return response;
   } catch (error: any) {
-    return thunkAPI.rejectWithValue(error.response.data.msg)
+    return thunkAPI.rejectWithValue(error.response.data.msg);
   }
 });

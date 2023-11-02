@@ -37,9 +37,9 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromBody] RegisterUserDto newUser, RoleType role)
+        public async Task<IActionResult> AddUser([FromBody] RegisterWithRoleDto newUser)
         {
-            var result = await _adminService.AddUserAsyncLogic(newUser, role);
+            var result = await _adminService.AddUserAsyncLogic(newUser);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("User created!");
         }
@@ -47,9 +47,9 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("EditUser")]
-        public async Task<IActionResult> EditUser([FromBody] EdittedUserDetails newUserEdited, string userId)
+        public async Task<IActionResult> EditUser([FromBody] EditedUserWithIdDto newUserEdited)
         {
-            var result = await _adminService.EditUserAsyncLogic(newUserEdited, userId);
+            var result = await _adminService.EditUserAsyncLogic(newUserEdited);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("User edited!");
         }
@@ -57,7 +57,11 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("DeleteUser")]
+<<<<<<< HEAD
         public async Task<IActionResult> DeleteUser(string userId)
+=======
+        public async Task<IActionResult> DeleteUser([FromQuery] string userId)
+>>>>>>> main
         {
             var result = await _adminService.DeleteUserAsyncLogic(userId);
             if (!result.Succeeded) return BadRequest(result.Errors);
