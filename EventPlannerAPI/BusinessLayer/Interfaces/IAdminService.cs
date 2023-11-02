@@ -13,7 +13,7 @@ namespace BusinessLayer.Interfaces
     {
         Task<List<UserDetailsDto>> GetUsersAsyncLogic();
         Task<IdentityResult> AddUserAsyncLogic(RegisterUserDto newUser, RoleType role);
-        Task<IdentityResult> EditUserAsyncLogic(EdittedUserDetails newUserEdited, string userId);
+        Task<IdentityResult> EditUserAsyncLogic(EditedUserDetails newUserEdited, string userId);
         Task<IdentityResult> DeleteUserAsyncLogic(string userId);
         Task<string> SendRecoverPasswordEmailAsyncLogic(ForgotPasswordDto forgotPasswordDto);
     }

@@ -78,7 +78,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IdentityResult> EditUserAsyncLogic(EdittedUserDetails newUserEdited, string userId)
+        public async Task<IdentityResult> EditUserAsyncLogic(EditedUserDetails newUserEdited, string userId)
         {
             try
             {
