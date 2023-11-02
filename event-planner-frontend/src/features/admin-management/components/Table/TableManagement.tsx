@@ -8,6 +8,7 @@ import {
   Text,
   Button,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import UserRow from '../User/UserRow';
@@ -17,10 +18,20 @@ import { AppDispatch } from 'redux/store';
 import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
 import { selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
 import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUserThunk';
+import { sendRecoverPasswordEmailThunk } from 'features/admin-management/store/thunks/sendRecoverPasswordEmailthunk';
+
+type User = {
+  userId: number;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+};
 
 const TableManagement: React.FC = () => {
 
-  const [users, setUsers] = useState([]);
+  const toast = useToast()
+
+  const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
@@ -61,10 +72,20 @@ const TableManagement: React.FC = () => {
 
   const deleteUser = (userId: any) => {
     dispatch(deleteUserThunk(userId));
+    const updatedUsers = users.filter(user => user.userId !== userId);
+    setUsers(updatedUsers);
+    toast({
+      title: 'User deleted successfully.',
+      status: 'success',
+    })
   }
 
   const sendRecoveryEmail = (email: string) => {
-    console.log(`Sending recovery email to ${email}`);
+    dispatch(sendRecoverPasswordEmailThunk({ email }))
+    toast({
+      title: "If there's an account associated with this email address, we've sent instructions for resetting the password.",
+      status: 'success',
+    })
   };
 
   return (

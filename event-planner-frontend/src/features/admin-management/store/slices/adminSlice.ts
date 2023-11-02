@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { getAllUsersThunk } from '../thunks/getAllUsersThunk';
 import { deleteUserThunk } from '../thunks/deleteUserThunk';
+import { sendRecoverPasswordEmailThunk } from '../thunks/sendRecoverPasswordEmailthunk';
 
 const initialState = {
   users: [],
@@ -43,14 +44,24 @@ export const adminSlice = createSlice({
       state.error.deleteUser = null;
     });
     builder.addCase(deleteUserThunk.fulfilled, (state, action) => {
-        console.log("merge");
-        
-      state.users = state.users.filter((user:any) => user.id !== action.payload);
+      state.users = state.users.filter((user: any) => user.userId !== action.payload);
       state.loading.deleteUser = false;
     });
     builder.addCase(deleteUserThunk.rejected, (state, action) => {
       state.error.deleteUser = action.error.message || 'Failed to delete user';
       state.loading.deleteUser = false;
+    });
+
+    builder.addCase(sendRecoverPasswordEmailThunk.pending, (state) => {
+      state.loading.sendRecoveryEmail = true;
+      state.error.sendRecoveryEmail = null;
+    });
+    builder.addCase(sendRecoverPasswordEmailThunk.fulfilled, (state) => {
+      state.loading.sendRecoveryEmail = false;
+    });
+    builder.addCase(sendRecoverPasswordEmailThunk.rejected, (state, action) => {
+      state.error.sendRecoveryEmail = action.error.message || 'Failed to send recovery email';
+      state.loading.sendRecoveryEmail = false;
     });
   },
 });

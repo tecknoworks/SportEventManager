@@ -13,8 +13,7 @@ export default class CommonService {
     return axiosInstance.put(url, data);
   }
 
-  delete(url: string, data?: any) {
-    return axiosInstance.delete(url, { data });
-}
-
+  delete(url: string, querryParams?: object) {
+    return axiosInstance.delete(url, { params: querryParams });
+  }
 }

@@ -5,7 +5,6 @@ const userService: UserService = new UserService();
 
 export const deleteUserThunk = createAsyncThunk('delete/DeleteUser', async (userId: string, thunkAPI) => {
   try {
-    console.log(userId);
     await userService.deleteUser(userId);
     return userId;
   } catch (error: any) {
