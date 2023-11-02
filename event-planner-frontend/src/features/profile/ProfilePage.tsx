@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, useMediaQuery } from '@chakra-ui/react';
 import EditProfileForm from './components/EditProfileForm';
 import { selectProfileIsSuccess } from './store/selectors/profileSelector';
 import { useSelector } from 'react-redux';
@@ -7,6 +7,7 @@ import { handleGenericSuccess } from 'services/notificationHandlingService';
 
 function ProfilePage() {
   const isSuccess = useSelector(selectProfileIsSuccess);
+  const [isMobile] = useMediaQuery('(max-width: 1037px)');
 
   useEffect(() => {
     if (isSuccess) handleGenericSuccess('You have successfully updated your profile.');
@@ -15,7 +16,8 @@ function ProfilePage() {
     <Box
       display="flex"
       justifyContent="center"
-      height="100vh"
+      width="100%"
+      height={!isMobile ? '100vh' : 'auto'}
       alignItems="center"
       bgGradient="linear(to-r, #610C9F, #E95793)"
     >
