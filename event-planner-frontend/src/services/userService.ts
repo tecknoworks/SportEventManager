@@ -4,6 +4,7 @@ import { UserDto } from 'features/registration/api/Dtos';
 import { UpdateUserProfileDto } from 'features/profile/api/dtos';
 import { ConfirmEmailDto } from 'features/account-confirmation/api/dtos';
 import { LogInDto } from 'features/login/api/dtos';
+import { EditUserOrAdminDto } from 'features/admin-management/api/dtos';
 
 const MOCK_USER_ID = '5a56cef4-71b6-4301-a69b-f0a60ed5bcdf'; //TODO: get user id from JWT token
 
@@ -48,5 +49,7 @@ export default class UserService extends CommonService {
     return this.post('/Admin/SendRecoverPasswordEmail', data)
   }
 
-
+  editUserOrAdmin(data:EditUserOrAdminDto){
+    return this.put("/Admin/EditUser", data)
+  }
 }

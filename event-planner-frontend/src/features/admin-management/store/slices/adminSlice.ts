@@ -2,9 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getAllUsersThunk } from '../thunks/getAllUsersThunk';
 import { deleteUserThunk } from '../thunks/deleteUserThunk';
 import { sendRecoverPasswordEmailThunk } from '../thunks/sendRecoverPasswordEmailthunk';
+import { editUserOrAdminThunk } from '../thunks/editUserOrAdminThunk';
 
 const initialState = {
-  users: [],
+  users: [] as any[],
   loading: {
     addUser: false,
     editUser: false,
@@ -62,6 +63,18 @@ export const adminSlice = createSlice({
     builder.addCase(sendRecoverPasswordEmailThunk.rejected, (state, action) => {
       state.error.sendRecoveryEmail = action.error.message || 'Failed to send recovery email';
       state.loading.sendRecoveryEmail = false;
+    });
+
+    builder.addCase(editUserOrAdminThunk.pending, (state) => {
+      state.loading.editUser = true;
+      state.error.editUser = null;
+    });
+    builder.addCase(editUserOrAdminThunk.fulfilled, (state, action) => {
+      state.loading.editUser = false;
+    });
+    builder.addCase(editUserOrAdminThunk.rejected, (state, action) => {
+      state.error.editUser = action.error.message || 'Failed to edit user';
+      state.loading.editUser = false;
     });
   },
 });

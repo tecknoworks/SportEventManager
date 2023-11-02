@@ -14,6 +14,7 @@ interface UserRowProps {
     user: User;
     deleteUser: (userId: number) => void;
     sendRecoveryEmail: (email: string) => void;
+    editUserOrAdmin: (editedUser: Account, userId: number) => void;
 }
 
 interface Account {
@@ -23,7 +24,7 @@ interface Account {
 }
 
 
-const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }) => {
+const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, editUserOrAdmin }) => {
     const [isEditing, setIsEditing] = useState(false)
 
     const [editUser, setEditUser] = useState<Account>({
@@ -57,10 +58,10 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
 
     const handleSaveChanges = () => {
         if (!isDisabled) {
-            // Save changes
+            editUserOrAdmin(editUser, user.userId);
             setIsEditing(false);
-            console.log("ceva");
         }
+        
     };
 
     useEffect(() => {

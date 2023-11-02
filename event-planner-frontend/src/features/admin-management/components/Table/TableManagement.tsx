@@ -19,6 +19,7 @@ import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllU
 import { selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
 import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUserThunk';
 import { sendRecoverPasswordEmailThunk } from 'features/admin-management/store/thunks/sendRecoverPasswordEmailthunk';
+import { editUserOrAdminThunk } from 'features/admin-management/store/thunks/editUserOrAdminThunk';
 
 type User = {
   userId: number;
@@ -46,6 +47,8 @@ const TableManagement: React.FC = () => {
   // };
   const dispatch: AppDispatch = useDispatch();
   const allUsers = useSelector(selectAllUsers)
+  console.log(allUsers);
+  
 
 
   useEffect(() => {
@@ -59,8 +62,14 @@ const TableManagement: React.FC = () => {
   }, [allUsers])
 
 
-
-
+  const editUserOrAdmin = async(editedUser: any, userId: number) => {
+    await dispatch(editUserOrAdminThunk({
+        userId,
+        ...editedUser
+    }));
+    await dispatch(getAllUsersThunk());
+};
+  
   const deleteUser = (userId: any) => {
     dispatch(deleteUserThunk(userId));
     const updatedUsers = users.filter(user => user.userId !== userId);
@@ -94,7 +103,7 @@ const TableManagement: React.FC = () => {
             </Thead>
             <Tbody>
               {users.map((user, index: number) => (
-                <UserRow key={index} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} />
+                <UserRow key={index} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} editUserOrAdmin={editUserOrAdmin} />
               ))}
             </Tbody>
           </Table>
