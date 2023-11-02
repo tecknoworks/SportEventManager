@@ -49,11 +49,18 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IdentityResult> AddUserAsyncLogic(RegisterUserDto newUser, RoleType role)
+        public async Task<IdentityResult> AddUserAsyncLogic(RegisterWithRoleDto newUser)
         {
             try
             {
-                var user = _mapper.Map<EventPlannerUser>(newUser);
+                var role = newUser.Role;
+                RegisterUserDto userWithoutRole = new RegisterUserDto{
+                    Email = newUser.Email,
+                    PhoneNumber = newUser.PhoneNumber,
+                    Password = newUser.Password,
+                    UserName= newUser.UserName,
+                };
+                var user = _mapper.Map<EventPlannerUser>(userWithoutRole);
                 var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
                 var userCreated = await _adminRepository.AddUserAsync(user, newUser.Password, role);
                 if (userCreated == null)
@@ -78,10 +85,11 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IdentityResult> EditUserAsyncLogic(EditedUserDetails newUserEdited, string userId)
+        public async Task<IdentityResult> EditUserAsyncLogic(EditedUserWithIdDto newUserEdited)
         {
             try
             {
+                var userId = newUserEdited.UserId;
                 var user = await _adminRepository.GetUserByIdAsync(userId);
                 if (user == null)
                 {
@@ -99,7 +107,7 @@ namespace BusinessLayer.Services
             }
             catch (Exception ex)
             {
-                _logger.Error(ex, $"Error editing user with id {userId}");
+                _logger.Error(ex, $"Error editing user with id {newUserEdited.UserId}");
                 var error = new IdentityError() { Description = "Error while editing user!" };
                 return IdentityResult.Failed(error);
             }

@@ -37,12 +37,9 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("AddUser")]
-        public async Task<IActionResult> AddUser([FromBody] RegisterWithRoleDto userAndRole)
+        public async Task<IActionResult> AddUser([FromBody] RegisterWithRoleDto newUser)
         {
-            RegisterUserDto newUser = userAndRole.NewUser;
-            RoleType role = userAndRole.Role;
-
-            var result = await _adminService.AddUserAsyncLogic(newUser, role);
+            var result = await _adminService.AddUserAsyncLogic(newUser);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("User created!");
         }
@@ -50,12 +47,9 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("EditUser")]
-        public async Task<IActionResult> EditUser([FromBody] EditedUserWithIdDto userWithId)
+        public async Task<IActionResult> EditUser([FromBody] EditedUserWithIdDto newUserEdited)
         {
-            EditedUserDetails newUserEdited = userWithId.NewUserEdited;
-            string userId = userWithId.UserId;
-
-            var result = await _adminService.EditUserAsyncLogic(newUserEdited, userId);
+            var result = await _adminService.EditUserAsyncLogic(newUserEdited);
             if (!result.Succeeded) return BadRequest(result.Errors);
             return Ok("User edited!");
         }
