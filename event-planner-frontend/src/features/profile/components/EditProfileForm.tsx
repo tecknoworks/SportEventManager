@@ -22,6 +22,7 @@ import {
   ModalFooter,
   Box,
   FormErrorMessage,
+  useMediaQuery,
 } from '@chakra-ui/react';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import SecondaryButton from 'common/components/buttons/SecondaryButton';
@@ -59,6 +60,7 @@ const EditProfileForm = () => {
   const [isImageWidgetLoading, setImageWidgetLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
   const [phoneNumberError, setPhoneNumberError] = useState('');
+  const [isMobile] = useMediaQuery('(max-width: 1037px)');
 
   useEffect(() => {
     dispatch(getProfileThunk(MOCK_USER_ID));
@@ -123,143 +125,164 @@ const EditProfileForm = () => {
   };
 
   return (
-    <Box width="500px">
+    <Box
+      marginTop={!isMobile ? '0px' : '80px'}
+      marginBottom={!isMobile ? '0px' : '30px'}
+      width="100%"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+    >
       {(isLoading || isImageWidgetLoading) && <Loader />}
       <Stack
         spacing={6}
         p={6}
-        w={'full'}
-        maxW={'md'}
+        w={!isMobile ? '50vw' : '90%'}
         bg={useColorModeValue('white', 'gray.700')}
         rounded={'xl'}
         my={12}
+        margin="0"
       >
         <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           User Profile Edit
         </Heading>
-        <FormControl id="userName">
-          <FormLabel>User Icon</FormLabel>
-          <Stack direction={['column', 'row']} spacing={6}>
-            <Center>
-              <Avatar
-                name={profile?.firstName + ' ' + profile?.lastName}
-                size="xl"
-                src={currentProfile.profilePhoto}
-                bgColor="#610c9f"
-              >
-                <AvatarBadge
-                  as={IconButton}
-                  size="sm"
-                  rounded="full"
-                  top="-10px"
-                  colorScheme="red"
-                  aria-label="remove Image"
-                  icon={<SmallCloseIcon onClick={onOpen} />}
-                />
-              </Avatar>
-              <Modal isOpen={isOpen} onClose={onClose}>
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Confirm Removal</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody>Are you sure you want to remove your profile photo?</ModalBody>
-                  <ModalFooter>
-                    <Button
+        <Stack
+          flexDirection={!isMobile ? 'row' : 'column'}
+          width="100%"
+          display="flex"
+          alignItems="center"
+          justifyContent="space-around"
+          gap={!isMobile ? '45px' : '0px'}
+        >
+          <Stack width="100%">
+            <FormControl id="userName">
+              <FormLabel>User Icon</FormLabel>
+              <Stack direction={['column', 'row']} spacing={6}>
+                <Center>
+                  <Avatar
+                    name={profile?.firstName + ' ' + profile?.lastName}
+                    size="xl"
+                    src={currentProfile.profilePhoto}
+                    bgColor="#610c9f"
+                  >
+                    <AvatarBadge
+                      as={IconButton}
+                      size="sm"
+                      rounded="full"
+                      top="-10px"
                       colorScheme="red"
-                      mr={3}
-                      onClick={() => {
-                        handleImageRemove();
-                        onClose();
-                      }}
-                    >
-                      Remove
-                    </Button>
-                    <Button variant="ghost" onClick={onClose}>
-                      Cancel
-                    </Button>
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
-            </Center>
-            <Center w="full">
-              <Button w="full" onClick={() => handleImageUpload()}>
-                Change Icon
-              </Button>
-            </Center>
+                      aria-label="remove Image"
+                      icon={<SmallCloseIcon onClick={onOpen} />}
+                    />
+                  </Avatar>
+                  <Modal isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Confirm Removal</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>Are you sure you want to remove your profile photo?</ModalBody>
+                      <ModalFooter>
+                        <Button
+                          colorScheme="red"
+                          mr={3}
+                          onClick={() => {
+                            handleImageRemove();
+                            onClose();
+                          }}
+                        >
+                          Remove
+                        </Button>
+                        <Button variant="ghost" onClick={onClose}>
+                          Cancel
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+                </Center>
+                <Center w="full">
+                  <Button w="full" onClick={() => handleImageUpload()}>
+                    Change Icon
+                  </Button>
+                </Center>
+              </Stack>
+            </FormControl>
+            <FormControl id="firstName">
+              <FormLabel>First Name</FormLabel>
+              <Input
+                placeholder="First Name"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                value={currentProfile.firstName}
+                onChange={(e) => setCurrentProfile({ ...currentProfile, firstName: e.target.value })}
+              />
+            </FormControl>
+            <FormControl id="lastName">
+              <FormLabel>Last Name</FormLabel>
+              <Input
+                placeholder="Last Name"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                value={currentProfile.lastName}
+                onChange={(e) => setCurrentProfile({ ...currentProfile, lastName: e.target.value })}
+              />
+            </FormControl>
+            <FormControl id="phoneNumber" isRequired isInvalid={phoneNumberError.length > 0}>
+              <FormLabel>Phone Number</FormLabel>
+              <InputGroup>
+                <InputLeftAddon children="tel" />
+                <Input
+                  placeholder="0720146781"
+                  _placeholder={{ color: 'gray.500' }}
+                  type="number"
+                  value={currentProfile.phoneNumber}
+                  onChange={(e) => setCurrentProfile({ ...currentProfile, phoneNumber: e.target.value })}
+                />
+              </InputGroup>
+              <FormErrorMessage>{phoneNumberError}</FormErrorMessage>
+            </FormControl>
           </Stack>
-        </FormControl>
-        <FormControl id="firstName">
-          <FormLabel>First Name</FormLabel>
-          <Input
-            placeholder="First Name"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-            value={currentProfile.firstName}
-            onChange={(e) => setCurrentProfile({ ...currentProfile, firstName: e.target.value })}
-          />
-        </FormControl>
-        <FormControl id="lastName">
-          <FormLabel>Last Name</FormLabel>
-          <Input
-            placeholder="Last Name"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-            value={currentProfile.lastName}
-            onChange={(e) => setCurrentProfile({ ...currentProfile, lastName: e.target.value })}
-          />
-        </FormControl>
-        <FormControl id="phoneNumber" isRequired isInvalid={phoneNumberError.length > 0}>
-          <FormLabel>Phone Number</FormLabel>
-          <InputGroup>
-            <InputLeftAddon children="tel" />
-            <Input
-              placeholder="0720146781"
-              _placeholder={{ color: 'gray.500' }}
-              type="number"
-              value={currentProfile.phoneNumber}
-              onChange={(e) => setCurrentProfile({ ...currentProfile, phoneNumber: e.target.value })}
-            />
-          </InputGroup>
-          <FormErrorMessage>{phoneNumberError}</FormErrorMessage>
-        </FormControl>
-        <FormControl id="DateOfBirth">
-          <FormLabel>Date of Birth</FormLabel>
-          <Input
-            type="date"
-            value={formatDate(currentProfile.dateOfBirth || new Date())}
-            onChange={(e) => setCurrentProfile({ ...currentProfile, dateOfBirth: new Date(e.target.value) })}
-          />
-        </FormControl>
-        <FormControl id="Country">
-          <FormLabel>Country</FormLabel>
-          <Input
-            placeholder="Country"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-            value={currentProfile.country}
-            onChange={(e) => setCurrentProfile({ ...currentProfile, country: e.target.value })}
-          />
-        </FormControl>
-        <FormControl id="County">
-          <FormLabel>County</FormLabel>
-          <Input
-            placeholder="County"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-            value={currentProfile.county}
-            onChange={(e) => setCurrentProfile({ ...currentProfile, county: e.target.value })}
-          />
-        </FormControl>
-        <FormControl id="City">
-          <FormLabel>City</FormLabel>
-          <Input
-            placeholder="City"
-            _placeholder={{ color: 'gray.500' }}
-            type="text"
-            value={currentProfile.city}
-            onChange={(e) => setCurrentProfile({ ...currentProfile, city: e.target.value })}
-          />
-        </FormControl>
+          <Stack width="100%" marginTop={!isMobile ? '57px' : '0px'}>
+            <FormControl id="DateOfBirth">
+              <FormLabel>Date of Birth</FormLabel>
+              <Input
+                type="date"
+                value={formatDate(currentProfile.dateOfBirth || new Date())}
+                onChange={(e) => setCurrentProfile({ ...currentProfile, dateOfBirth: new Date(e.target.value) })}
+              />
+            </FormControl>
+            <FormControl id="Country">
+              <FormLabel>Country</FormLabel>
+              <Input
+                placeholder="Country"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                value={currentProfile.country}
+                onChange={(e) => setCurrentProfile({ ...currentProfile, country: e.target.value })}
+              />
+            </FormControl>
+            <FormControl id="County">
+              <FormLabel>County</FormLabel>
+              <Input
+                placeholder="County"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                value={currentProfile.county}
+                onChange={(e) => setCurrentProfile({ ...currentProfile, county: e.target.value })}
+              />
+            </FormControl>
+            <FormControl id="City">
+              <FormLabel>City</FormLabel>
+              <Input
+                placeholder="City"
+                _placeholder={{ color: 'gray.500' }}
+                type="text"
+                value={currentProfile.city}
+                onChange={(e) => setCurrentProfile({ ...currentProfile, city: e.target.value })}
+              />
+            </FormControl>
+          </Stack>
+        </Stack>
+
         <Stack spacing={6} direction={['column', 'row']}>
           <PrimaryButton text="Submit" w="full" isDisabled={isDisabled} onClick={() => handleSubmitChanges()} />
           <SecondaryButton text="Cancel" w="full" />
