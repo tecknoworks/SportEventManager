@@ -57,11 +57,11 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete("DeleteUser")]
-<<<<<<< HEAD
+
         public async Task<IActionResult> DeleteUser(string userId)
-=======
-        public async Task<IActionResult> DeleteUser([FromQuery] string userId)
->>>>>>> main
+
+       
+
         {
             var result = await _adminService.DeleteUserAsyncLogic(userId);
             if (!result.Succeeded) return BadRequest(result.Errors);
