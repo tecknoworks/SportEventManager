@@ -1,13 +1,15 @@
-import React, { useContext } from 'react';
-import { Route, Navigate } from 'react-router-dom';
+import React, { useContext, ReactNode, useEffect } from 'react';
 import { AuthContext } from '../../services/auth/context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 interface PrivateRouteProps {
-  element: React.ReactElement;
+  children: ReactNode;
 }
 
-export function PrivateRoute({ element, ...rest }: PrivateRouteProps) {
+export function PrivateRoute({ children }: PrivateRouteProps) {
   const { isAuthenticated } = useContext(AuthContext);
-
-  return <Route {...rest} element={isAuthenticated ? element : <Navigate to="/" replace />} />;
+  useEffect(() => {
+    console.log('este? ', isAuthenticated);
+  }, []);
+  return <>{isAuthenticated ? children : <Navigate to="/" replace />}</>;
 }

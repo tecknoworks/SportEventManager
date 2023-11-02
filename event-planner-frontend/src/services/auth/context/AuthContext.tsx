@@ -12,19 +12,23 @@ export const AuthContext = React.createContext<AuthContextInterface>({
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [authState, setAuthState] = useState<AuthContextInterface>({
-    token: localStorage.getItem('token') || null,
+    token: null,
     isAuthenticated: false,
   });
 
   const checkToken = () => {
-    if (authState.token !== null) {
+    const tokenFromLocalStorage = localStorage.getItem('token');
+    if (tokenFromLocalStorage) {
+      console.log('from context --> yes');
       setAuthState({
-        ...authState,
+        token: tokenFromLocalStorage,
         isAuthenticated: true,
       });
+      console.log(authState.isAuthenticated);
     } else {
+      console.log('from context --> no');
       setAuthState({
-        ...authState,
+        token: null,
         isAuthenticated: false,
       });
     }
