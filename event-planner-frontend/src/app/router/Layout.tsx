@@ -1,9 +1,10 @@
+import NavigationMenu from 'common/components/NavigationMenu/NavigationMenu';
 import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
     <div>
-      <div>Navigation</div>
+      <NavigationMenu />
       <div>
         <Outlet />
       </div>
