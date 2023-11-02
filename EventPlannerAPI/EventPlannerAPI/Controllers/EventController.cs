@@ -1,12 +1,15 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DataAccessLayer.Helpers;
 
 namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -14,7 +17,6 @@ namespace EventPlannerAPI.Controllers
         {
             _eventService = eventService;
         }
-
 
         [HttpGet("GetEvents")]
         public async Task<ActionResult<IList<GetEventDto>>> GetEvents()

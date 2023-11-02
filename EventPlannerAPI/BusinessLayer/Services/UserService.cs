@@ -154,24 +154,6 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<GetUserProfileDetailsDto> CreateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails)
-        {
-            try
-            {
-                var user = await _userRepository.GetUserByIdAsync(userId);
-                var userDetailsEntity = _mapper.Map<UserProfileDetails>(userDetails);
-                userDetailsEntity.UserId = userId;
-                userDetailsEntity.User = user;
-
-                return _mapper.Map<GetUserProfileDetailsDto>(await _userRepository.CreateUserProfileDetailsAsync(userId, userDetailsEntity));
-            }
-            catch(Exception ex)
-            {
-                _logger.Error(ex, $"Something went wrong while creating user profile for user with id {userId}");
-                throw;
-            }
-        }
-
         public async Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto newUserDetails)
         {
             try
