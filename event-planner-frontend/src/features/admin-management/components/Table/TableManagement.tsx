@@ -48,11 +48,6 @@ const TableManagement: React.FC = () => {
   const allUsers = useSelector(selectAllUsers)
 
 
-
-
-
-
-
   useEffect(() => {
     dispatch(getAllUsersThunk())
     setUsers(allUsers)
@@ -65,10 +60,6 @@ const TableManagement: React.FC = () => {
 
 
 
-  // const editUser = (id: number, updatedUser: any) => {
-  //     setUsers(users.map(user => (user.id === id ? updatedUser : user)));
-  //     setEditingUser(null);
-  // };
 
   const deleteUser = (userId: any) => {
     dispatch(deleteUserThunk(userId));

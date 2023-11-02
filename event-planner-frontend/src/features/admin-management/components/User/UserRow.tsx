@@ -1,7 +1,6 @@
 import { Tr, Td, Button, Tooltip, Input, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { CheckIcon, DeleteIcon, EditIcon, EmailIcon } from '@chakra-ui/icons';
 import React, { FormEvent, useEffect, useState } from 'react';
-import { useDebounce } from 'use-debounce';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 
@@ -17,14 +16,12 @@ interface UserRowProps {
     sendRecoveryEmail: (email: string) => void;
 }
 
-/////////////////////////
-
 interface Account {
     userName: string;
     email: string;
     phoneNumber: string;
 }
-/////////////////////
+
 
 const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }) => {
     const [isEditing, setIsEditing] = useState(false)
@@ -35,7 +32,7 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
         phoneNumber: user.phoneNumber,
     });
 
-    //for eroors
+
     const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
     const [errorBe, setErrorBe] = useState<object[]>([]);
 
@@ -44,69 +41,31 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
     const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>('');
     const [userNameErrorMessage, setUserNameErrorMessage] = useState<string>('');
 
-    const [account, setAccount] = useState<Account>({
-        userName: '',
-        email: '',
-        phoneNumber: '',
-    });
-
-    const [debouncedAccount] = useDebounce(account, 1000);
-
-    const checkIfEmptyInputValues = (): boolean => {
-        if (
-            account.userName !== '' &&
-            account.email !== '' &&
-            account.phoneNumber !== ''
-        ) {
-            return false;
-        }
-        return true;
-    };
 
     useEffect(() => {
-        const errorEmailMessage = isValidEmail(debouncedAccount.email) ? '' : 'Not a valid email!';
-        setEmailErrorMessage(debouncedAccount.email && errorEmailMessage);
-
-        const errorPhoneNumberMessage = isValidPhoneNumber(debouncedAccount.phoneNumber) ? '' : 'Not a valid phone number!';
-        setPhoneNumberErrorMessage(debouncedAccount.phoneNumber && errorPhoneNumberMessage);
-
-        const isUserNameValid = debouncedAccount.userName.length >= 2;
-        const errorUserNameMessage = isUserNameValid ? '' : 'User name not valid! (length must be greater than 2)';
-
-        setUserNameErrorMessage(debouncedAccount.userName && errorUserNameMessage);
-
+        setEmailErrorMessage(isValidEmail(editUser.email) ? '' : 'Not a valid email!');
+        setPhoneNumberErrorMessage(isValidPhoneNumber(editUser.phoneNumber) ? '' : 'Not a valid phone number!');
+        setUserNameErrorMessage(editUser.userName.length >= 2 ? '' : 'User name not valid! (length must be greater than 2)');
         setIsDisabled(
             !(
-                isValidEmail(debouncedAccount.email) &&
-                isUserNameValid &&
-                isValidPhoneNumber(debouncedAccount.phoneNumber) &&
-                !checkIfEmptyInputValues()
+                isValidEmail(editUser.email) &&
+                editUser.userName.length >= 2 &&
+                isValidPhoneNumber(editUser.phoneNumber)
             )
         );
-    }, [debouncedAccount]);
+    }, [editUser]);
+
+    const handleSaveChanges = () => {
+        if (!isDisabled) {
+            // Save changes
+            setIsEditing(false);
+            console.log("ceva");
+        }
+    };
 
     useEffect(() => {
         setErrorBe([]);
     }, []);
-
-
-    function handleSubmit(event: FormEvent): void {
-        event.preventDefault();
-
-        const data = {
-            userName: account.userName,
-            email: account.email,
-            phoneNumber: account.phoneNumber,
-        };
-        // dispatch(createUser(data));
-    }
-
-
-    /////////////////////////
-
-
-
-
 
     return (
         <Tr>
@@ -114,7 +73,7 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
                 {isEditing ? (
                     <FormControl isInvalid={userNameErrorMessage.length > 0}>
                         <Input
-                            defaultValue={editUser.userName}
+                            value={editUser.userName}
                             onChange={(e) => setEditUser({ ...editUser, userName: e.target.value })}
                         />
                         <FormErrorMessage>{userNameErrorMessage}</FormErrorMessage>
@@ -125,21 +84,33 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
             </Td>
             <Td>
                 {isEditing ? (
-                    <Input defaultValue={user.email} />
+                    <FormControl isInvalid={emailErrorMessage.length > 0}>
+                        <Input
+                            value={editUser.email}
+                            onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
+                        />
+                        <FormErrorMessage>{emailErrorMessage}</FormErrorMessage>
+                    </FormControl>
                 ) : (
                     user.email
                 )}
             </Td>
             <Td>
                 {isEditing ? (
-                    <Input defaultValue={user.phoneNumber} />
+                    <FormControl isInvalid={phoneNumberErrorMessage.length > 0}>
+                        <Input
+                            value={editUser.phoneNumber}
+                            onChange={(e) => setEditUser({ ...editUser, phoneNumber: e.target.value })}
+                        />
+                        <FormErrorMessage>{phoneNumberErrorMessage}</FormErrorMessage>
+                    </FormControl>
                 ) : (
                     user.phoneNumber
                 )}
             </Td>
             <Td display='flex' justifyContent='flex-end'>
                 <Tooltip label={isEditing ? 'Save changes' : 'Edit user'}>
-                    <Button mr='3' bg={isEditing ? 'orange.300' : 'blue.300'} onClick={() => setIsEditing(!isEditing)}>
+                    <Button mr='3' bg={isEditing ? 'orange.300' : 'blue.300'} onClick={isEditing ? handleSaveChanges : () => setIsEditing(true)}>
                         {isEditing ? <CheckIcon /> : <EditIcon />}
                     </Button>
                 </Tooltip>
@@ -149,7 +120,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail }
                 <Tooltip label='Delete user'>
                     <Button bg={'red.300'} onClick={() => deleteUser(user.userId)}><DeleteIcon /></Button>
                 </Tooltip>
-
             </Td>
         </Tr>
     );
