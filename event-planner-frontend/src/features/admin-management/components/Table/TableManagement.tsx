@@ -28,7 +28,6 @@ type User = {
 };
 
 const TableManagement: React.FC = () => {
-
   const toast = useToast()
 
   const [users, setUsers] = useState<User[]>([]);
@@ -46,10 +45,11 @@ const TableManagement: React.FC = () => {
   //   setUsers([...users, newUserData]);
   // };
   const dispatch: AppDispatch = useDispatch();
-
-
   const allUsers = useSelector(selectAllUsers)
-  console.log(allUsers);
+
+
+
+
 
 
 
@@ -95,7 +95,7 @@ const TableManagement: React.FC = () => {
           <Table>
             <Thead>
               <Tr>
-                <Th>Name</Th>
+                <Th>UserName</Th>
                 <Th>Email</Th>
                 <Th>Phone Number</Th>
                 <Th display='flex' justifyContent='flex-end'>Actions</Th>

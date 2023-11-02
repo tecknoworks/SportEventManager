@@ -47,4 +47,6 @@ export default class UserService extends CommonService {
   sendRecoverPasswordEmail(data: SendResetLinkDto) {
     return this.post('/Admin/SendRecoverPasswordEmail', data)
   }
+
+
 }
