@@ -11,5 +11,7 @@ namespace DataAccessLayer.Interfaces
         Task<IList<Event>> GetEventsAsync();
         Task<string> SaveChangesAsync();
         Task<bool> PositionExistsAsync(Guid positionId);
+        Task<bool> SportTypeExistsAsync(Guid sportTypeId);
+        Task<bool> PositionBelongsToSportTypeAsync(Guid positionId, Guid sportTypeId);
     }
 }

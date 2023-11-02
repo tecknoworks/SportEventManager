@@ -4,6 +4,7 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLayer.Services
 {
@@ -28,7 +29,7 @@ namespace BusinessLayer.Services
             try
             {
                 var errorMessage = await ValidateCreateEventDtoAsync(newEvent);
-                if (errorMessage != null) throw new EventPlannerException(errorMessage);
+                if (!errorMessage.IsNullOrEmpty()) throw new EventPlannerException(errorMessage);
                 var eventEntity = _mapper.Map<Event>(newEvent);
                 return await _eventRepository.CreateEventAsync(eventEntity);
             }
@@ -98,26 +99,31 @@ namespace BusinessLayer.Services
         {
             try
             {
-                var errorMessage = await ValidateUpdateEventDtoAsync(updateEventDto);
-                if (errorMessage != null) throw new EventPlannerException(errorMessage);
                 var eventEntity = await _eventRepository.GetEventByIdAsync(eventId);
+                var errorMessage = await ValidateUpdateEventDtoAsync(eventEntity.SportTypeId, updateEventDto);
+                if (!errorMessage.IsNullOrEmpty()) throw new EventPlannerException(errorMessage);
                 _mapper.Map(updateEventDto, eventEntity);
                 return await _eventRepository.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while updating the event with id {eventId}");
-                throw;
+                throw ex;
             }
         }
 
-        private async Task<string> ValidateEventPositionsAsync(IEnumerable<UpsertEventPositionDto> eventPositions)
+        private async Task<string> ValidateEventPositionsAsync(Guid sportTypeId, IEnumerable<UpsertEventPositionDto> eventPositions)
         {
             foreach (var position in eventPositions)
             {
                 if (!await _eventRepository.PositionExistsAsync(position.PositionId))
                 {
                     return $"Position with ID {position.PositionId} does not exist.";
+                }
+                
+                if (!await _eventRepository.PositionBelongsToSportTypeAsync(position.PositionId, sportTypeId))
+                {
+                    return $"Position with ID {position.PositionId} does not belong to the sport type with ID {sportTypeId}.";
                 }
             }
 
@@ -131,17 +137,30 @@ namespace BusinessLayer.Services
                 return $"User with ID {dto.AuthorUserId} does not exist.";
             }
 
-            return await ValidateEventPositionsAsync(dto.EventPositions);
-        }
-
-        private async Task<string> ValidateUpdateEventDtoAsync(UpdateEventDto dto)
-        {
-            string positionValidationResult = await ValidateEventPositionsAsync(dto.EventPositions);
-            if (!string.IsNullOrEmpty(positionValidationResult))
+            if (!await _eventRepository.SportTypeExistsAsync(dto.SportTypeId))
             {
-                return positionValidationResult;
+                return $"SportType with ID {dto.SportTypeId} does not exist.";
             }
 
+            if (!dto.EventPositions.IsNullOrEmpty()) 
+            { 
+                return await ValidateEventPositionsAsync(dto.SportTypeId, dto.EventPositions);
+            }
+            return string.Empty;
+        }
+
+        private async Task<string> ValidateUpdateEventDtoAsync(Guid sportTypeId, UpdateEventDto dto)
+        {
+            if (!dto.EventPositions.IsNullOrEmpty())
+            {
+                string positionValidationResult = await ValidateEventPositionsAsync(sportTypeId, dto.EventPositions);
+
+                if (!string.IsNullOrEmpty(positionValidationResult))
+                {
+                    return positionValidationResult;
+                }
+            }
+            
             foreach (var participant in dto.Participants)
             {
                 if (!await _userRepository.UserExistsAsync(participant.UserId))

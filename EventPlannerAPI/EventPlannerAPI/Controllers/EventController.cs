@@ -4,6 +4,7 @@ using DataAccessLayer.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DataAccessLayer.Helpers;
+using System.Security.Claims;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -108,6 +109,14 @@ namespace EventPlannerAPI.Controllers
         {
             try
             {
+                var currentUserId = HttpContext.User.FindFirstValue(SolutionConfigurationConstants.JwtIdClaim);
+                var eventToUpdate = await _eventService.GetEventByIdAsync(eventId);
+
+                if (eventToUpdate.AuthorUserId != currentUserId)
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden, "Only the creator can update the event.");
+                }
+
                 return Ok(await _eventService.UpdateEventAsync(eventId, updateEventDto));
             }
             catch (EventPlannerException ex)

@@ -67,5 +67,13 @@ namespace DataAccessLayer.Repositories
         {
             return await _eventPlannerContext.Positions.AnyAsync(position => position.Id == positionId);
         }
+        public async Task<bool> SportTypeExistsAsync(Guid sportTypeId)
+        {
+            return await _eventPlannerContext.SportTypes.AnyAsync(sportType => sportType.Id == sportTypeId);
+        }
+        public async Task<bool> PositionBelongsToSportTypeAsync(Guid positionId, Guid sportTypeId)
+        {
+            return await _eventPlannerContext.Positions.AnyAsync(p => p.Id == positionId && p.SportTypeId == sportTypeId);
+        }
     }
 }
