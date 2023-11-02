@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -17,6 +17,12 @@ import {
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import NavLink from './components/NavLink';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext, getUserFromToken } from 'services/auth/context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from 'redux/store';
+import { logout } from 'features/login/store/slices/logInSlice';
+import { selectIsAuthenticated, selectToken } from 'services/auth/selectors/authSelectors';
+import { updateNavOnLogout } from 'services/auth/slice/authSlice';
 
 type LinkType = {
   key: number;
@@ -27,6 +33,7 @@ type LinkType = {
 
 const NavigationMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const Links: LinkType[] = [
     {
@@ -42,8 +49,22 @@ const NavigationMenu = () => {
       linkTo: '/adminusermanagement',
     },
   ];
-  const isLoggedIn = false;
-  const isAdmin = true;
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const token = useSelector(selectToken);
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log(isAuthenticated);
+    console.log(token);
+    if (token) {
+      const user = getUserFromToken(token);
+      setIsAdmin(user?.role === 'User' ? false : true);
+    }
+    console.log(isAdmin);
+    setIsLoggedIn(isAuthenticated);
+  }, [token]);
 
   return (
     <Box position="fixed" width="100%" top="0" zIndex="1" bg={'whiteAlpha.800'} px={4}>
@@ -95,7 +116,14 @@ const NavigationMenu = () => {
                     Profile Page
                   </MenuItem>
                   <MenuDivider />
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      dispatch(logout());
+                      dispatch(updateNavOnLogout());
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
                 </>
               ) : (
                 <>

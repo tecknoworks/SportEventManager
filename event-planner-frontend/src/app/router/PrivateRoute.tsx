@@ -5,11 +5,12 @@ import { Navigate } from 'react-router-dom';
 interface PrivateRouteProps {
   children: ReactNode;
 }
-
 export function PrivateRoute({ children }: PrivateRouteProps) {
   const { isAuthenticated } = useContext(AuthContext);
+
   useEffect(() => {
-    console.log('este? ', isAuthenticated);
-  }, []);
+    console.log('Authenticated: ', isAuthenticated);
+  }, [isAuthenticated]);
+
   return <>{isAuthenticated ? children : <Navigate to="/" replace />}</>;
 }

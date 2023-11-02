@@ -30,15 +30,14 @@ import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfileThunk } from '../store/thunks/getProfileThunk';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { selectProfile, selectProfileIsLoading } from '../store/selectors/profileSelector';
 import { GetUserProfileDto, UpdateUserProfileDto } from '../api/dtos';
 import { formatDate } from 'common/helpers/dateFormatter';
 import { updateProfileThunk } from '../store/thunks/updateProfileThunk';
 import Loader from 'common/components/Loader/Loader';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
-
-const MOCK_USER_ID = '5a56cef4-71b6-4301-a69b-f0a60ed5bcdf'; //TODO: get user id from JWT token
+import { AuthContext, getUserFromToken } from 'services/auth/context/AuthContext';
 
 const EditProfileForm = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -56,6 +55,10 @@ const EditProfileForm = () => {
     city: '',
     profilePhoto: '',
   };
+
+  const { token } = useContext(AuthContext);
+  const user = getUserFromToken(token || '');
+
   const [currentProfile, setCurrentProfile] = useState<GetUserProfileDto>(defaultProfile);
   const [isImageWidgetLoading, setImageWidgetLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -63,7 +66,7 @@ const EditProfileForm = () => {
   const [isMobile] = useMediaQuery('(max-width: 1037px)');
 
   useEffect(() => {
-    dispatch(getProfileThunk(MOCK_USER_ID));
+    dispatch(getProfileThunk(user?.userId || ''));
   }, []);
 
   useEffect(() => {
@@ -121,7 +124,7 @@ const EditProfileForm = () => {
       city: currentProfile.city,
       profilePhoto: currentProfile.profilePhoto,
     };
-    dispatch(updateProfileThunk(data));
+    dispatch(updateProfileThunk({ userId: user?.userId || '', data }));
   };
 
   return (
@@ -160,7 +163,7 @@ const EditProfileForm = () => {
               <Stack direction={['column', 'row']} spacing={6}>
                 <Center>
                   <Avatar
-                    name={profile?.firstName + ' ' + profile?.lastName}
+                    name={currentProfile?.firstName + ' ' + currentProfile?.lastName}
                     size="xl"
                     src={currentProfile.profilePhoto}
                     bgColor="#610c9f"

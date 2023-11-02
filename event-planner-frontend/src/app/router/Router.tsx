@@ -14,7 +14,6 @@ import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
 import { PrivateRoute } from './PrivateRoute';
-import { AuthProvider } from 'services/auth/context/AuthContext';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -25,35 +24,33 @@ const RouterComponent: FC = () => {
 
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="signup" element={<SignUpPage />} />
-            <Route path="confirm-account" element={<AccountConfirmationPage />} />
-            <Route path="recover-password" element={<PasswordRecoveryPage />} />
-            <Route path="reset-password" element={<CreateNewPasswordPage />} />
-            <Route
-              path="/profile"
-              element={
-                <PrivateRoute>
-                  <EditProfilePage />
-                </PrivateRoute>
-              }
-            />
-            <Route path="login" element={<LoginPage />} />
-            <Route
-              path="/admin"
-              element={
-                <PrivateRoute>
-                  <AdminPage />
-                </PrivateRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
-          </Route>
-        </Routes>
-      </AuthProvider>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<HomePage />} />
+          <Route path="signup" element={<SignUpPage />} />
+          <Route path="confirm-account" element={<AccountConfirmationPage />} />
+          <Route path="recover-password" element={<PasswordRecoveryPage />} />
+          <Route path="reset-password" element={<CreateNewPasswordPage />} />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <EditProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="login" element={<LoginPage />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
     </BrowserRouter>
   );
 };
