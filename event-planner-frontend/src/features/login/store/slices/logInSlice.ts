@@ -2,23 +2,23 @@ import { createSlice } from '@reduxjs/toolkit';
 import { logInThunk } from '../thunks/logInThunk';
 
 type State = {
-  loading: boolean,
-  user: any,
-  error: unknown | null,
-}
+  loading: boolean;
+  user: any;
+  error: unknown | null;
+};
 
 const initialState: State = {
   loading: false,
   user: null,
   error: null as unknown,
-}
+};
 
 export const logInSlice = createSlice({
   name: 'logIn',
   initialState,
   reducers: {
     logout: (state) => {
-      localStorage.removeItem('user');
+      localStorage.removeItem('token');
       state.loading = false;
       state.user = null;
       state.error = null;
@@ -47,7 +47,5 @@ export const logInSlice = createSlice({
   },
 });
 
-
-export const { logout } = logInSlice.actions
+export const { logout } = logInSlice.actions;
 export default logInSlice.reducer;
-

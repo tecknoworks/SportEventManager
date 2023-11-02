@@ -161,7 +161,6 @@ const LogInForm = () => {
             Forgot password?
           </Button>
 
-
           {user && (
             <Button variant="text" size="sm" onClick={handleLogout}>
               Logout
