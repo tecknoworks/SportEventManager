@@ -18,9 +18,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logInThunk } from 'features/login/store/thunks/logInThunk';
 import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
-import { useNavigate } from 'react-router-dom';
-import { logout } from 'features/login/store/slices/logInSlice';
-import { selectLogInStateLoading, selectLogInStateUser } from 'features/login/store/selectors/logInSelectors';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
 
 const LogInForm = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -28,7 +27,6 @@ const LogInForm = () => {
   const toast = useToast();
 
   const loading = useSelector(selectLogInStateLoading);
-  const user = useSelector(selectLogInStateUser);
 
   const [userIdentifier, setUserIdentifier] = React.useState<string>('');
   const [password, setPassword] = React.useState<string>('');
@@ -65,7 +63,7 @@ const LogInForm = () => {
     };
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
-        navigate('/');
+        <Navigate to="/" replace />;
         toast({
           title: 'Log In succesfully.',
           status: 'success',
@@ -80,17 +78,6 @@ const LogInForm = () => {
           isClosable: true,
         });
       }
-    });
-  };
-
-  const handleLogout = () => {
-    dispatch(logout());
-    navigate('/');
-    toast({
-      title: 'Log Out succesfully.',
-      status: 'success',
-      duration: 2000,
-      isClosable: true,
     });
   };
 
@@ -146,7 +133,7 @@ const LogInForm = () => {
             Log In
           </Button>
           <Text>
-            Don't have an account?{' '}
+            Don't have an account?
             <Link color="purple" href="/signup">
               Sign up
             </Link>
@@ -160,13 +147,6 @@ const LogInForm = () => {
           >
             Forgot password?
           </Button>
-
-
-          {user && (
-            <Button variant="text" size="sm" onClick={handleLogout}>
-              Logout
-            </Button>
-          )}
         </Stack>
       </form>
     </Box>

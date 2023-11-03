@@ -37,8 +37,8 @@ import { formatDate } from 'common/helpers/dateFormatter';
 import { updateProfileThunk } from '../store/thunks/updateProfileThunk';
 import Loader from 'common/components/Loader/Loader';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
-
-const MOCK_USER_ID = '5a56cef4-71b6-4301-a69b-f0a60ed5bcdf'; //TODO: get user id from JWT token
+import { getUserFromToken } from 'services/auth/context/AuthContext';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
 
 const EditProfileForm = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -56,6 +56,10 @@ const EditProfileForm = () => {
     city: '',
     profilePhoto: '',
   };
+
+  const token = useSelector(selectToken);
+  const user = getUserFromToken(token || '');
+
   const [currentProfile, setCurrentProfile] = useState<GetUserProfileDto>(defaultProfile);
   const [isImageWidgetLoading, setImageWidgetLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -63,7 +67,7 @@ const EditProfileForm = () => {
   const [isMobile] = useMediaQuery('(max-width: 1037px)');
 
   useEffect(() => {
-    dispatch(getProfileThunk(MOCK_USER_ID));
+    dispatch(getProfileThunk(user?.userId || ''));
   }, []);
 
   useEffect(() => {
@@ -121,12 +125,12 @@ const EditProfileForm = () => {
       city: currentProfile.city,
       profilePhoto: currentProfile.profilePhoto,
     };
-    dispatch(updateProfileThunk(data));
+    dispatch(updateProfileThunk({ userId: user?.userId || '', data }));
   };
 
   return (
     <Box
-      marginTop={!isMobile ? '0px' : '80px'}
+      marginTop={!isMobile ? '0px' : '430px'}
       marginBottom={!isMobile ? '0px' : '30px'}
       width="100%"
       display="flex"
@@ -160,7 +164,7 @@ const EditProfileForm = () => {
               <Stack direction={['column', 'row']} spacing={6}>
                 <Center>
                   <Avatar
-                    name={profile?.firstName + ' ' + profile?.lastName}
+                    name={currentProfile?.firstName + ' ' + currentProfile?.lastName}
                     size="xl"
                     src={currentProfile.profilePhoto}
                     bgColor="#610c9f"

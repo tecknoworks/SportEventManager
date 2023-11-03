@@ -1,6 +1,5 @@
 import { Box } from '@chakra-ui/react';
 import { useEffect } from 'react';
-import 'common/styles/form-page.scss';
 import CreateNewPasswordForm from '../components/NewPasswordForm/NewPasswordForm';
 import { useSelector } from 'react-redux';
 import { selectNewPasswordIsSuccess } from '../store/selectors/newPasswordSelectors';
@@ -13,7 +12,7 @@ function CreateNewPasswordPage() {
     if (isSuccess) handleGenericSuccess('You have successfully reset your password.');
   }, [isSuccess]);
   return (
-    <Box className="form-page-wrapper" bgGradient="linear(to-r, #610C9F, #E95793)">
+    <Box width="100%" height="inherit" display="flex" alignItems="center" justifyContent="center">
       <CreateNewPasswordForm />
     </Box>
   );
