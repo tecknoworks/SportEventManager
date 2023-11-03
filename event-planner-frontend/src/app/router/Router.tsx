@@ -13,7 +13,7 @@ import AccountConfirmationPage from 'features/account-confirmation/views/Account
 import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
-import { PrivateRoute } from './PrivateRoute';
+import { LoggedInRoute, PrivateRoute } from './PrivateRoute';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -27,11 +27,46 @@ const RouterComponent: FC = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="signup" element={<SignUpPage />} />
-          <Route path="confirm-account" element={<AccountConfirmationPage />} />
-          <Route path="recover-password" element={<PasswordRecoveryPage />} />
-          <Route path="reset-password" element={<CreateNewPasswordPage />} />
+          <Route
+            path="login"
+            element={
+              <LoggedInRoute>
+                <LoginPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="signup"
+            element={
+              <LoggedInRoute>
+                <SignUpPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="confirm-account"
+            element={
+              <LoggedInRoute>
+                <AccountConfirmationPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="recover-password"
+            element={
+              <LoggedInRoute>
+                <PasswordRecoveryPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="reset-password"
+            element={
+              <LoggedInRoute>
+                <CreateNewPasswordPage />
+              </LoggedInRoute>
+            }
+          />
           <Route
             path="/profile"
             element={
