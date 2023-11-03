@@ -15,7 +15,6 @@ namespace BusinessLayer.Interfaces
 		Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier);
         Task<GetUserProfileDetailsDto> GetUserProfileDetailsAsync(string userId);
         Task<IList<string>> GetRolesAsync(EventPlannerUser user);
-        Task<GetUserProfileDetailsDto> CreateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto userDetails);
         Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto newUserDetails);
 
     }

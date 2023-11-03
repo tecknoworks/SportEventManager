@@ -3,6 +3,7 @@ using BusinessLayer.Interfaces;
 using BusinessLayer.Services;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
@@ -11,6 +12,7 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = RoleConstants.ADMIN_ROLE)]
     public class AdminController:ControllerBase
     {
         private readonly IAdminService _adminService;

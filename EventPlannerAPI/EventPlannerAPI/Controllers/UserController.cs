@@ -75,6 +75,7 @@ namespace EventPlannerAPI.Controllers
             return Ok("Password reset successfully.");
         }
 
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("GetUserProfileDetails/{userId}")]
@@ -94,25 +95,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpPost("CreateUserProfileDetails/{userId}")]
-        public async Task<ActionResult<GetUserProfileDetailsDto>> CreateUserProfileDetails(string userId, UpsertUserProfileDetailsDto userDetails)
-        {
-            try
-            {
-                return Ok(await _userService.CreateUserProfileDetailsAsync(userId, userDetails));
-            }
-            catch(EventPlannerException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch(Exception)
-            {
-                return Problem("Something went wrong.");
-            }
-        }
-
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("UpdateUserProfileDetails/{userId}")]
