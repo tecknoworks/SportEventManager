@@ -12,6 +12,7 @@ import AccountConfirmationPage from 'features/account-confirmation/views/Account
 import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
+import UpsertEventPage from 'features/event/views/UpsertEventPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -32,6 +33,7 @@ const RouterComponent: FC = () => {
           <Route path="profile" element={<EditProfilePage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="admin" element={<AdminPage />} />
+          <Route path="event" element={<UpsertEventPage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
