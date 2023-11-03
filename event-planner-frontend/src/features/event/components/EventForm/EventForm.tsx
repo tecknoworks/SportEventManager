@@ -1,16 +1,27 @@
 import { FormControl, Box, FormLabel, Heading, Select, Input, Button, Textarea } from '@chakra-ui/react';
+import LocationSearch from 'common/components/LocationSearch/LocationSearch';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { GetPositionForSportTypeDto, GetSportTypesDto } from 'features/event/api/dtos';
-import React from 'react';
+import { SkillLevel } from 'features/event/api/models';
+import React, { useEffect, useState } from 'react';
+
+type LatLng = {
+  lat: number;
+  lng: number;
+};
 
 function EventForm() {
   const [selectedSport, setSelectedSport] = React.useState<GetSportTypesDto | undefined>(undefined);
   const [selectedPositions, setSelectedPositions] = React.useState<EventPostion[]>([]);
-
+  const [coordinates, setCoordinates] = useState<LatLng>({ lat: -34.397, lng: 150.644 });
   type EventPostion = {
     position: GetPositionForSportTypeDto;
     availablePositions: number;
   };
+
+  useEffect(() => {
+    console.log(coordinates);
+  }, [coordinates]);
 
   const handlePositionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const positionId = event.target.value;
@@ -42,14 +53,20 @@ function EventForm() {
     setSelectedPositions((prev) => prev.filter((p) => p.position.id !== positionId));
   };
 
-  const handleSportChange = (event: any) => {
+  const handleSportChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const sportId = event.target.value;
     const sport = sportTypes.find((s) => s.id === sportId) || undefined;
     setSelectedSport(sport);
     setSelectedPositions([]);
   };
 
+  //TODO: validation of the fields, disable button before everything is valid
+  const handleCreateEvent = () => {
+    //TODO: dispatch the create event thunk
+  };
+
   const sportTypes: GetSportTypesDto[] = [
+    //TODO: fetch available sport types from backend
     {
       id: 'F6FE54D3-A451-4DE6-9FE9-AFC051A963B6',
       name: 'Football',
@@ -63,6 +80,7 @@ function EventForm() {
   ];
 
   const positionsForSportType: GetPositionForSportTypeDto[] = [
+    //TODO: fetch positions for selected sport types from backend
     {
       id: '6A737AD1-7FE2-40BD-888A-0604186743B6',
       name: 'Quarterback',
@@ -85,10 +103,11 @@ function EventForm() {
       className="form-wrapper"
       gap="1rem"
       display="flex"
+      flexDirection="column"
       width="500px"
       borderWidth="1px"
       borderRadius="lg"
-      overflow="hidden"
+      overflowY="auto"
     >
       <Heading>Create your event</Heading>
       <FormControl isRequired>
@@ -146,9 +165,9 @@ function EventForm() {
       <FormControl isRequired>
         <FormLabel>Skill Level</FormLabel>
         <Select placeholder="Select skill level">
-          <option>Begginer</option>
-          <option>Intermediate</option>
-          <option>Advanced</option>
+          <option value={SkillLevel.Beginner}>Beginner</option>
+          <option value={SkillLevel.Intermediate}>Intermediate</option>
+          <option value={SkillLevel.Advanced}>Advanced</option>
         </Select>
       </FormControl>
       {selectedSport && !selectedSport.hasPositions && (
@@ -158,18 +177,18 @@ function EventForm() {
         </FormControl>
       )}
       <FormControl isRequired>
-        <FormLabel>Location</FormLabel>
-        <Input type="location" />
-      </FormControl>
-      <FormControl isRequired>
         <FormLabel>Start Date</FormLabel>
-        <Input type="date" />
+        <Input type="datetime-local" />
       </FormControl>
       <FormControl isRequired>
         <FormLabel>End Date</FormLabel>
-        <Input type="date" />
+        <Input type="datetime-local" />
       </FormControl>
-      <PrimaryButton text="Create event" />
+      <FormControl isRequired>
+        <FormLabel>Location</FormLabel>
+        <LocationSearch onCoordinatesChange={setCoordinates} />
+      </FormControl>
+      <PrimaryButton text="Create event" onClick={() => handleCreateEvent()} />
     </Box>
   );
 }
