@@ -27,6 +27,7 @@ const RouterComponent: FC = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
+          <Route path="login" element={<LoginPage />} />
           <Route path="signup" element={<SignUpPage />} />
           <Route path="confirm-account" element={<AccountConfirmationPage />} />
           <Route path="recover-password" element={<PasswordRecoveryPage />} />
@@ -39,7 +40,6 @@ const RouterComponent: FC = () => {
               </PrivateRoute>
             }
           />
-          <Route path="login" element={<LoginPage />} />
           <Route
             path="/admin"
             element={

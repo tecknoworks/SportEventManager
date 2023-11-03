@@ -8,9 +8,5 @@ interface PrivateRouteProps {
 export function PrivateRoute({ children }: PrivateRouteProps) {
   const { isAuthenticated } = useContext(AuthContext);
 
-  useEffect(() => {
-    console.log('Authenticated: ', isAuthenticated);
-  }, [isAuthenticated]);
-
   return <>{isAuthenticated ? children : <Navigate to="/" replace />}</>;
 }

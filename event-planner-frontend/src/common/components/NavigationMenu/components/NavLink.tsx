@@ -3,16 +3,14 @@ import { Box } from '@chakra-ui/react';
 
 interface Props {
   children: React.ReactNode;
-  key: number;
   linkTo: string;
 }
 
 const NavLink = (props: Props) => {
-  const { children, key, linkTo } = props;
+  const { children, linkTo } = props;
 
   return (
     <Box
-      key={key}
       as="a"
       px={2}
       py={1}

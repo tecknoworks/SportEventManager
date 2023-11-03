@@ -3,14 +3,14 @@ import { logInThunk } from '../thunks/logInThunk';
 
 type State = {
   loading: boolean;
-  user: any;
   error: unknown | null;
+  token: string | null;
 };
 
 const initialState: State = {
   loading: false,
-  user: null,
   error: null as unknown,
+  token: localStorage.getItem('token') || null,
 };
 
 export const logInSlice = createSlice({
@@ -20,24 +20,23 @@ export const logInSlice = createSlice({
     logout: (state) => {
       localStorage.removeItem('token');
       state.loading = false;
-      state.user = null;
       state.error = null;
+      state.token = null;
     },
   },
   extraReducers: (builder) => {
     builder.addCase(logInThunk.pending, (state) => {
       state.loading = true;
-      state.user = null;
       state.error = null;
+      state.token = null;
     });
     builder.addCase(logInThunk.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload;
       state.error = null;
+      state.token = action.payload;
     });
     builder.addCase(logInThunk.rejected, (state, action) => {
       state.loading = false;
-      state.user = null;
       if (action.error.message === 'Unable to find the user.') {
         state.error = 'Access denied! Invalid credentials';
       } else {
