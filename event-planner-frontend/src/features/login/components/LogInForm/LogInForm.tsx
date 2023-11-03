@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logInThunk } from 'features/login/store/thunks/logInThunk';
 import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
 
 const LogInForm = () => {
@@ -63,7 +63,7 @@ const LogInForm = () => {
     };
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
-        navigate('/');
+        <Navigate to="/" replace />;
         toast({
           title: 'Log In succesfully.',
           status: 'success',

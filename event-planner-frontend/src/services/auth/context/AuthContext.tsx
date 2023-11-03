@@ -1,9 +1,10 @@
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { JwtPayload, jwtDecode } from 'jwt-decode';
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 interface AuthContextInterface {
   token: string | null;
-  isAuthenticated: boolean;
 }
 
 interface JwtClaims {
@@ -13,7 +14,6 @@ interface JwtClaims {
 
 export const AuthContext = React.createContext<AuthContextInterface>({
   token: null,
-  isAuthenticated: false,
 });
 
 export const getUserFromToken = (token: string) => {
@@ -32,11 +32,10 @@ export const getUserFromToken = (token: string) => {
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const tokenFromLocalStorage = useSelector(selectToken);
   const [authState, setAuthState] = useState<AuthContextInterface>(() => {
-    const tokenFromLocalStorage = localStorage.getItem('token');
     return {
       token: tokenFromLocalStorage || null,
-      isAuthenticated: !!tokenFromLocalStorage,
     };
   });
 

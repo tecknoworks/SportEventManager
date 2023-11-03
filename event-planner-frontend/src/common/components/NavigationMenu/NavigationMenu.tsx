@@ -50,7 +50,7 @@ const NavigationMenu = () => {
       linkTo: '/adminusermanagement',
     },
   ];
-  const { isAuthenticated } = useContext(AuthContext);
+
   const token = useSelector(selectToken);
   const profile = useSelector(selectProfile);
 
@@ -62,7 +62,7 @@ const NavigationMenu = () => {
       const user = getUserFromToken(token);
       dispatch(getProfileThunk(user?.userId || ''));
       setIsAdmin(user?.role === 'User' ? false : true);
-      setIsLoggedIn(isAuthenticated);
+      setIsLoggedIn(!!token);
     } else {
       setIsLoggedIn(false);
       setIsAdmin(false);
@@ -70,7 +70,7 @@ const NavigationMenu = () => {
   }, [token]);
 
   return (
-    <Box position="relative" width="100%" top="0" bg={'whiteAlpha.800'} px={4}>
+    <Box width="100%" top="0" bg={'whiteAlpha.800'} px={4}>
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
         <IconButton
           backgroundColor="whiteAlpha.700"

@@ -30,14 +30,15 @@ import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfileThunk } from '../store/thunks/getProfileThunk';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { selectProfile, selectProfileIsLoading } from '../store/selectors/profileSelector';
 import { GetUserProfileDto, UpdateUserProfileDto } from '../api/dtos';
 import { formatDate } from 'common/helpers/dateFormatter';
 import { updateProfileThunk } from '../store/thunks/updateProfileThunk';
 import Loader from 'common/components/Loader/Loader';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
-import { AuthContext, getUserFromToken } from 'services/auth/context/AuthContext';
+import { getUserFromToken } from 'services/auth/context/AuthContext';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
 
 const EditProfileForm = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -56,7 +57,7 @@ const EditProfileForm = () => {
     profilePhoto: '',
   };
 
-  const { token } = useContext(AuthContext);
+  const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');
 
   const [currentProfile, setCurrentProfile] = useState<GetUserProfileDto>(defaultProfile);
@@ -129,7 +130,7 @@ const EditProfileForm = () => {
 
   return (
     <Box
-      marginTop={!isMobile ? '0px' : '80px'}
+      marginTop={!isMobile ? '0px' : '430px'}
       marginBottom={!isMobile ? '0px' : '30px'}
       width="100%"
       display="flex"
