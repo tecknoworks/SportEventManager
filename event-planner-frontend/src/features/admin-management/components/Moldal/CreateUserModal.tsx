@@ -17,18 +17,23 @@ import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { validatePassword } from 'common/validators/passwordValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
+import { UserOrAdminDto } from 'features/admin-management/api/dtos';
+import { selectAdminStateError } from 'features/admin-management/store/selectors/adminSelectors';
+import { createUserOrAdminThunk } from 'features/admin-management/store/thunks/createUserOrAdminThunk';
+import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
 import { UserDto } from 'features/registration/api/Dtos';
-import { createUser } from 'features/registration/thunks/signupThunks';
+import { selectUserError, selectUserStatus } from 'features/registration/store/signupPageSelector';
+import { createUser, resetStore } from 'features/registration/thunks/signupThunks';
 import { useState, useEffect, FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { useDebounce } from 'use-debounce';
 
 
+
 type AddUserModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  // addUser: () => void;
   newUser: any;
   setNewUser: (user: any) => void;
 };
@@ -41,19 +46,19 @@ interface Account {
   confirmPassword: string;
   showPassword: boolean;
   showConfirmPassword: boolean;
+  role: number | '';
 }
 
 
 const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser, setNewUser }) => {
 
-
-
   const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
   const dispatch: AppDispatch = useDispatch();
-  // const userStatus = useSelector(selectUserStatus);
-  // const userError = useSelector(selectUserError);
+  const userStatus = useSelector(selectUserStatus);
+  const userError = useSelector(selectUserError);
   const [errorBe, setErrorBe] = useState<object[]>([]);
   const toast = useToast();
+
 
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
@@ -70,6 +75,7 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
     confirmPassword: '',
     showPassword: false,
     showConfirmPassword: false,
+    role: '',
   });
   const [debouncedAccount] = useDebounce(account, 1000);
 
@@ -79,7 +85,8 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       account.email !== '' &&
       account.phoneNumber !== '' &&
       account.password !== '' &&
-      account.confirmPassword !== ''
+      account.confirmPassword !== '' &&
+      account.role !== ''
     ) {
       return false;
     }
@@ -87,6 +94,7 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
   };
 
   const isPasswordEqualToConfirmPassword: boolean = account.password === account.confirmPassword;
+  const isRoleValid = account.role === 0 || account.role === 1;
 
   useEffect(() => {
     const errorPasswordMessage = validatePassword(debouncedAccount.password);
@@ -110,6 +118,7 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
 
     setUserNameErrorMessage(debouncedAccount.userName && errorUserNameMessage);
 
+
     setIsDisabled(
       !(
         isPasswordValid &&
@@ -118,10 +127,12 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
         isUserNameValid &&
         isValidPhoneNumber(debouncedAccount.phoneNumber) &&
         !checkIfEmptyInputValues() &&
-        isPasswordEqualToConfirmPassword
+        isPasswordEqualToConfirmPassword &&
+        isRoleValid
       )
     );
   }, [debouncedAccount]);
+
 
   useEffect(() => {
     setErrorBe([]);
@@ -137,37 +148,37 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       confirmPassword: '',
       showPassword: false,
       showConfirmPassword: false,
+      role: ''
     });
   };
 
-  //NU AM STATUS INCA
 
-  // useEffect(() => {
-  //   if (userStatus === 'succeded') {
-  //     dispatch(resetStore());
-  //     resetInputValues();
-  //     toast({
-  //       title: 'Account created.',
-  //       description: "We've created your account for you. Check your email to confirm your account",
-  //       status: 'success',
-  //       duration: 9000,
-  //       isClosable: true,
-  //     });
-  //   } else {
-  //     setErrorBe(userError);
-  //   }
-  // }, [userStatus]);
+  useEffect(() => {
+    if (userStatus === 'succeded') {
+      dispatch(resetStore());
+      resetInputValues();
+    } else {
+      setErrorBe(userError);
+    }
+  }, [userStatus]);
+  const errorAddUser = useSelector(selectAdminStateError)
 
-  function handleSubmit(event: FormEvent): void {
+
+
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
-    const data: UserDto = {
+
+    const data: UserOrAdminDto = {
       userName: account.userName,
       email: account.email,
       phoneNumber: account.phoneNumber,
       password: account.password,
+      role: account.role
     };
-    dispatch(createUser(data));
+    await dispatch(createUserOrAdminThunk(data));
+    await dispatch(getAllUsersThunk())
+    resetInputValues();
   }
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -251,25 +262,19 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
                 errorMessage={confirmPasswordErrorMessage}
                 isRequired={true}
               />
-              <Select placeholder="Roles:">
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
+              <Select onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                setAccount({ ...account, role: e.target.value === "" ? '' : Number(e.target.value) })
+              } placeholder="Roles:">
+                <option value={1}>Admin</option>
+                <option value={0}>User</option>
               </Select>
               {errorBe?.map((err: any) => (
                 <Text key={err.code} color="red.500" as="b" fontSize="sm" textAlign="center">
                   {err.description}
                 </Text>
               ))}
-              <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
+              <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" onClick={() => { onClose() }} />
             </Stack>
-            {/* <Button
-              onClick={() => {
-                addUser();
-                onClose();
-              }}
-            >
-              Confirm
-            </Button> */}
           </form>
         </ModalBody>
         <ModalFooter>

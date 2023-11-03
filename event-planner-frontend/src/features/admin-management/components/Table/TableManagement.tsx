@@ -41,14 +41,13 @@ const TableManagement: React.FC = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // const addUser = () => {
-  //   const newUserData = { id: users.length + 1, ...newUser };
-  //   setUsers([...users, newUserData]);
-  // };
+
   const dispatch: AppDispatch = useDispatch();
+  console.log(selectAllUsers)
   const allUsers = useSelector(selectAllUsers)
+  console.log("selector done")
   console.log(allUsers);
-  
+
 
 
   useEffect(() => {
@@ -62,14 +61,18 @@ const TableManagement: React.FC = () => {
   }, [allUsers])
 
 
-  const editUserOrAdmin = async(editedUser: any, userId: number) => {
+  const editUserOrAdmin = async (editedUser: any, userId: number) => {
     await dispatch(editUserOrAdminThunk({
-        userId,
-        ...editedUser
+      userId,
+      ...editedUser
     }));
     await dispatch(getAllUsersThunk());
-};
-  
+    toast({
+      title: 'User updated successfully.',
+      status: 'success',
+    })
+  };
+
   const deleteUser = (userId: any) => {
     dispatch(deleteUserThunk(userId));
     const updatedUsers = users.filter(user => user.userId !== userId);
@@ -115,7 +118,7 @@ const TableManagement: React.FC = () => {
       <CreateUserModal
         isOpen={isOpen}
         onClose={onClose}
-        // addUser={addUser}
+
         newUser={newUser}
         setNewUser={setNewUser}
       />

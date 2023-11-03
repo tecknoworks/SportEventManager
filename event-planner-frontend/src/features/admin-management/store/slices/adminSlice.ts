@@ -3,6 +3,7 @@ import { getAllUsersThunk } from '../thunks/getAllUsersThunk';
 import { deleteUserThunk } from '../thunks/deleteUserThunk';
 import { sendRecoverPasswordEmailThunk } from '../thunks/sendRecoverPasswordEmailthunk';
 import { editUserOrAdminThunk } from '../thunks/editUserOrAdminThunk';
+import { createUserOrAdminThunk } from '../thunks/createUserOrAdminThunk';
 
 const initialState = {
   users: [] as any[],
@@ -76,6 +77,27 @@ export const adminSlice = createSlice({
       state.error.editUser = action.error.message || 'Failed to edit user';
       state.loading.editUser = false;
     });
+
+    builder.addCase(createUserOrAdminThunk.pending, (state) => {
+      state.loading.addUser = true;
+      state.error.addUser = null;
+    });
+    builder.addCase(createUserOrAdminThunk.fulfilled, (state, action) => {
+      // state.users.push(action.payload); 
+      state.loading.addUser = false;
+    });
+    builder.addCase(createUserOrAdminThunk.rejected, (state, action: { payload: any; error: any }) => {
+      let errorMessage = 'Failed to create user or admin'; // Default message
+      if (action.payload && Array.isArray(action.payload) && action.payload[0]?.description) {
+        errorMessage = action.payload[0].description; // Get message from payload if available
+      } else if (action.error?.message) {
+        errorMessage = action.error.message; // Fallback to error message from Redux Toolkit
+      }
+      state.error.addUser = errorMessage;
+      state.loading.addUser = false;
+    });
+
+
   },
 });
 
