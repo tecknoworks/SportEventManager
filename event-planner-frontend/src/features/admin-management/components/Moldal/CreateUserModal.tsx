@@ -187,6 +187,12 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       await dispatch(getAllUsersThunk());
       resetInputValues();
       onClose();
+      toast({
+        title: 'User created successfully.',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      })
     } else {
      
       if (resultAction.payload) { 
