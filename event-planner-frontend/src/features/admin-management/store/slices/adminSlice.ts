@@ -74,7 +74,13 @@ export const adminSlice = createSlice({
       state.loading.editUser = false;
     });
     builder.addCase(editUserOrAdminThunk.rejected, (state, action) => {
-      state.error.editUser = action.error.message || 'Failed to edit user';
+      let errorMessage = 'Failed to create user or admin'; // Default message
+      if (action.payload && Array.isArray(action.payload) && action.payload[0]?.description) {
+        errorMessage = action.payload[0].description; // Get message from payload if available
+      } else if (action.error?.message) {
+        errorMessage = action.error.message; // Fallback to error message from Redux Toolkit
+      }
+      state.error.editUser = errorMessage;
       state.loading.editUser = false;
     });
 

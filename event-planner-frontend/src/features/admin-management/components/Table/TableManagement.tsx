@@ -16,10 +16,11 @@ import CreateUserModal from '../Moldal/CreateUserModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
-import { selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
+import { selectAdminStateError, selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
 import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUserThunk';
 import { sendRecoverPasswordEmailThunk } from 'features/admin-management/store/thunks/sendRecoverPasswordEmailthunk';
 import { editUserOrAdminThunk } from 'features/admin-management/store/thunks/editUserOrAdminThunk';
+
 
 type User = {
   userId: number;
@@ -43,12 +44,22 @@ const TableManagement: React.FC = () => {
 
 
   const dispatch: AppDispatch = useDispatch();
-  console.log(selectAllUsers)
   const allUsers = useSelector(selectAllUsers)
-  console.log("selector done")
-  console.log(allUsers);
-
-
+  const error=useSelector(selectAdminStateError)
+  console.log(error.editUser);
+  
+  useEffect(() => {
+    if (error.editUser) {
+      toast({
+        title: 'Error editing user.',
+        description: `${error.editUser}`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [error]);
+  
 
   useEffect(() => {
     dispatch(getAllUsersThunk())
@@ -59,6 +70,7 @@ const TableManagement: React.FC = () => {
   useEffect(() => {
     setUsers(allUsers)
   }, [allUsers])
+  
 
 
   const editUserOrAdmin = async (editedUser: any, userId: number) => {
@@ -67,10 +79,7 @@ const TableManagement: React.FC = () => {
       ...editedUser
     }));
     await dispatch(getAllUsersThunk());
-    toast({
-      title: 'User updated successfully.',
-      status: 'success',
-    })
+    
   };
 
   const deleteUser = (userId: any) => {
@@ -118,7 +127,6 @@ const TableManagement: React.FC = () => {
       <CreateUserModal
         isOpen={isOpen}
         onClose={onClose}
-
         newUser={newUser}
         setNewUser={setNewUser}
       />

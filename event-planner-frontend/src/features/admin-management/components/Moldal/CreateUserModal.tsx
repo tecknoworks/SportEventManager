@@ -161,13 +161,17 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       setErrorBe(userError);
     }
   }, [userStatus]);
-  const errorAddUser = useSelector(selectAdminStateError)
+
+
+  const error = useSelector(selectAdminStateError)
+  const [submitError, setSubmitError] = useState<string | {} | null>(null);
+  console.log(error.addUser);
+  
 
 
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-
 
     const data: UserOrAdminDto = {
       userName: account.userName,
@@ -176,10 +180,34 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       password: account.password,
       role: account.role
     };
-    await dispatch(createUserOrAdminThunk(data));
-    await dispatch(getAllUsersThunk())
-    resetInputValues();
+    const resultAction = await dispatch(createUserOrAdminThunk(data));
+    console.log(resultAction.payload);
+    
+    if (createUserOrAdminThunk.fulfilled.match(resultAction)) {
+      await dispatch(getAllUsersThunk());
+      resetInputValues();
+      onClose();
+    } else {
+     
+      if (resultAction.payload) { 
+        setSubmitError((resultAction.payload as any)[0].description); 
+      }
+    }
   }
+
+ 
+useEffect(() => {
+  if (submitError) {
+    toast({
+      title: 'Error creating the user.',
+      description: `${submitError}`,
+      status: 'error',
+      duration: 9000,
+      isClosable: true,
+    });
+  }
+}, [submitError]);
+
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -273,7 +301,7 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
                   {err.description}
                 </Text>
               ))}
-              <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" onClick={() => { onClose() }} />
+              <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
             </Stack>
           </form>
         </ModalBody>
