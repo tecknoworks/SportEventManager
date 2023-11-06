@@ -49,6 +49,12 @@ const NavigationMenu = () => {
       availableForUser: false,
       linkTo: '/adminusermanagement',
     },
+    {
+      key: 3,
+      title: 'Create event',
+      availableForUser: true,
+      linkTo: '/create-event',
+    },
   ];
 
   const token = useSelector(selectToken);
