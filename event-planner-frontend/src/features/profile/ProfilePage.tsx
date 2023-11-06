@@ -13,14 +13,7 @@ function ProfilePage() {
     if (isSuccess) handleGenericSuccess('You have successfully updated your profile.');
   }, [isSuccess]);
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      width="100%"
-      height={!isMobile ? '100vh' : 'auto'}
-      alignItems="center"
-      bgGradient="linear(to-r, #610C9F, #E95793)"
-    >
+    <Box display="flex" justifyContent="center" width="100%" alignItems="center">
       <EditProfileForm />
     </Box>
   );

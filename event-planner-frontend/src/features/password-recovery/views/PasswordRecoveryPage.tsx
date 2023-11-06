@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { Box } from '@chakra-ui/react';
 import PasswordRecoveryForm from '../components/ResetLinkForm/ResetLinkForm';
-import 'common/styles/form-page.scss';
 import { useSelector } from 'react-redux';
 import { selectResetLinkIsSuccess } from '../store/selectors/resetLinkSelectors';
 import { handleGenericSuccess } from 'services/notificationHandlingService';
@@ -14,7 +13,7 @@ function PasswordRecoveryPage() {
   }, [isSuccess]);
 
   return (
-    <Box className="form-page-wrapper" bgGradient="linear(to-r, #610C9F, #E95793)">
+    <Box width="100%" height="inherit" display="flex" alignItems="center" justifyContent="center">
       <PasswordRecoveryForm />
     </Box>
   );
