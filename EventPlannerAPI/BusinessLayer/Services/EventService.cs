@@ -4,6 +4,8 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLayer.Services
@@ -50,6 +52,19 @@ namespace BusinessLayer.Services
             catch (Exception ex) 
             {
                 _logger.Error(ex, $"An error occurred while getting the event with id {eventId}");
+                throw;
+            }
+        }
+       public async Task<IList<GetEventDto>> GetPagedEventsAsyncLogic(PaginationFilter filters)
+        {
+            try
+            {
+                var eventEntities = await _eventRepository.GetPagedEventsAsync(filters.PageSize, filters.PageNumber);
+                return _mapper.Map<IList<GetEventDto>>(eventEntities);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, " An error occurred while getting the events");
                 throw;
             }
         }

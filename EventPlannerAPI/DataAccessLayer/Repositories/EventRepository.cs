@@ -39,6 +39,15 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
+        public async Task<IList<Event>> GetPagedEventsAsync(int pageSize, int pageNumber)
+        {
+            return await _eventPlannerContext.Events
+                .Include(evnt => evnt.SportType)
+                .Include(evnt => evnt.Author)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
         public async Task<IList<Event>> GetEventsAsync()
         {
             return await _eventPlannerContext.Events

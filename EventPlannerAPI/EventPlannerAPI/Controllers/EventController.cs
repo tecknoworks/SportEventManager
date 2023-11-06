@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DataAccessLayer.Helpers;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -14,7 +15,7 @@ namespace EventPlannerAPI.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
-        public EventController(IEventService eventService) 
+        public EventController(IEventService eventService)
         {
             _eventService = eventService;
         }
@@ -30,7 +31,7 @@ namespace EventPlannerAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return Problem("Something went wrong.");
             }
@@ -43,13 +44,26 @@ namespace EventPlannerAPI.Controllers
             {
                 return Ok(await _eventService.GetEventByIdAsync(eventId));
             }
-            catch (EventPlannerException ex) 
+            catch (EventPlannerException ex)
             {
                 return BadRequest(ex.Message);
             }
             catch (Exception)
             {
                 return Problem("Something went wrong.");
+            }
+        }
+
+        [HttpGet("GetPagedEvents")]
+        public async Task<ActionResult<IList<GetEventDto>>> GetPagedEvents([FromQuery] PaginationFilter filters)
+        {
+            try
+            {
+                return Ok(await _eventService.GetPagedEventsAsyncLogic(filters));
+            }
+            catch (Exception)
+            {
+                throw new Exception("Smth went wrong");
             }
         }
 
