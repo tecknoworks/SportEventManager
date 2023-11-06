@@ -16,6 +16,7 @@ namespace BusinessLayer.DTOs
         public double MaximumDuration { get; set; }
         public string Location { get; set; }
         public string AuthorUserId { get; set; }
+        public int SkillLevel { get; set; }
 
         public PaginationFilter()
         {
@@ -27,8 +28,9 @@ namespace BusinessLayer.DTOs
             this.MaximumDuration = 0.0;
             this.Location = string.Empty;
             this.AuthorUserId = string.Empty;
+            this.SkillLevel = 0;
         }
-        public PaginationFilter(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserId)
+        public PaginationFilter(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserId, int skillLevel)
         {
             this.PageNumber = pageNumber;
             this.PageSize = pageSize;
@@ -38,6 +40,7 @@ namespace BusinessLayer.DTOs
             this.MaximumDuration = maximumDuration;
             this.Location = location;
             this.AuthorUserId = authorUserId;
+            this.SkillLevel = skillLevel;
         }
 
         public bool IsEmpty()
