@@ -1,7 +1,5 @@
 ﻿using BusinessLayer.DTOs;
 using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Mvc;
-
 namespace BusinessLayer.Interfaces
 {
     public interface IEventService
