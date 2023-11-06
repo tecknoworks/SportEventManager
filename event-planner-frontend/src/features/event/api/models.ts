@@ -3,3 +3,9 @@ export enum SkillLevel {
   Intermediate = 1,
   Advanced = 2,
 }
+
+export type EventPosition = {
+  positionId: string;
+  positionName: string;
+  availablePositions: number;
+};

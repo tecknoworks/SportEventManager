@@ -34,7 +34,7 @@ export function handleApiError(error: any) {
 export function handleGenericError(error: any) {
   displayToast({
     title: 'Error',
-    description: 'Something unexpected went wrong. Please try again later.',
+    description: error || 'Something unexpected went wrong. Please try again later.',
     status: 'error',
   });
 }

@@ -13,8 +13,9 @@ import AccountConfirmationPage from 'features/account-confirmation/views/Account
 import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
-import UpsertEventPage from 'features/event/views/UpsertEventPage';
 import { LoggedInRoute, PrivateRoute } from './PrivateRoute';
+import CreateEventPage from 'features/event/views/CreateEventPage';
+import EditEventPage from 'features/event/views/EditEventPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -81,6 +82,22 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <AdminPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="create-event"
+            element={
+              <PrivateRoute>
+                <CreateEventPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="edit-event/:eventId"
+            element={
+              <PrivateRoute>
+                <EditEventPage />
               </PrivateRoute>
             }
           />

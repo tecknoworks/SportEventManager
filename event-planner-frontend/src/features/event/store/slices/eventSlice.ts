@@ -1,18 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createEventThunk } from '../thunks/createEventThunk';
+import { getSportTypesThunk } from '../thunks/getSportTypesThunk';
+import { GetEventDto, GetPositionForSportTypeDto, GetSportTypesDto } from 'features/event/api/dtos';
+import { getPositionsForSportTypeThunk } from '../thunks/getPositionsForSportTypeThunk';
+import { getEventThunk } from '../thunks/getEventThunk';
 
 type State = {
-  isLoading: boolean;
-  isSuccess: boolean;
-  isDone: boolean;
-  error: string;
+  sportTypes: GetSportTypesDto[] | undefined;
+  positions: GetPositionForSportTypeDto[] | undefined;
+  currentEvent: GetEventDto | undefined;
 };
 
 const initialState: State = {
-  isLoading: false,
-  isSuccess: false,
-  isDone: false,
-  error: '',
+  sportTypes: undefined,
+  positions: undefined,
+  currentEvent: undefined,
 };
 
 const eventSlice = createSlice({
@@ -20,21 +21,16 @@ const eventSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(createEventThunk.pending, (state) => {
-      state.isLoading = true;
+    builder.addCase(getSportTypesThunk.fulfilled, (state, action) => {
+      state.sportTypes = action.payload as GetSportTypesDto[];
     });
 
-    builder.addCase(createEventThunk.fulfilled, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = true;
-      state.isDone = true;
+    builder.addCase(getPositionsForSportTypeThunk.fulfilled, (state, action) => {
+      state.positions = action.payload as GetPositionForSportTypeDto[];
     });
 
-    builder.addCase(createEventThunk.rejected, (state, action) => {
-      state.isLoading = false;
-      state.isSuccess = false;
-      state.isDone = true;
-      state.error = action.payload as string;
+    builder.addCase(getEventThunk.fulfilled, (state, action) => {
+      state.currentEvent = action.payload as GetEventDto;
     });
   },
 });
