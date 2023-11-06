@@ -1,7 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
 import { FormInfo } from 'common/components/FormInfo/FromInfo';
 import 'common/styles/form.scss';
-import 'common/styles/form-page.scss';
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AppDispatch } from 'redux/store';
@@ -46,8 +45,20 @@ const AccountConfirmationPage = () => {
   }, [isDone, isSuccess]);
 
   return (
-    <Box className="form-page-wrapper" height="100vh" overflowY="hidden" bgGradient="linear(to-r, #610C9F, #E95793)">
-      <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box overflowY="hidden">
+      <Box
+        bgColor="white"
+        display="flex"
+        flexDirection="column"
+        justifyContent="center"
+        alignItems="center"
+        padding="20px"
+        width="500px"
+        borderWidth="1px"
+        borderRadius="lg"
+        overflow="hidden"
+        height="inherit"
+      >
         <Text color="black.500" as="b" fontSize="3xl">
           {isDone && isSuccess ? 'Account confirmed' : 'Something went Wrong'}
         </Text>

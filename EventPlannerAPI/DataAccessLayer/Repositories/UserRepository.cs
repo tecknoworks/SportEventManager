@@ -11,7 +11,7 @@ using DataAccessLayer.Exceptions;
 
 namespace DataAccessLayer.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository 
     {
 		private readonly EventPlannerContext _eventPlannerContext;
         private readonly UserManager<EventPlannerUser> _userManager;
@@ -65,6 +65,17 @@ namespace DataAccessLayer.Repositories
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, userRole);
+                    await CreateUserProfileDetailsAsync(user.Id, new UserProfileDetails()
+                    {
+                        FirstName = "",
+                        LastName = "",
+                        DateOfBirth = new DateTime(),
+                        Country = "",
+                        County = "",
+                        City = "",
+                        ProfilePhoto = "",
+                        UserId = user.Id,
+                    });
                 }
                 return result;
             }
@@ -200,6 +211,11 @@ namespace DataAccessLayer.Repositories
         {
             await _eventPlannerContext.SaveChangesAsync();
             return "Changes saved to the database";
+        }
+
+        public async Task<bool> UserExistsAsync(string userId)
+        {
+            return await _eventPlannerContext.Users.AnyAsync(user => user.Id == userId);
         }
     }
 }

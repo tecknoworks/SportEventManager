@@ -9,3 +9,21 @@ export const axiosInstance = axios.create({
     'Access-Control-Allow-Origin': '*',
   },
 });
+
+function getJwtToken() {
+  let token = localStorage.getItem('token') || '';
+  return token.replace(/^"|"$/g, '');
+}
+
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = getJwtToken();
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);

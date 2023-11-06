@@ -5,8 +5,6 @@ import { UpdateUserProfileDto } from 'features/profile/api/dtos';
 import { ConfirmEmailDto } from 'features/account-confirmation/api/dtos';
 import { LogInDto } from 'features/login/api/dtos';
 
-const MOCK_USER_ID = '5a56cef4-71b6-4301-a69b-f0a60ed5bcdf'; //TODO: get user id from JWT token
-
 export default class UserService extends CommonService {
   createUser(data: UserDto) {
     return this.post('/User/CreateUser', data);
@@ -28,8 +26,8 @@ export default class UserService extends CommonService {
     return this.get('/User/GetUserProfileDetails/' + userId);
   }
 
-  updateUserProfile(data: UpdateUserProfileDto) {
-    return this.put('/User/UpdateUserProfileDetails/' + MOCK_USER_ID, data);
+  updateUserProfile(userId: string, data: UpdateUserProfileDto) {
+    return this.put('/User/UpdateUserProfileDetails/' + userId, data);
   }
 
   logInUser(data: LogInDto) {
