@@ -4,6 +4,7 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLayer.Services
@@ -170,6 +171,26 @@ namespace BusinessLayer.Services
             }
 
             return string.Empty;
+        }
+
+
+
+        public async Task<string> JoinEvent(JoinEventDto joinEventDto)
+        {
+            try
+            {
+                string userId = joinEventDto.UserId;
+                Guid eventId = joinEventDto.EventId;
+                Guid? eventPositionId = joinEventDto.EventPositionId;
+
+                return await _eventRepository.JoinEvent(userId, eventId, eventPositionId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An error occurred while joining the event");
+                throw;
+            }
+
         }
     }
 }

@@ -14,7 +14,6 @@ namespace DataAccessLayer.Contexts
         public DbSet<SportType> SportTypes { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<EventPosition> EventPositions { get; set; }
-        public DbSet<ParticipantStatus> ParticipantStatuses { get; set; }
         public DbSet<Participant> Participants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -76,13 +75,6 @@ namespace DataAccessLayer.Contexts
                 .HasOne(participant => participant.Event)
                 .WithMany(evnt => evnt.Participants)
                 .HasForeignKey(participant => participant.EventId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Participant>()
-                .HasOne(participant => participant.Status)
-                .WithMany()
-                .HasForeignKey(participant => participant.StatusId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 

@@ -1,8 +1,10 @@
 ﻿using DataAccessLayer.Contexts;
 using DataAccessLayer.Exceptions;
+using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DataAccessLayer.Repositories
 {
@@ -74,6 +76,22 @@ namespace DataAccessLayer.Repositories
         public async Task<bool> PositionBelongsToSportTypeAsync(Guid positionId, Guid sportTypeId)
         {
             return await _eventPlannerContext.Positions.AnyAsync(p => p.Id == positionId && p.SportTypeId == sportTypeId);
+        }
+
+        public async Task<string> JoinEvent(string UserId, Guid EventId, Guid? EventPositionId)
+        {
+            var participant = new Participant()
+            {
+                UserId = UserId,
+                EventId = EventId,
+                EventPositionId = EventPositionId,
+                Status = ParticipantStatus.Pending
+            };
+
+            _eventPlannerContext.Participants.Add(participant);
+            await _eventPlannerContext.SaveChangesAsync();
+
+            return "User joined the event successfully.";
         }
     }
 }
