@@ -87,7 +87,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageSize, filters.PageNumber, filters.SearchData); ;
+                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserId); ;
                 return _mapper.Map<IList<GetEventDto>>(eventEntities);
             }
             catch (Exception ex)
