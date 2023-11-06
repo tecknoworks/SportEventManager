@@ -74,11 +74,11 @@ export const adminSlice = createSlice({
       state.loading.editUser = false;
     });
     builder.addCase(editUserOrAdminThunk.rejected, (state, action) => {
-      let errorMessage = 'Failed to create user or admin'; // Default message
+      let errorMessage = 'Failed to create user or admin';
       if (action.payload && Array.isArray(action.payload) && action.payload[0]?.description) {
-        errorMessage = action.payload[0].description; // Get message from payload if available
+        errorMessage = action.payload[0].description;
       } else if (action.error?.message) {
-        errorMessage = action.error.message; // Fallback to error message from Redux Toolkit
+        errorMessage = action.error.message;
       }
       state.error.editUser = errorMessage;
       state.loading.editUser = false;
@@ -89,21 +89,18 @@ export const adminSlice = createSlice({
       state.error.addUser = null;
     });
     builder.addCase(createUserOrAdminThunk.fulfilled, (state, action) => {
-      // state.users.push(action.payload); 
       state.loading.addUser = false;
     });
     builder.addCase(createUserOrAdminThunk.rejected, (state, action: { payload: any; error: any }) => {
-      let errorMessage = 'Failed to create user or admin'; // Default message
+      let errorMessage = 'Failed to create user or admin';
       if (action.payload && Array.isArray(action.payload) && action.payload[0]?.description) {
-        errorMessage = action.payload[0].description; // Get message from payload if available
+        errorMessage = action.payload[0].description;
       } else if (action.error?.message) {
-        errorMessage = action.error.message; // Fallback to error message from Redux Toolkit
+        errorMessage = action.error.message;
       }
       state.error.addUser = errorMessage;
       state.loading.addUser = false;
     });
-
-
   },
 });
 

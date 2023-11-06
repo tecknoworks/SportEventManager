@@ -33,7 +33,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
         phoneNumber: user.phoneNumber,
     });
 
-
     const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
     const [errorBe, setErrorBe] = useState<object[]>([]);
 
@@ -61,7 +60,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
             editUserOrAdmin(editUser, user.userId);
             setIsEditing(false);
         }
-        
     };
 
     useEffect(() => {
@@ -127,5 +125,3 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
 };
 
 export default UserRow;
-
-

@@ -21,15 +21,12 @@ import { UserOrAdminDto } from 'features/admin-management/api/dtos';
 import { selectAdminStateError } from 'features/admin-management/store/selectors/adminSelectors';
 import { createUserOrAdminThunk } from 'features/admin-management/store/thunks/createUserOrAdminThunk';
 import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
-import { UserDto } from 'features/registration/api/Dtos';
 import { selectUserError, selectUserStatus } from 'features/registration/store/signupPageSelector';
-import { createUser, resetStore } from 'features/registration/thunks/signupThunks';
+import { resetStore } from 'features/registration/thunks/signupThunks';
 import { useState, useEffect, FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { useDebounce } from 'use-debounce';
-
-
 
 type AddUserModalProps = {
   isOpen: boolean;
@@ -49,7 +46,6 @@ interface Account {
   role: number | '';
 }
 
-
 const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser, setNewUser }) => {
 
   const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
@@ -58,8 +54,6 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
   const userError = useSelector(selectUserError);
   const [errorBe, setErrorBe] = useState<object[]>([]);
   const toast = useToast();
-
-
 
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState<string>('');
@@ -118,7 +112,6 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
 
     setUserNameErrorMessage(debouncedAccount.userName && errorUserNameMessage);
 
-
     setIsDisabled(
       !(
         isPasswordValid &&
@@ -132,7 +125,6 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       )
     );
   }, [debouncedAccount]);
-
 
   useEffect(() => {
     setErrorBe([]);
@@ -152,7 +144,6 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
     });
   };
 
-
   useEffect(() => {
     if (userStatus === 'succeded') {
       dispatch(resetStore());
@@ -162,13 +153,8 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
     }
   }, [userStatus]);
 
-
   const error = useSelector(selectAdminStateError)
   const [submitError, setSubmitError] = useState<string | {} | null>(null);
-  console.log(error.addUser);
-  
-
-
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -181,8 +167,7 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
       role: account.role
     };
     const resultAction = await dispatch(createUserOrAdminThunk(data));
-    console.log(resultAction.payload);
-    
+
     if (createUserOrAdminThunk.fulfilled.match(resultAction)) {
       await dispatch(getAllUsersThunk());
       resetInputValues();
@@ -194,28 +179,23 @@ const CreateUserModal: React.FC<AddUserModalProps> = ({ isOpen, onClose, newUser
         isClosable: true,
       })
     } else {
-     
-      if (resultAction.payload) { 
-        setSubmitError((resultAction.payload as any)[0].description); 
+      if (resultAction.payload) {
+        setSubmitError((resultAction.payload as any)[0].description);
       }
     }
   }
 
- 
-useEffect(() => {
-  if (submitError) {
-    toast({
-      title: 'Error creating the user.',
-      description: `${submitError}`,
-      status: 'error',
-      duration: 9000,
-      isClosable: true,
-    });
-  }
-}, [submitError]);
-
-
-  const [showPassword, setShowPassword] = useState<boolean>(false);
+  useEffect(() => {
+    if (submitError) {
+      toast({
+        title: 'Error creating the user.',
+        description: `${submitError}`,
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    }
+  }, [submitError]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

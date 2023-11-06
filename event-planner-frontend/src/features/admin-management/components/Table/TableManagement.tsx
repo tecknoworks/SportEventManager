@@ -21,7 +21,6 @@ import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUs
 import { sendRecoverPasswordEmailThunk } from 'features/admin-management/store/thunks/sendRecoverPasswordEmailthunk';
 import { editUserOrAdminThunk } from 'features/admin-management/store/thunks/editUserOrAdminThunk';
 
-
 type User = {
   userId: number;
   userName: string;
@@ -42,12 +41,10 @@ const TableManagement: React.FC = () => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-
   const dispatch: AppDispatch = useDispatch();
   const allUsers = useSelector(selectAllUsers)
-  const error=useSelector(selectAdminStateError)
-  console.log(error.editUser);
-  
+  const error = useSelector(selectAdminStateError)
+
   useEffect(() => {
     if (error.editUser) {
       toast({
@@ -59,19 +56,15 @@ const TableManagement: React.FC = () => {
       });
     }
   }, [error]);
-  
 
   useEffect(() => {
     dispatch(getAllUsersThunk())
     setUsers(allUsers)
-
   }, [])
 
   useEffect(() => {
     setUsers(allUsers)
   }, [allUsers])
-  
-
 
   const editUserOrAdmin = async (editedUser: any, userId: number) => {
     await dispatch(editUserOrAdminThunk({
@@ -79,7 +72,6 @@ const TableManagement: React.FC = () => {
       ...editedUser
     }));
     await dispatch(getAllUsersThunk());
-    
   };
 
   const deleteUser = (userId: any) => {
@@ -131,8 +123,6 @@ const TableManagement: React.FC = () => {
         setNewUser={setNewUser}
       />
     </>
-
-
   );
 };
 

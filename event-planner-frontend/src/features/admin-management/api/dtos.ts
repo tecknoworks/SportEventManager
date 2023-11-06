@@ -12,4 +12,3 @@ export interface UserOrAdminDto {
   password: string;
   role: number | ""
 }
-
