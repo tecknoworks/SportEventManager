@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using DataAccessLayer.Helpers;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -20,12 +21,12 @@ namespace EventPlannerAPI.Controllers
             _eventService = eventService;
         }
 
-        [HttpGet("GetEvents")]
-        public async Task<ActionResult<IList<GetEventDto>>> GetEvents()
+        [HttpPost("GetEvents")]
+        public async Task<ActionResult<IList<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
         {
             try
             {
-                return Ok(await _eventService.GetEventsAsync());
+                return Ok(await _eventService.GetEventsAsync(filters));
             }
             catch (EventPlannerException ex)
             {
@@ -51,19 +52,6 @@ namespace EventPlannerAPI.Controllers
             catch (Exception)
             {
                 return Problem("Something went wrong.");
-            }
-        }
-
-        [HttpGet("GetPagedEvents")]
-        public async Task<ActionResult<IList<GetEventDto>>> GetPagedEvents([FromQuery] PaginationFilter filters)
-        {
-            try
-            {
-                return Ok(await _eventService.GetPagedEventsAsyncLogic(filters));
-            }
-            catch (Exception)
-            {
-                throw new Exception("Smth went wrong");
             }
         }
 

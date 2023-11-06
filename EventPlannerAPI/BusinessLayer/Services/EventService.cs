@@ -55,19 +55,6 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
-       public async Task<IList<GetEventDto>> GetPagedEventsAsyncLogic(PaginationFilter filters)
-        {
-            try
-            {
-                var eventEntities = await _eventRepository.GetPagedEventsAsync(filters.PageSize, filters.PageNumber);
-                return _mapper.Map<IList<GetEventDto>>(eventEntities);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, " An error occurred while getting the events");
-                throw;
-            }
-        }
         public async Task<IList<SportTypeDto>> GetAvailableSportTypesAsync()
         {
             try
@@ -96,11 +83,11 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IList<GetEventDto>> GetEventsAsync()
+        public async Task<IList<GetEventDto>> GetEventsAsync(PaginationFilter filters)
         {
             try
             {
-                var eventEntities = await _eventRepository.GetEventsAsync();
+                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageSize, filters.PageNumber, filters.SearchData); ;
                 return _mapper.Map<IList<GetEventDto>>(eventEntities);
             }
             catch (Exception ex)

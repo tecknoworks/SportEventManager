@@ -3,6 +3,7 @@ using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 
 namespace DataAccessLayer.Repositories
 {
@@ -29,7 +30,7 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
-                    .ThenInclude(ep => ep.Position)
+                .ThenInclude(ep => ep.Position)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
             if (eventEntity == null) 
@@ -39,20 +40,14 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
-        public async Task<IList<Event>> GetPagedEventsAsync(int pageSize, int pageNumber)
+        public async Task<IList<Event>> GetEventsAsync(int pageSize, int pageNumber, string searchData)
         {
             return await _eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
+                .Where(evnt => evnt.Name.Contains(searchData) || evnt.Description.Contains(searchData))
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToListAsync();
-        }
-        public async Task<IList<Event>> GetEventsAsync()
-        {
-            return await _eventPlannerContext.Events
-                .Include(evnt => evnt.SportType)
-                .Include(evnt => evnt.Author)
                 .ToListAsync();
         }
 
