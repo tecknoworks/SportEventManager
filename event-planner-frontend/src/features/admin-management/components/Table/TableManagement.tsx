@@ -1,151 +1,128 @@
-import { Table, Thead, Tbody, Tr, Th, Td, TableContainer, Box, Text, Button, Input, Select, useToast } from '@chakra-ui/react';
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  TableContainer,
+  Text,
+  Button,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import UserRow from '../User/UserRow';
-import PasswordInput from 'common/components/PasswordInput/PasswordInput';
-import { isValidEmail } from 'common/validators/emailValidator';
-import { validatePassword } from 'common/validators/passwordValidator';
-import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
-import { useDebounce } from 'use-debounce';
+import CreateUserModal from '../Moldal/CreateUserModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from 'redux/store';
+import { getAllUsersThunk } from 'features/admin-management/store/thunks/getAllUsersThunk';
+import { selectAdminStateError, selectAllUsers } from 'features/admin-management/store/selectors/adminSelectors';
+import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUserThunk';
+import { sendRecoverPasswordEmailThunk } from 'features/admin-management/store/thunks/sendRecoverPasswordEmailthunk';
+import { editUserOrAdminThunk } from 'features/admin-management/store/thunks/editUserOrAdminThunk';
+
+type User = {
+  userId: number;
+  userName: string;
+  email: string;
+  phoneNumber: string;
+};
 
 const TableManagement: React.FC = () => {
-  const initialUsers = [{ id: 1, name: 'ion', email: 'ion@gmail.com', phoneNumber: '0747545789' }];
+  const toast = useToast()
 
-  const [users, setUsers] = useState(initialUsers);
-  const [editingUser, setEditingUser] = useState(null);
-  const [showFields, setShowFields] = useState<boolean>(false);
+  const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState({
     name: '',
     email: '',
     phoneNumber: '',
-    password: ''
-  });
-  const [touchedFields, setTouchedFields] = useState({
-    name: false,
-    email: false,
-    password: false,
-    phoneNumber: false,
+    password: '',
   });
 
-  const [showPassword, setShowPassword] = useState<boolean>(false)
-  const [emailError, setEmailError] = useState<string>("");
-  const [passwordError, setPasswordError] = useState<string>("");
-  const [phoneError, setPhoneError] = useState<string>("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const toast = useToast()
-  const [debouncedNewUser] = useDebounce(newUser, 2000);
-
-  const validateFields = () => {
-    setEmailError(isValidEmail(newUser.email) ? "" : "Invalid Email");
-    setPasswordError(validatePassword(newUser.password));
-    setPhoneError(isValidPhoneNumber(newUser.phoneNumber) ? "" : "Invalid Phone Number");
-  };
-
-  const isValid = !emailError && !passwordError && !phoneError;
+  const dispatch: AppDispatch = useDispatch();
+  const allUsers = useSelector(selectAllUsers)
+  const error = useSelector(selectAdminStateError)
 
   useEffect(() => {
-    validateFields();
-    // Trigger toast if there are errors
-    if (emailError && touchedFields.email) {
-      toast({ description: emailError, status: "error" });
+    if (error.editUser) {
+      toast({
+        title: 'Error editing user.',
+        description: `${error.editUser}`,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     }
-    if (passwordError && touchedFields.password) {
-      toast({ description: passwordError, status: "error" });
-    }
-    if (phoneError && touchedFields.phoneNumber) {
-      toast({ description: phoneError, status: "error" });
-    }
-  }, [debouncedNewUser, toast]);
+  }, [error]);
 
+  useEffect(() => {
+    dispatch(getAllUsersThunk())
+    setUsers(allUsers)
+  }, [])
 
+  useEffect(() => {
+    setUsers(allUsers)
+  }, [allUsers])
 
-  const addUser = () => {
-    let isValid = true;
-    if (isValid) {
-      const newUserData = { id: users.length + 1, ...newUser };
-      setUsers([...users, newUserData]);
-    }
+  const editUserOrAdmin = async (editedUser: any, userId: number) => {
+    await dispatch(editUserOrAdminThunk({
+      userId,
+      ...editedUser
+    }));
+    await dispatch(getAllUsersThunk());
   };
 
-  // const editUser = (id: number, updatedUser: any) => {
-  //     setUsers(users.map(user => (user.id === id ? updatedUser : user)));
-  //     setEditingUser(null);
-  // };
-
-  const deleteUser = (id: number) => {
-    setUsers(users.filter((user) => user.id !== id));
-  };
+  const deleteUser = (userId: any) => {
+    dispatch(deleteUserThunk(userId));
+    const updatedUsers = users.filter(user => user.userId !== userId);
+    setUsers(updatedUsers);
+    toast({
+      title: 'User deleted successfully.',
+      status: 'success',
+    })
+  }
 
   const sendRecoveryEmail = (email: string) => {
-    console.log(`Sending recovery email to ${email}`);
+    dispatch(sendRecoverPasswordEmailThunk({ email }))
+    toast({
+      title: "If there's an account associated with this email address, we've sent instructions for resetting the password.",
+      status: 'success',
+    })
   };
 
   return (
-    <Box className="form-wrapper" display="flex" width="100%" borderWidth="1px" borderRadius="lg" overflow="hidden">
-      <Text fontSize="5xl">Admin Page</Text>
+    <>
       <TableContainer pt={9} width="100%">
-        <Table>
-          <Thead>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Email</Th>
-              <Th>Phone Number</Th>
-              <Th>Actions</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {users.map((user) => (
-              <UserRow key={user.id} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} />
-            ))}
-            {showFields && (
+        {users.length > 0 ? (
+          <Table>
+            <Thead>
               <Tr>
-                <Td>
-                  <Input placeholder="Name" value={newUser.name} onChange={(e) => { setNewUser({ ...newUser, name: e.target.value }); setTouchedFields({ ...touchedFields, name: true }) }} />
-                </Td>
-                <Td>
-                  <Input placeholder="Email" value={newUser.email} onChange={(e) => {
-                    setNewUser({ ...newUser, email: e.target.value });
-                    setTouchedFields({ ...touchedFields, email: true });
-                  }} />
-                </Td>
-                <Td>
-                  <Input placeholder="Phone" value={newUser.phoneNumber} onChange={(e) => { setNewUser({ ...newUser, phoneNumber: e.target.value }); setTouchedFields({ ...touchedFields, phoneNumber: true }) }} />
-                </Td>
+                <Th>UserName</Th>
+                <Th>Email</Th>
+                <Th>Phone Number</Th>
+                <Th display='flex' justifyContent='flex-end'>Actions</Th>
               </Tr>
-            )}
-
-            {showFields && (
-              <Tr>
-                <Td>
-                  <Select placeholder="Roles:">
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
-                  </Select>
-                </Td>
-                <Td>
-                  <PasswordInput
-                    value={newUser.password}
-                    onChange={(e) => { setNewUser({ ...newUser, password: e.target.value }); setTouchedFields({ ...touchedFields, password: true }) }}
-                    show={showPassword}
-                    onToggleShow={() => { setShowPassword(!showPassword) }}
-                    placeholder="Password"
-                    errorMessage={""}
-                    isRequired={true}
-                  />
-                </Td>
-                <Td>
-                  <Button onClick={() => { setShowFields(!showFields); addUser() }} isDisabled={!isValid}>Confirm</Button>
-                </Td>
-              </Tr>
-            )}
-            <Tr>
-              <Td colSpan={5}>
-                <Button onClick={() => { setShowFields(!showFields) }}>Add User</Button>
-              </Td>
-            </Tr>
-          </Tbody>
-        </Table>
+            </Thead>
+            <Tbody>
+              {users.map((user, index: number) => (
+                <UserRow key={index} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} editUserOrAdmin={editUserOrAdmin} />
+              ))}
+            </Tbody>
+          </Table>
+        ) : (
+          <Text fontSize="2xl">We have 0 users</Text>
+        )}
       </TableContainer>
-    </Box>
+      <Button mt="6" onClick={onOpen}>Add User</Button>
+      <CreateUserModal
+        isOpen={isOpen}
+        onClose={onClose}
+        newUser={newUser}
+        setNewUser={setNewUser}
+      />
+    </>
   );
 };
 

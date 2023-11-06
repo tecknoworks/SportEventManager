@@ -11,6 +11,7 @@ namespace BusinessLayer.DTOs
     {
         public string UserName { get; set; }
         public string Email { get; set; }
+        [MinLength(10, ErrorMessage = "Phone number must be at least 10 digits long.")]
         public string PhoneNumber { get; set; }
         public string Password { get; set; }
         
