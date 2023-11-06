@@ -3,7 +3,7 @@ import UserService from "services/userService";
 
 const userService: UserService = new UserService();
 
-export const getAllUsersThunk = createAsyncThunk('get/GetUsers', async () => {
+export const getAllUsersThunk = createAsyncThunk('adminSlice/GetUsers', async () => {
     try {
         const request = await userService.getAllUsers()
         const response = await request.data;

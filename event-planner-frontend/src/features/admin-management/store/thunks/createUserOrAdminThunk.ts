@@ -4,7 +4,7 @@ import UserService from "services/userService";
 
 const userService: UserService = new UserService();
 
-export const createUserOrAdminThunk = createAsyncThunk("post/createUserOrAdmin", async (requestData: UserOrAdminDto, thunkAPI) => {
+export const createUserOrAdminThunk = createAsyncThunk("adminSlice/createUserOrAdmin", async (requestData: UserOrAdminDto, thunkAPI) => {
     try {
         const request = await userService.createUserOrAdmin(requestData);
         return request.data;

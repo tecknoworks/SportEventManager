@@ -5,7 +5,7 @@ import UserService from 'services/userService';
 
 const userService = new UserService();
 
-export const sendRecoverPasswordEmailThunk = createAsyncThunk('post/sendRecoverPasswordEmail', async (requestData: SendResetLinkDto, thunkAPI) => {
+export const sendRecoverPasswordEmailThunk = createAsyncThunk('adminSlice/sendRecoverPasswordEmail', async (requestData: SendResetLinkDto, thunkAPI) => {
     try {
         const response = await userService.sendRecoverPasswordEmail(requestData)
         return response.data;

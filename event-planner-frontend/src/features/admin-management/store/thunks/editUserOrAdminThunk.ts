@@ -4,7 +4,7 @@ import UserService from "services/userService";
 
 const userService: UserService = new UserService();
 
-export const editUserOrAdminThunk = createAsyncThunk("post/editUserOrAdmin", async (requestData: EditUserOrAdminDto, thunkAPI) => {
+export const editUserOrAdminThunk = createAsyncThunk("adminSlice/editUserOrAdmin", async (requestData: EditUserOrAdminDto, thunkAPI) => {
     try {
         const request = await userService.editUserOrAdmin(requestData)
         return request.data
