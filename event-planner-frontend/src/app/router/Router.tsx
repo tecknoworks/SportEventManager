@@ -1,4 +1,3 @@
-// RouterComponent.tsx
 import React, { FC, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from 'features/homepage/HomePage';
@@ -13,9 +12,9 @@ import AccountConfirmationPage from 'features/account-confirmation/views/Account
 import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
-import { LoggedInRoute, PrivateRoute } from './PrivateRoute';
 import CreateEventPage from 'features/event/views/CreateEventPage';
 import EditEventPage from 'features/event/views/EditEventPage';
+import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -80,9 +79,9 @@ const RouterComponent: FC = () => {
           <Route
             path="/admin"
             element={
-              <PrivateRoute>
+              <OnlyAdminRoute>
                 <AdminPage />
-              </PrivateRoute>
+              </OnlyAdminRoute>
             }
           />
           <Route
