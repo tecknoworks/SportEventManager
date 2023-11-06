@@ -1,4 +1,5 @@
-import { FC, useEffect } from 'react';
+// RouterComponent.tsx
+import React, { FC, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from 'features/homepage/HomePage';
 import NotFound from 'features/static-pages/NotFound';
@@ -13,6 +14,7 @@ import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
 import UpsertEventPage from 'features/event/views/UpsertEventPage';
+import { LoggedInRoute, PrivateRoute } from './PrivateRoute';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -26,14 +28,62 @@ const RouterComponent: FC = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
-          <Route path="signup" element={<SignUpPage />} />
-          <Route path="confirm-account" element={<AccountConfirmationPage />} />
-          <Route path="recover-password" element={<PasswordRecoveryPage />} />
-          <Route path="reset-password" element={<CreateNewPasswordPage />} />
-          <Route path="profile" element={<EditProfilePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="admin" element={<AdminPage />} />
-          <Route path="event" element={<UpsertEventPage />} />
+          <Route
+            path="login"
+            element={
+              <LoggedInRoute>
+                <LoginPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="signup"
+            element={
+              <LoggedInRoute>
+                <SignUpPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="confirm-account"
+            element={
+              <LoggedInRoute>
+                <AccountConfirmationPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="recover-password"
+            element={
+              <LoggedInRoute>
+                <PasswordRecoveryPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="reset-password"
+            element={
+              <LoggedInRoute>
+                <CreateNewPasswordPage />
+              </LoggedInRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <EditProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute>
+                <AdminPage />
+              </PrivateRoute>
+            }
+          />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

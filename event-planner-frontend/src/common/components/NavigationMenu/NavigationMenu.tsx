@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -17,6 +17,13 @@ import {
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import NavLink from './components/NavLink';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext, getUserFromToken } from 'services/auth/context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from 'redux/store';
+import { logout } from 'features/login/store/slices/logInSlice';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
+import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
+import { selectProfile } from 'features/profile/store/selectors/profileSelector';
 
 type LinkType = {
   key: number;
@@ -27,13 +34,14 @@ type LinkType = {
 
 const NavigationMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const Links: LinkType[] = [
     {
       key: 1,
       title: 'Home Page',
       availableForUser: true,
-      linkTo: '/homepage',
+      linkTo: '/',
     },
     {
       key: 2,
@@ -42,11 +50,27 @@ const NavigationMenu = () => {
       linkTo: '/adminusermanagement',
     },
   ];
-  const isLoggedIn = false;
-  const isAdmin = true;
+
+  const token = useSelector(selectToken);
+  const profile = useSelector(selectProfile);
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (token) {
+      const user = getUserFromToken(token);
+      dispatch(getProfileThunk(user?.userId || ''));
+      setIsAdmin(user?.role === 'User' ? false : true);
+      setIsLoggedIn(!!token);
+    } else {
+      setIsLoggedIn(false);
+      setIsAdmin(false);
+    }
+  }, [token]);
 
   return (
-    <Box position="fixed" width="100%" top="0" zIndex="1" bg={'whiteAlpha.800'} px={4}>
+    <Box width="100%" top="0" bg={'whiteAlpha.800'} px={4}>
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
         <IconButton
           backgroundColor="whiteAlpha.700"
@@ -57,14 +81,14 @@ const NavigationMenu = () => {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={'center'}>
-          <Box color="purple" fontWeight="semibold">
+          <Box color="#610c9f" fontWeight="semibold">
             EventPlanner
           </Box>
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
             {Links.map(
-              (link) =>
+              (link, index) =>
                 (link.availableForUser || (!link.availableForUser && isLoggedIn && isAdmin)) && (
-                  <NavLink key={link.key} linkTo={link.linkTo}>
+                  <NavLink key={index} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>
                 )
@@ -75,13 +99,10 @@ const NavigationMenu = () => {
           <Menu>
             <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
               <Avatar
-                size={'sm'}
-                src={
-                  isLoggedIn
-                    ? 'https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                    : ''
-                }
-                border={!isLoggedIn ? '1px' : '0px'}
+                size="sm"
+                bgColor="#610c9f"
+                name={isLoggedIn ? profile?.firstName + ' ' + profile?.lastName : ''}
+                src={isLoggedIn ? profile?.profilePhoto : ''}
               />
             </MenuButton>
             <MenuList>
@@ -95,7 +116,14 @@ const NavigationMenu = () => {
                     Profile Page
                   </MenuItem>
                   <MenuDivider />
-                  <MenuItem>Logout</MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      dispatch(logout());
+                      navigate('/');
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
                 </>
               ) : (
                 <>
@@ -122,7 +150,16 @@ const NavigationMenu = () => {
       </Flex>
 
       {isOpen ? (
-        <Box pb={4} display={{ md: 'none' }}>
+        <Box
+          position="absolute"
+          left="0"
+          pb={4}
+          bg={'whiteAlpha.800'}
+          textAlign="left"
+          padding="20px"
+          width="100%"
+          display={{ md: 'none' }}
+        >
           <Stack as={'nav'} spacing={4}>
             {Links.map(
               (link) =>
