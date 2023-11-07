@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormControl, FormLabel, Input } from '@chakra-ui/react';
 
 interface DateTimeFieldProps {
   label: string;
   value: string;
-  onChange: (e: any) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const DateTimeField: React.FC<DateTimeFieldProps> = ({ label, value, onChange }) => {

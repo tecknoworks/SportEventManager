@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Box, FormLabel, Select } from '@chakra-ui/react';
 import { GetPositionForSportTypeDto } from 'features/event/api/dtos';
 import { EventPosition } from 'features/event/api/models';
@@ -6,7 +6,7 @@ import IndividualAvailablePositions from './IndividualAvailablePositions';
 
 interface PositionSelectionProps {
   positionsForSportType: GetPositionForSportTypeDto[];
-  handlePositionChange: (e: any) => void;
+  handlePositionChange: (e: ChangeEvent<HTMLSelectElement>) => void;
   selectedPositions: EventPosition[];
   handleAvailablePositionsChange: (positionId: string, value: string) => void;
   handleDeletePosition: (positionId: string) => void;

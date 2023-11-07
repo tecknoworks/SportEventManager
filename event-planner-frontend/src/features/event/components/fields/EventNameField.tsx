@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormControl, FormLabel, Input } from '@chakra-ui/react';
 
 interface EventNameFieldProps {
   eventName: string;
-  onChange: (e: any) => void;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const EventNameField: React.FC<EventNameFieldProps> = ({ eventName, onChange }) => {

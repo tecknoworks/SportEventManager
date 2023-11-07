@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { FormControl, FormLabel, Textarea } from '@chakra-ui/react';
 
 interface EventDescriptionFieldProps {
   eventDescription: string;
-  onChange: (e: any) => void;
+  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 }
 
 const EventDescriptionField: React.FC<EventDescriptionFieldProps> = ({ eventDescription, onChange }) => {
