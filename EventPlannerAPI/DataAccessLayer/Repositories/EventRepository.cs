@@ -29,7 +29,7 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
-                    .ThenInclude(ep => ep.Position)
+                .ThenInclude(ep => ep.Position)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
             if (eventEntity == null) 
@@ -39,13 +39,24 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
-        public async Task<IList<Event>> GetEventsAsync()
+        public async Task<IList<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserId, int skillLevel)
         {
             return await _eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
+                .Where(evnt =>
+                    (string.IsNullOrEmpty(searchData) || evnt.Name.Contains(searchData) || evnt.Description.Contains(searchData)) &&
+                    (sportTypeId == Guid.Empty || evnt.SportTypeId == sportTypeId) &&
+                    (startDate == DateTime.MinValue || evnt.StartDate >= startDate) &&
+                    ((maximumDuration <= 0) || (evnt.EndDate - evnt.StartDate).TotalHours <= maximumDuration) &&
+                    (string.IsNullOrEmpty(location) || evnt.Location.Contains(location)) &&
+                    (string.IsNullOrEmpty(authorUserId) || evnt.Author.Id == authorUserId) &&
+                    evnt.SkillLevel == skillLevel) 
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
+
 
         public async Task<IList<SportType>> GetAvailableSportTypesAsync()
         {
