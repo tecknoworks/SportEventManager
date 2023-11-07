@@ -45,5 +45,23 @@ namespace DataAccessLayer.Helpers
 
             return new MailRequest(ToEmail, "Account Confirmation Request", mailBody.ToString());
         }
+
+        public static MailRequest JoinEventNotification(string toEmail, string userName, string profileImageUrl, string profileLink)
+        {
+            var mailBody = new StringBuilder();
+            mailBody.AppendLine("<h1>New Event Participation</h1>");
+            mailBody.AppendLine($"<p>Dear Event Creator,</p>");
+            mailBody.AppendLine($"<p>{userName} has joined your event.</p>");
+           
+            if (!string.IsNullOrEmpty(profileImageUrl))
+            {
+                mailBody.AppendLine($"<img src='{profileImageUrl}' alt='Profile Picture' />");
+            }
+            mailBody.AppendLine($"<p>You can view their profile here: <a href='{profileLink}'>{userName}'s Profile</a></p>");
+            mailBody.AppendLine("<p>Thanks,</p>");
+            mailBody.AppendLine("<p>Your Team</p>");
+
+            return new MailRequest(toEmail, "New Participant for Your Event", mailBody.ToString());
+        }
     }
 }

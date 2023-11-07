@@ -2,6 +2,7 @@
 using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
+using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.Extensions.Logging;
@@ -16,13 +17,15 @@ namespace BusinessLayer.Services
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly Serilog.ILogger _logger;
+        private readonly IMailService _mailService;
 
-        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IMapper mapper, Serilog.ILogger logger)
+        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService)
         {
             _eventRepository = eventRepository;
             _userRepository = userRepository;
             _mapper = mapper;
             _logger = logger;
+            _mailService = mailService;
         }
 
         public async Task<string> CreateEventAsync(CreateEventDto newEvent)
@@ -183,7 +186,42 @@ namespace BusinessLayer.Services
                 Guid eventId = joinEventDto.EventId;
                 Guid? eventPositionId = joinEventDto.EventPositionId;
 
-                return await _eventRepository.JoinEventAsync(userId, eventId, eventPositionId);
+                var joinResult= await _eventRepository.JoinEventAsync(userId, eventId, eventPositionId);
+
+                var fullEvent =await _eventRepository.GetEventByIdAsync(eventId);
+                if (fullEvent == null)
+                {
+                    _logger.Error($"Event with id {eventId} not found.");
+                    throw new KeyNotFoundException("Event not found");
+                }
+
+                var authorId = fullEvent.AuthorUserId;
+                var author=await _userRepository.GetUserByIdAsync(authorId);
+                if (author == null)
+                {
+                    _logger.Error($"Author with id {authorId} not found.");
+                    throw new KeyNotFoundException("Author not found");
+                }
+
+                var user =await _userRepository.GetUserByIdAsync(userId);
+                if (user == null)
+                {
+                    _logger.Error($"User with id {userId} not found.");
+                    throw new KeyNotFoundException("User not found");
+                }
+                var userDetails=await _userRepository.GetUserProfileDetailsAsync(userId);
+                if (userDetails == null)
+                {
+                    _logger.Error($"User details for user id {userId} not found.");
+                    throw new KeyNotFoundException("User details not found");
+                }
+
+                var profileLink = $"http://localhost:3000/profile/{userId}";
+
+
+                var mail = MailRequest.JoinEventNotification(author.Email, user.UserName, userDetails.ProfilePhoto, profileLink);
+                await _mailService.SendEmailAsync(mail);
+                return joinResult;
             }
             catch (Exception ex)
             {
