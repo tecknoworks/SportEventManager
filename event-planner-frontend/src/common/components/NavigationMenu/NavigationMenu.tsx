@@ -47,7 +47,7 @@ const NavigationMenu = () => {
       key: 2,
       title: 'Admin User Management',
       availableForUser: false,
-      linkTo: '/adminusermanagement',
+      linkTo: '/admin',
     },
   ];
 
@@ -105,7 +105,7 @@ const NavigationMenu = () => {
                 src={isLoggedIn ? profile?.profilePhoto : ''}
               />
             </MenuButton>
-            <MenuList>
+            <MenuList zIndex="9">
               {isLoggedIn ? (
                 <>
                   <MenuItem
@@ -158,6 +158,7 @@ const NavigationMenu = () => {
           textAlign="left"
           padding="20px"
           width="100%"
+          zIndex="9"
           display={{ md: 'none' }}
         >
           <Stack as={'nav'} spacing={4}>

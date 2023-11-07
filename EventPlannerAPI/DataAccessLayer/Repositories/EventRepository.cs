@@ -29,7 +29,7 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
-                    .ThenInclude(ep => ep.Position)
+                .ThenInclude(ep => ep.Position)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
             if (eventEntity == null) 

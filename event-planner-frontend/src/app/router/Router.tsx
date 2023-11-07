@@ -14,6 +14,7 @@ import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
+import BrowseEvents from 'features/browse-events/BrowseEvents';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -83,6 +84,7 @@ const RouterComponent: FC = () => {
               </OnlyAdminRoute>
             }
           />
+          <Route path="/browseevents" element={<BrowseEvents />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
