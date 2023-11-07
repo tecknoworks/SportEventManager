@@ -183,7 +183,7 @@ namespace BusinessLayer.Services
                 Guid eventId = joinEventDto.EventId;
                 Guid? eventPositionId = joinEventDto.EventPositionId;
 
-                return await _eventRepository.JoinEvent(userId, eventId, eventPositionId);
+                return await _eventRepository.JoinEventAsync(userId, eventId, eventPositionId);
             }
             catch (Exception ex)
             {

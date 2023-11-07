@@ -12,7 +12,7 @@ namespace DataAccessLayer.Repositories
     {
         private readonly EventPlannerContext _eventPlannerContext;
 
-        public EventRepository(EventPlannerContext eventPlannerContext) 
+        public EventRepository(EventPlannerContext eventPlannerContext)
         {
             _eventPlannerContext = eventPlannerContext;
         }
@@ -34,7 +34,7 @@ namespace DataAccessLayer.Repositories
                     .ThenInclude(ep => ep.Position)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
-            if (eventEntity == null) 
+            if (eventEntity == null)
             {
                 throw new EventPlannerException($"Event with id {eventId} does not exist.");
             }
@@ -78,18 +78,42 @@ namespace DataAccessLayer.Repositories
             return await _eventPlannerContext.Positions.AnyAsync(p => p.Id == positionId && p.SportTypeId == sportTypeId);
         }
 
-        public async Task<string> JoinEvent(string UserId, Guid EventId, Guid? EventPositionId)
+        public async Task<string> JoinEventAsync(string userId, Guid eventId, Guid? eventPositionId)
         {
             var participant = new Participant()
             {
-                UserId = UserId,
-                EventId = EventId,
-                EventPositionId = EventPositionId,
-                Status = ParticipantStatus.Pending
+                EventId = eventId,
+                UserId = userId,
+                Status = ParticipantStatus.Pending,
+                EventPositionId = eventPositionId
             };
 
-            _eventPlannerContext.Participants.Add(participant);
-            await _eventPlannerContext.SaveChangesAsync();
+            participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+            participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
+            participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
+
+            var eventPosition = eventPositionId.HasValue
+                                ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
+                                : null;
+
+            if (eventPosition != null && eventPosition.AvailablePositions > 0)
+            {
+                eventPosition.AvailablePositions -= 1;
+            }
+            else
+            {
+                throw new EventPlannerException("No available positions.");
+            }
+
+            try
+            {
+                await _eventPlannerContext.Participants.AddAsync(participant);
+                await _eventPlannerContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            };
 
             return "User joined the event successfully.";
         }
