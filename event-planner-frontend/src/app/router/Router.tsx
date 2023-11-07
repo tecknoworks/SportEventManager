@@ -7,7 +7,7 @@ import SignUpPage from 'features/registration/views/SignUpPage';
 import LoginPage from 'features/login/LoginPage';
 import PasswordRecoveryPage from 'features/password-recovery/views/PasswordRecoveryPage';
 import CreateNewPasswordPage from 'features/password-recovery/views/CreateNewPasswordPage';
-import EditProfilePage from 'features/profile/ProfilePage';
+import EditProfilePage from 'features/profile/views/EditProfilePage';
 import AccountConfirmationPage from 'features/account-confirmation/views/AccountConfirmationPage';
 import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
@@ -15,6 +15,7 @@ import AdminPage from 'features/admin-management/AdminPage';
 import CreateEventPage from 'features/event/views/CreateEventPage';
 import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
+import SeeProfilePage from 'features/profile/views/SeeProfilePage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -69,10 +70,18 @@ const RouterComponent: FC = () => {
             }
           />
           <Route
-            path="/profile"
+            path="/edit-profile"
             element={
               <PrivateRoute>
                 <EditProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile/:userId"
+            element={
+              <PrivateRoute>
+                <SeeProfilePage />
               </PrivateRoute>
             }
           />
