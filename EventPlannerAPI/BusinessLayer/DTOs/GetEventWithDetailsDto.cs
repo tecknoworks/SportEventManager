@@ -7,7 +7,9 @@
         public string Description { get; set; }
         public Guid SportTypeId { get; set; }
         public string SportTypeName { get; set; }
+        public bool HasPositions { get; set; }  
         public string Location { get; set; }
+        public string LocationName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int MaximumParticipants { get; set; }

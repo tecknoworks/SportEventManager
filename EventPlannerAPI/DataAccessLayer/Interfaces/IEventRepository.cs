@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DataAccessLayer.Interfaces
 {
@@ -8,7 +9,7 @@ namespace DataAccessLayer.Interfaces
         Task<Event> GetEventByIdAsync(Guid eventId);
         Task<IList<SportType>> GetAvailableSportTypesAsync();
         Task<IList<Position>> GetPositionsForSportTypeAsync(Guid sportTypeId);
-        Task<IList<Event>> GetEventsAsync();
+        Task<IList<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserId, int skillLevel);
         Task<string> SaveChangesAsync();
         Task<bool> PositionExistsAsync(Guid positionId);
         Task<bool> SportTypeExistsAsync(Guid sportTypeId);
