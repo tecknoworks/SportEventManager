@@ -12,6 +12,8 @@ namespace BusinessLayer.DTOs
         [Required]
         public string Location { get; set; }
         [Required]
+        public string LocationName { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
