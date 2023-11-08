@@ -13,6 +13,13 @@ const colors = {
 
 const customTheme = extendTheme({
   colors,
+  styles: {
+    global: {
+      body: {
+        bg: 'linear-gradient(to right, #610C9F , #E95793);',
+      },
+    },
+  },
 });
 
 export default customTheme;
