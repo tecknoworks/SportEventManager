@@ -24,6 +24,7 @@ import { createUser, resetStore } from 'features/registration/thunks/signupThunk
 import { selectUserError, selectUserStatus } from 'features/registration/store/signupPageSelector';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
+import { Navigate } from 'react-router-dom';
 
 interface Account {
   userName: string;
@@ -154,7 +155,11 @@ const SignupForm = () => {
       password: account.password,
     };
 
-    dispatch(createUser(data));
+    dispatch(createUser(data)).then((response) => {
+      if (response.payload) {
+        <Navigate to="/" />;
+      }
+    });;
   }
 
   return (

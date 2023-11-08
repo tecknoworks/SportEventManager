@@ -124,8 +124,7 @@ namespace DataAccessLayer.Repositories
             {
                 throw;
             };
-
-            return "User joined the event successfully.";
+            return await Task.FromResult("User joined the event successfully.") ;
         }
     }
 }
