@@ -11,12 +11,12 @@ namespace BusinessLayer.DTOs
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public string? SearchData { get; set; }
-        public Guid? SportTypeId { get; set; }
-        public DateTime? StartDate { get; set; }
-        public double? MaximumDuration { get; set; }
+        public Guid SportTypeId { get; set; }
+        public DateTime StartDate { get; set; }
+        public double MaximumDuration { get; set; }
         public string? Location { get; set; }
         public string? AuthorUserId { get; set; }
-        public int? SkillLevel { get; set; }
+        public int SkillLevel { get; set; }
 
         public PaginationFilter()
         {
