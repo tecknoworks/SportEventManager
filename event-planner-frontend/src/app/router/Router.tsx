@@ -16,6 +16,7 @@ import CreateEventPage from 'features/event/views/CreateEventPage';
 import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
 import SeeProfilePage from 'features/profile/views/SeeProfilePage';
+import DetailsPage from 'features/account-confirmation/DetailsPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -43,6 +44,14 @@ const RouterComponent: FC = () => {
               <LoggedInRoute>
                 <SignUpPage />
               </LoggedInRoute>
+            }
+          />
+          <Route
+            path="details"
+            element={
+
+              <DetailsPage />
+
             }
           />
           <Route
