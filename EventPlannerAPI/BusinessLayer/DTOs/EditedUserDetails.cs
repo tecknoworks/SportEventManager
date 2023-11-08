@@ -13,6 +13,7 @@ namespace BusinessLayer.DTOs
         public string Email { get; set; }
 
         [MinLength(10, ErrorMessage = "Phone number must be at least 10 digits long.")]
+        [RegularExpression(@"^\d+$", ErrorMessage = "Phone number must be only digits.")]
         public string PhoneNumber { get; set; }
     }
 }
