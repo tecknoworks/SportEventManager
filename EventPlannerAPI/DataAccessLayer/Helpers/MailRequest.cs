@@ -8,11 +8,14 @@ namespace DataAccessLayer.Helpers
         public string Subject { get; set; }
         public string Body { get; set; }
 
-        public MailRequest(string toEmail, string subject, string body)
+        public string OptionalParameter { get; set; }
+
+        public MailRequest(string toEmail, string subject, string body, string optionalParameter = null)
         {
             ToEmail = toEmail;
             Subject = subject;
             Body = body;
+            OptionalParameter = optionalParameter;
         }
 
         public static MailRequest ResetPassword(string ToEmail, string username, string resetLink)
@@ -61,7 +64,7 @@ namespace DataAccessLayer.Helpers
             mailBody.AppendLine("<p>Thanks,</p>");
             mailBody.AppendLine("<p>Your Team</p>");
 
-            return new MailRequest(toEmail, "New Participant for Your Event", mailBody.ToString());
+            return new MailRequest(toEmail, "New Participant for Your Event", mailBody.ToString(), profileImageUrl);
         }
     }
 }
