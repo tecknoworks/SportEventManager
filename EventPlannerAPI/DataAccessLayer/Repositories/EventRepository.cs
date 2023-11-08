@@ -31,7 +31,7 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
-                    .ThenInclude(ep => ep.Position)
+                .ThenInclude(ep => ep.Position)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
             if (eventEntity == null)
@@ -41,13 +41,24 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
-        public async Task<IList<Event>> GetEventsAsync()
+        public async Task<IList<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserId, int skillLevel)
         {
             return await _eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
+                .Where(evnt =>
+                    (string.IsNullOrEmpty(searchData) || evnt.Name.Contains(searchData) || evnt.Description.Contains(searchData)) &&
+                    (sportTypeId == Guid.Empty || evnt.SportTypeId == sportTypeId) &&
+                    (startDate == DateTime.MinValue || evnt.StartDate >= startDate) &&
+                    ((maximumDuration <= 0) || (evnt.EndDate - evnt.StartDate).TotalHours <= maximumDuration) &&
+                    (string.IsNullOrEmpty(location) || evnt.Location.Contains(location)) &&
+                    (string.IsNullOrEmpty(authorUserId) || evnt.Author.Id == authorUserId) &&
+                    evnt.SkillLevel == skillLevel) 
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
         }
+
 
         public async Task<IList<SportType>> GetAvailableSportTypesAsync()
         {
@@ -88,27 +99,31 @@ namespace DataAccessLayer.Repositories
                 EventPositionId = eventPositionId
             };
 
-            participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
-            participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
-            participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
-
-            var eventPosition = eventPositionId.HasValue
-                                ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
-                                : null;
-
-            if (eventPosition != null && eventPosition.AvailablePositions > 0)
-            {
-                eventPosition.AvailablePositions -= 1;
-            }
-            else
-            {
-                throw new EventPlannerException("No available positions.");
-            }
 
             try
             {
+
+                participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+                participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
+                participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
+
+
+                var eventPosition = eventPositionId.HasValue
+                                    ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
+                                    : null;
+
+                if (eventPosition != null && eventPosition.AvailablePositions > 0)
+                {
+                    eventPosition.AvailablePositions -= 1;
+                }
+                else
+                {
+                    throw new EventPlannerException("No available positions.");
+                }
                 await _eventPlannerContext.Participants.AddAsync(participant);
                 await _eventPlannerContext.SaveChangesAsync();
+
+
             }
             catch (Exception ex)
             {

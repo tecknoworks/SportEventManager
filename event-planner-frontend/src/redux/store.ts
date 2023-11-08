@@ -6,7 +6,8 @@ import logInReducer from 'features/login/store/slices/logInSlice';
 import signupPageReducer from 'features/registration/store/signupPageSlice';
 import profileReducer from 'features/profile/store/slices/profileSlice';
 import accountConfirmationReducer from 'features/account-confirmation/store/slices/accountConfirmationSlice';
-import adminReducer from 'features/admin-management/store/slices/adminSlice'
+import eventReducer from 'features/event/store/slices/eventSlice';
+import adminReducer from 'features/admin-management/store/slices/adminSlice';
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     signupPage: signupPageReducer,
     profilePage: profileReducer,
     confirmAccount: accountConfirmationReducer,
+    eventPage: eventReducer,
     adminPage: adminReducer,
   },
   devTools: true,

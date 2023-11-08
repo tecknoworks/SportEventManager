@@ -1,4 +1,3 @@
-// RouterComponent.tsx
 import React, { FC, useEffect } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from 'features/homepage/HomePage';
@@ -8,12 +7,15 @@ import SignUpPage from 'features/registration/views/SignUpPage';
 import LoginPage from 'features/login/LoginPage';
 import PasswordRecoveryPage from 'features/password-recovery/views/PasswordRecoveryPage';
 import CreateNewPasswordPage from 'features/password-recovery/views/CreateNewPasswordPage';
-import EditProfilePage from 'features/profile/ProfilePage';
+import EditProfilePage from 'features/profile/views/EditProfilePage';
 import AccountConfirmationPage from 'features/account-confirmation/views/AccountConfirmationPage';
 import { useToast } from '@chakra-ui/react';
 import { initializeErrorHandlingService } from 'services/notificationHandlingService';
 import AdminPage from 'features/admin-management/AdminPage';
+import CreateEventPage from 'features/event/views/CreateEventPage';
+import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
+import SeeProfilePage from 'features/profile/views/SeeProfilePage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -68,10 +70,18 @@ const RouterComponent: FC = () => {
             }
           />
           <Route
-            path="/profile"
+            path="/edit-profile"
             element={
               <PrivateRoute>
                 <EditProfilePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile/:userId"
+            element={
+              <PrivateRoute>
+                <SeeProfilePage />
               </PrivateRoute>
             }
           />
@@ -81,6 +91,22 @@ const RouterComponent: FC = () => {
               <OnlyAdminRoute>
                 <AdminPage />
               </OnlyAdminRoute>
+            }
+          />
+          <Route
+            path="create-event"
+            element={
+              <PrivateRoute>
+                <CreateEventPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="edit-event/:eventId"
+            element={
+              <PrivateRoute>
+                <EditEventPage />
+              </PrivateRoute>
             }
           />
           <Route path="*" element={<NotFound />} />

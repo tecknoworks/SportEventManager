@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.Contexts;
+using DataAccessLayer.Exceptions;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
@@ -51,6 +52,17 @@ namespace DataAccessLayer.Repositories
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, roleToCheck);
+                    await CreateUserProfileDetailsAsync(user.Id, new UserProfileDetails()
+                    {
+                        FirstName = "",
+                        LastName = "",
+                        DateOfBirth = new DateTime(),
+                        Country = "",
+                        County = "",
+                        City = "",
+                        ProfilePhoto = "",
+                        UserId = user.Id,
+                    });
                 }
                 return result;
 
@@ -138,6 +150,22 @@ namespace DataAccessLayer.Repositories
                 _logger.Error(ex, $"Error generating password reset token for user {user.Id}");
                 return string.Empty;
             }
+        }
+
+        public async Task<bool> UserHasProfileAsync(string userId)
+        {
+            return await _eventPlannerContext.UserProfileDetails.AnyAsync(profile => profile.UserId == userId);
+        }
+
+        public async Task<UserProfileDetails> CreateUserProfileDetailsAsync(string userId, UserProfileDetails userDetails)
+        {
+            if (await UserHasProfileAsync(userId))
+            {
+                throw new EventPlannerException($"User with id {userId} already has a profile.");
+            }
+            await _eventPlannerContext.UserProfileDetails.AddAsync(userDetails);
+            await _eventPlannerContext.SaveChangesAsync();
+            return userDetails;
         }
     }
 }

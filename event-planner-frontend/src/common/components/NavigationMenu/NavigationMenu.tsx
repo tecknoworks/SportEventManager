@@ -17,7 +17,7 @@ import {
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import NavLink from './components/NavLink';
 import { useNavigate } from 'react-router-dom';
-import { AuthContext, getUserFromToken } from 'services/auth/context/AuthContext';
+import { getUserFromToken } from 'services/auth/context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { logout } from 'features/login/store/slices/logInSlice';
@@ -48,6 +48,12 @@ const NavigationMenu = () => {
       title: 'Admin User Management',
       availableForUser: false,
       linkTo: '/adminusermanagement',
+    },
+    {
+      key: 3,
+      title: 'Create event',
+      availableForUser: true,
+      linkTo: '/create-event',
     },
   ];
 
@@ -110,7 +116,7 @@ const NavigationMenu = () => {
                 <>
                   <MenuItem
                     onClick={() => {
-                      navigate('/profile');
+                      navigate('/edit-profile');
                     }}
                   >
                     Profile Page

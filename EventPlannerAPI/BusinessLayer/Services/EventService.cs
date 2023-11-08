@@ -5,6 +5,7 @@ using DataAccessLayer.Exceptions;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
@@ -19,6 +20,7 @@ namespace BusinessLayer.Services
         private readonly Serilog.ILogger _logger;
         private readonly IMailService _mailService;
 
+        
         public EventService(IEventRepository eventRepository, IUserRepository userRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService)
         {
             _eventRepository = eventRepository;
@@ -85,11 +87,13 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IList<GetEventDto>> GetEventsAsync()
+        
+        public async Task<IList<GetEventDto>> GetEventsAsync(PaginationFilter filters)
         {
             try
             {
-                var eventEntities = await _eventRepository.GetEventsAsync();
+                
+                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserId, filters.SkillLevel);
                 return _mapper.Map<IList<GetEventDto>>(eventEntities);
             }
             catch (Exception ex)

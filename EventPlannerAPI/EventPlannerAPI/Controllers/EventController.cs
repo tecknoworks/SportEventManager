@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DataAccessLayer.Helpers;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace EventPlannerAPI.Controllers
 {
@@ -14,23 +16,23 @@ namespace EventPlannerAPI.Controllers
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
-        public EventController(IEventService eventService) 
+        public EventController(IEventService eventService)
         {
             _eventService = eventService;
         }
 
-        [HttpGet("GetEvents")]
-        public async Task<ActionResult<IList<GetEventDto>>> GetEvents()
+        [HttpPost("GetEvents")]
+        public async Task<ActionResult<IList<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
         {
             try
             {
-                return Ok(await _eventService.GetEventsAsync());
+                return Ok(await _eventService.GetEventsAsync(filters));
             }
             catch (EventPlannerException ex)
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception) 
+            catch (Exception)
             {
                 return Problem("Something went wrong.");
             }
@@ -43,7 +45,7 @@ namespace EventPlannerAPI.Controllers
             {
                 return Ok(await _eventService.GetEventByIdAsync(eventId));
             }
-            catch (EventPlannerException ex) 
+            catch (EventPlannerException ex)
             {
                 return BadRequest(ex.Message);
             }
