@@ -102,7 +102,6 @@ namespace DataAccessLayer.Repositories
 
             try
             {
-
                 participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
                 participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
                 participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);

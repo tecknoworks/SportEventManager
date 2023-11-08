@@ -36,16 +36,23 @@ namespace EventPlannerAPI.Controllers
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LogInUserDto logInUserDto)
         {
-            var resposnse = await _userService.LogInAsync(logInUserDto);
-            if (!resposnse)
+            try
             {
-                return BadRequest("Invalid credentials.");
-            }
-            var user = await _userService.GetUserByIdentifier(logInUserDto.UserIdentifier);
-            var roles = await _userService.GetRolesAsync(user);
+                var resposnse = await _userService.LogInAsync(logInUserDto);
+                if (!resposnse)
+                {
+                    return BadRequest("Invalid credentials.");
+                }
+                var user = await _userService.GetUserByIdentifier(logInUserDto.UserIdentifier);
+                var roles = await _userService.GetRolesAsync(user);
 
-            var tokenString =await _authService.GenerateTokenString(user, roles);
-            return Ok(tokenString);
+                var tokenString = await _authService.GenerateTokenString(user, roles);
+                return Ok(tokenString);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet("ConfirmEmail")]

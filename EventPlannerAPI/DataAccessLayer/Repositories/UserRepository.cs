@@ -97,6 +97,12 @@ namespace DataAccessLayer.Repositories
                 _logger.Error("An error occurred while validating credentials");
                 throw new BadHttpRequestException("Unable to find the user.");
             }
+
+            if (!userByEmailOrUsername.EmailConfirmed) 
+            {
+                throw new EventPlannerException("Account is not confirmed.");
+            }
+
             return await _userManager.CheckPasswordAsync(userByEmailOrUsername, password);
         }
 
