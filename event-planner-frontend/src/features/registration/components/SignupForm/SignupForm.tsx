@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useState } from 'react';
 import 'common/styles/form.scss';
 import {
   Box,
@@ -10,7 +10,6 @@ import {
   InputLeftAddon,
   Stack,
   Text,
-  useToast,
   Link,
 } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
@@ -20,11 +19,10 @@ import { validatePassword } from 'common/validators/passwordValidator';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import { UserDto } from 'features/registration/api/Dtos';
-import { createUser, resetStore } from 'features/registration/thunks/signupThunks';
-import { selectUserError, selectUserStatus } from 'features/registration/store/signupPageSelector';
-import { useDispatch, useSelector } from 'react-redux';
+import { createUser } from 'features/registration/thunks/signupThunks';
+import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'redux/store';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 interface Account {
   userName: string;
@@ -39,11 +37,7 @@ interface Account {
 const SignupForm = () => {
   const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
   const dispatch: AppDispatch = useDispatch();
-  const userStatus = useSelector(selectUserStatus);
-  const userError = useSelector(selectUserError);
-  const [errorBe, setErrorBe] = useState<object[]>([]);
-  const toast = useToast();
-
+  const navigate = useNavigate();
   const [passwordErrorMessage, setPasswordErrorMessage] = useState<string>('');
   const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState<string>('');
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
@@ -112,40 +106,7 @@ const SignupForm = () => {
     );
   }, [debouncedAccount]);
 
-  useEffect(() => {
-    setErrorBe([]);
-  }, []);
-
-  const resetInputValues = () => {
-    setErrorBe([]);
-    setAccount({
-      userName: '',
-      email: '',
-      phoneNumber: '',
-      password: '',
-      confirmPassword: '',
-      showPassword: false,
-      showConfirmPassword: false,
-    });
-  };
-
-  useEffect(() => {
-    if (userStatus === 'succeded') {
-      dispatch(resetStore());
-      resetInputValues();
-      toast({
-        title: 'Account created.',
-        description: "We've created your account for you. Check your email to confirm your account",
-        status: 'success',
-        duration: 9000,
-        isClosable: true,
-      });
-    } else {
-      setErrorBe(userError);
-    }
-  }, [userStatus]);
-
-  function handleSubmit(event: FormEvent): void {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
 
     const data: UserDto = {
@@ -155,11 +116,12 @@ const SignupForm = () => {
       password: account.password,
     };
 
-    dispatch(createUser(data)).then((response) => {
-      if (response.payload) {
-        <Navigate to="/" />;
+    dispatch(createUser(data)).then((response: any) => {
+      console.log(response);
+      if (response.meta.requestStatus === 'fulfilled') {
+        navigate('/');
       }
-    });;
+    });
   }
 
   return (
@@ -239,11 +201,6 @@ const SignupForm = () => {
             errorMessage={confirmPasswordErrorMessage}
             isRequired={true}
           />
-          {errorBe?.map((err: any) => (
-            <Text key={err.code} color="red.500" as="b" fontSize="sm" textAlign="center">
-              {err.description}
-            </Text>
-          ))}
           <Text>
             Already have an account?{' '}
             <Link color="purple" href="/login">
