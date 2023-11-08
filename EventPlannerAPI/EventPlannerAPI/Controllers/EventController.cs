@@ -12,7 +12,7 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    /*[Authorize]*/
+    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -148,7 +148,5 @@ namespace EventPlannerAPI.Controllers
                 return Problem("An unexpected error occurred.");
             }
         }
-
-
     }
 }

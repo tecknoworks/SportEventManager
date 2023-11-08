@@ -13,7 +13,6 @@ namespace BusinessLayer.DTOs
         public string UserId { get; set; }
         [Required]
         public Guid EventId { get; set; }
-
         public Guid? EventPositionId { get; set; }
     }
 }

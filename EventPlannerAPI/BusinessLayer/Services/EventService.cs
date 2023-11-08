@@ -178,8 +178,6 @@ namespace BusinessLayer.Services
             return string.Empty;
         }
 
-
-
         public async Task<string> JoinEvent(JoinEventDto joinEventDto)
         {
             try
@@ -211,6 +209,7 @@ namespace BusinessLayer.Services
                     _logger.Error($"User with id {userId} not found.");
                     throw new KeyNotFoundException("User not found");
                 }
+
                 var userDetails=await _userRepository.GetUserProfileDetailsAsync(userId);
                 if (userDetails == null)
                 {
@@ -219,7 +218,6 @@ namespace BusinessLayer.Services
                 }
 
                 var profileLink = $"http://localhost:3000/profile/{userId}";
-
 
                 var mail = MailRequest.JoinEventNotification(author.Email, user.UserName, userDetails.ProfilePhoto, profileLink);
                 await _mailService.SendEmailAsync(mail);
@@ -230,7 +228,6 @@ namespace BusinessLayer.Services
                 _logger.Error(ex, $"An error occurred while joining the event");
                 throw;
             }
-
         }
     }
 }
