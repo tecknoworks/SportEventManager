@@ -220,7 +220,7 @@ namespace BusinessLayer.Services
                     _logger.Error($"User details for user id {userId} not found.");
                     throw new KeyNotFoundException("User details not found");
                 }
-
+                 
                 var profileLink = $"{baseUrl}/profile/{userId}";
 
                 var mail = MailRequest.JoinEventNotification(author.Email, user.UserName, userDetails.ProfilePhoto, profileLink);
