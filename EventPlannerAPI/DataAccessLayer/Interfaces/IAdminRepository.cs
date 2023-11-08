@@ -14,5 +14,8 @@ namespace DataAccessLayer.Interfaces
         Task<IdentityResult> DeleteUserAsync(EventPlannerUser user);
         Task<EventPlannerUser> FindByEmailAsync(string email);
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
+        Task<bool> UserHasProfileAsync(string userId);
+        Task<UserProfileDetails> CreateUserProfileDetailsAsync(string userId, UserProfileDetails userDetails);
+
     }
 }
