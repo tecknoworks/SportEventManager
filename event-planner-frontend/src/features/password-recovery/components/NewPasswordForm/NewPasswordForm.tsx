@@ -74,7 +74,7 @@ function NewPasswordForm() {
         Create a new password
       </Text>
 
-      <form className="form-container">
+      <form>
         {!isDone && (
           <Stack spacing={5}>
             <Text color="gray.500" fontSize="md">

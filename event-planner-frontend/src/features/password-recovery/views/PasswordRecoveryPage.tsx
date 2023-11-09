@@ -13,7 +13,7 @@ function PasswordRecoveryPage() {
   }, [isSuccess]);
 
   return (
-    <Box width="100%" height="inherit" display="flex" alignItems="center" justifyContent="center">
+    <Box width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
       <PasswordRecoveryForm />
     </Box>
   );
