@@ -15,5 +15,6 @@ namespace DataAccessLayer.Interfaces
         Task<bool> SportTypeExistsAsync(Guid sportTypeId);
         Task<bool> PositionBelongsToSportTypeAsync(Guid positionId, Guid sportTypeId);
         Task<string> JoinEventAsync(string userId, Guid eventId, Guid? eventPositionId);
+        Task<bool> IsUserParticipantOfEvent(string userId, Guid eventId);
     }
 }

@@ -4,7 +4,6 @@ using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DataAccessLayer.Repositories
 {
@@ -125,6 +124,12 @@ namespace DataAccessLayer.Repositories
                 throw;
             };
             return await Task.FromResult("User joined the event successfully.") ;
+        }
+
+        public async Task<bool> IsUserParticipantOfEvent(string userId, Guid eventId)
+        {
+            var result = await _eventPlannerContext.Participants.AnyAsync(participant => participant.UserId == userId && participant.EventId == eventId);
+            return result;
         }
     }
 }

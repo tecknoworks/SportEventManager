@@ -233,5 +233,10 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
+        public async Task<bool> IsUserParticipantOfEvent(string userId, Guid eventId)
+        {
+            return await _eventRepository.IsUserParticipantOfEvent(userId, eventId);
+        }
     }
 }

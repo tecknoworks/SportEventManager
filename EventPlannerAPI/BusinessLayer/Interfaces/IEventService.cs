@@ -11,5 +11,6 @@ namespace BusinessLayer.Interfaces
         Task<IList<GetEventDto>> GetEventsAsync(PaginationFilter filters);
         Task<string> UpdateEventAsync(Guid eventId, UpdateEventDto updateEventDto);
         Task<string> JoinEvent(JoinEventDto joinEventDto);
+        Task<bool> IsUserParticipantOfEvent(string userId, Guid eventId);
     }
 }
