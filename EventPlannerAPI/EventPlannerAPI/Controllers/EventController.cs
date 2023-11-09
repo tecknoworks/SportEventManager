@@ -13,7 +13,6 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -90,6 +89,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
         {
@@ -107,6 +107,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("UpdateEvent/{eventId}")]
         public async Task<ActionResult> UpdateEvent(Guid eventId, [FromBody] UpdateEventDto updateEventDto)
         {
@@ -132,6 +133,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
         {
