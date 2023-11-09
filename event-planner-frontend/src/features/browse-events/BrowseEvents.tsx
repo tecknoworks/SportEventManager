@@ -4,7 +4,7 @@ import EventsPage from './components/events-page/EventsPage';
 
 const BrowseEvents = () => {
   return (
-    <Box height="inherit" width="full" display="flex" justifyContent="center">
+    <Box height="100%" width="100%" display="flex" alignItems="center" justifyContent="center">
       <EventsPage />
     </Box>
   );

@@ -62,7 +62,7 @@ const EventsPage = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="row">
+      <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" h="100%">
         <FilterForm onClose={() => onClose} onSendFilter={handleSendFilter} display={{ base: 'none', md: 'block' }} />
         <Drawer
           isOpen={isOpen}
@@ -77,7 +77,7 @@ const EventsPage = () => {
           </DrawerContent>
         </Drawer>
       </Box>
-      <Stack spacing="3" width="100%" padding="20px" justifyContent="space-between">
+      <Stack spacing="3" width="100%" h="100%" padding="20px" justifyContent="space-between">
         <Box display="flex" flexDirection="column" justifyContent="center">
           <Text color="white" textAlign="center" fontSize="30px">
             Browse Events
