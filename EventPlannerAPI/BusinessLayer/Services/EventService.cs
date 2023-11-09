@@ -90,12 +90,12 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<IList<GetEventDto>> GetEventsAsync(PaginationFilter filters)
+        public async Task<PaginatedResult<GetEventDto>> GetEventsAsync(PaginationFilter filters)
         {
             try
             {
-                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserId, filters.SkillLevel);
-                return _mapper.Map<IList<GetEventDto>>(eventEntities);
+                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserName, filters.SkillLevel);
+                return _mapper.Map<PaginatedResult<GetEventDto>> (eventEntities);
             }
             catch (Exception ex)
             {

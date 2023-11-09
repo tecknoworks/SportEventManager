@@ -63,7 +63,6 @@ function CreateEventForm() {
     if (!eventName.trim()) return 'Event name is required.';
     if (!eventDescription.trim()) return 'Event description is required.';
     if (!selectedSport) return 'Sport type must be selected.';
-    if (!skillLevel) return 'Skill level must be selected.';
     if (!startDate) return 'Start date is required.';
     if (!endDate) return 'End date is required.';
     if (new Date(startDate) >= new Date(endDate)) return 'End date must be later than start date.';
