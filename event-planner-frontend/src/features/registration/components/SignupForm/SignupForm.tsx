@@ -125,7 +125,7 @@ const SignupForm = () => {
   }
 
   return (
-    <Box width="300px" display="flex" borderRadius="lg" overflow="hidden">
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
       <Text color="gray.500" as="b" fontSize="3xl">
         Signup
       </Text>
