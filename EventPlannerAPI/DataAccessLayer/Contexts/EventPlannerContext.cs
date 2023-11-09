@@ -14,8 +14,11 @@ namespace DataAccessLayer.Contexts
         public DbSet<SportType> SportTypes { get; set; }
         public DbSet<Position> Positions { get; set; }
         public DbSet<EventPosition> EventPositions { get; set; }
-        public DbSet<ParticipantStatus> ParticipantStatuses { get; set; }
         public DbSet<Participant> Participants { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+        public DbSet<ChatEvent> ChatEvents { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -80,17 +83,45 @@ namespace DataAccessLayer.Contexts
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Participant>()
-                .HasOne(participant => participant.Status)
-                .WithMany()
-                .HasForeignKey(participant => participant.StatusId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Participant>()
                 .HasOne(participant => participant.EventPosition)
                 .WithMany() 
                 .HasForeignKey(participant => participant.EventPositionId)
                 .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatEvent>()
+                .HasOne(chatEvent => chatEvent.Event)
+                .WithOne()
+                .HasForeignKey<ChatEvent>(chatEvent => chatEvent.EventID)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatEvent>()
+                .HasMany(chatEvent => chatEvent.ChatMessages)
+                .WithOne(chatMessage => chatMessage.ChatEvent)
+                .HasForeignKey(chatMessage => chatMessage.ChatId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ChatMessage>()
+                .HasOne(chatMessage => chatMessage.Message)
+                .WithOne(message => message.ChatMessage)
+                .HasForeignKey<ChatMessage>(chatMessage => chatMessage.MessageId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(review => review.Author)
+                .WithMany(author => author.GivenReviews)
+                .HasForeignKey(review => review.AuthorUserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(review => review.User)
+                .WithMany(user => user.RecievedReviews)
+                .HasForeignKey(review => review.UserId)
+                .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
             // Seed SportType data for Football

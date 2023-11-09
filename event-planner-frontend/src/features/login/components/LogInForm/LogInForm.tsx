@@ -64,19 +64,6 @@ const LogInForm = () => {
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
         <Navigate to="/" replace />;
-        toast({
-          title: 'Log In succesfully.',
-          status: 'success',
-          duration: 2000,
-          isClosable: true,
-        });
-      } else {
-        toast({
-          title: 'There was an error with your E-Mail/Password combination. Please try again',
-          status: 'error',
-          duration: 2000,
-          isClosable: true,
-        });
       }
     });
   };

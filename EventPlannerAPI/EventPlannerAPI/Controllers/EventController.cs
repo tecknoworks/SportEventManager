@@ -131,5 +131,23 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
+
+        [HttpPost("JoinEvent")]
+        public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
+        {
+            try
+            {
+                var response = await _eventService.JoinEvent(joinEventDto);
+                return Ok(response);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("An unexpected error occurred.");
+            }
+        }
     }
 }
