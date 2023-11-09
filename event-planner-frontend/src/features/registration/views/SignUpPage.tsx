@@ -3,7 +3,7 @@ import { Box, useMediaQuery } from '@chakra-ui/react';
 
 const SignUpPage = () => {
   return (
-    <Box width="100%" height="100%" display="flex" alignItems="center" justifyContent="center">
+    <Box width="100%" height="inherit" display="flex" alignItems="center" justifyContent="center">
       <SignupForm />
     </Box>
   );
