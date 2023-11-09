@@ -41,7 +41,7 @@ namespace BusinessLayer.Profiles
             CreateMap<Event, GetEventDto>()
                 .ForMember(dest => dest.SportTypeName, opt => opt.MapFrom(src => src.SportType.Name))
                 .ForMember(dest => dest.AuthorUserName, opt => opt.MapFrom(src => src.Author.UserName));
-            
+
             CreateMap<UpdateEventDto, Event>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.SportTypeId, opt => opt.Ignore())
@@ -59,6 +59,10 @@ namespace BusinessLayer.Profiles
                 .ForMember(dest => dest.SportType, opt => opt.Ignore())
                 .ForMember(dest => dest.EventPositions, opt => opt.MapFrom(src => src.EventPositions))
                 .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.Participants));
+
+            CreateMap<PaginatedResult<Event>, PaginatedResult<GetEventDto>>()
+                 .ForMember(dest => dest.TotalEvents, opt => opt.MapFrom(src => src.TotalEvents))
+                 .ForMember(dest => dest.Events, opt => opt.MapFrom(src => src.Events));
         }
     }
 }

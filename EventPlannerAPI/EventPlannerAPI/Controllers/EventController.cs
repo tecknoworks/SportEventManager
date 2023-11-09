@@ -7,12 +7,13 @@ using DataAccessLayer.Helpers;
 using System.Security.Claims;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using DataAccessLayer.Models;
 
 namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -22,7 +23,7 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpPost("GetEvents")]
-        public async Task<ActionResult<IList<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
+        public async Task<ActionResult<PaginatedResult<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
         {
             try
             {

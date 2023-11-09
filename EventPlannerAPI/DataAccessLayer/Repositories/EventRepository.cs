@@ -3,6 +3,7 @@ using DataAccessLayer.Exceptions;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Data.Entity.Core.Objects;
 
 namespace DataAccessLayer.Repositories
 {
@@ -39,23 +40,63 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
-        public async Task<IList<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserId, int skillLevel)
+        public async Task<PaginatedResult<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserName, int skillLevel)
         {
-            return await _eventPlannerContext.Events
+            var query = (IQueryable<Event>)_eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
-                .Include(evnt => evnt.Author)
-                .Where(evnt =>
-                    (string.IsNullOrEmpty(searchData) || evnt.Name.Contains(searchData) || evnt.Description.Contains(searchData)) &&
-                    (sportTypeId == Guid.Empty || evnt.SportTypeId == sportTypeId) &&
-                    (startDate == DateTime.MinValue || evnt.StartDate >= startDate) &&
-                    ((maximumDuration <= 0) || (evnt.EndDate - evnt.StartDate).TotalHours <= maximumDuration) &&
-                    (string.IsNullOrEmpty(location) || evnt.Location.Contains(location)) &&
-                    (string.IsNullOrEmpty(authorUserId) || evnt.Author.Id == authorUserId) &&
-                    evnt.SkillLevel == skillLevel) 
+                .Include(evnt => evnt.Author);
+
+            if (!string.IsNullOrEmpty(searchData))
+            {
+                query = query.Where(evnt => evnt.Name.Contains(searchData) || evnt.Description.Contains(searchData));
+            }
+
+            if (sportTypeId != Guid.Empty)
+            {
+                query = query.Where(evnt => evnt.SportTypeId == sportTypeId);
+            }
+
+            if (startDate != DateTime.MinValue)
+            {
+                query = query.Where(evnt => evnt.StartDate >= startDate);
+            }
+
+            if (maximumDuration > 0)
+            {
+                var x = Int32.Parse(maximumDuration.ToString());
+                query = query.Where(evnt => evnt.EndDate <= evnt.StartDate.AddHours(x));
+            }
+
+            if (!string.IsNullOrEmpty(location))
+            {
+                query = query.Where(evnt => evnt.LocationName.Contains(location));
+            }
+
+            if (!string.IsNullOrEmpty(authorUserName))
+            {
+                query = query.Where(evnt => evnt.Author.UserName.Contains(authorUserName));
+            }
+
+            if (skillLevel != 0)
+            {
+                query = query.Where(evnt => evnt.SkillLevel == skillLevel);
+            }
+
+            var totalEvents = await query.CountAsync();
+
+            var paginatedEvents = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
+
+            return new PaginatedResult<Event>
+            {
+                TotalEvents = totalEvents,
+                Events = paginatedEvents
+            };
         }
+
+
 
 
         public async Task<IList<SportType>> GetAvailableSportTypesAsync()

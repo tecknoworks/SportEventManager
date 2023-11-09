@@ -8,7 +8,7 @@ namespace BusinessLayer.Interfaces
         Task<GetEventWithDetailsDto> GetEventByIdAsync(Guid eventId);
         Task<IList<SportTypeDto>> GetAvailableSportTypesAsync();
         Task<IList<PositionDto>> GetPositionsForSportTypeAsync(Guid sportTypeId);
-        Task<IList<GetEventDto>> GetEventsAsync(PaginationFilter filters);
+        Task<PaginatedResult<GetEventDto>> GetEventsAsync(PaginationFilter filters);
         Task<string> UpdateEventAsync(Guid eventId, UpdateEventDto updateEventDto);
     }
 }
