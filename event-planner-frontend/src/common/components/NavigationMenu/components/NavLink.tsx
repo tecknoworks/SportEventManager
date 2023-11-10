@@ -17,7 +17,7 @@ const NavLink = (props: Props) => {
       rounded={'md'}
       _hover={{
         textDecoration: 'none',
-        bg: 'whiteAlpha.300',
+        bg: 'purple.200',
       }}
       href={linkTo}
       fontWeight="semibold"

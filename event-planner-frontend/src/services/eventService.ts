@@ -1,3 +1,4 @@
+import { FilterParams } from 'features/browse-events/api/dtos';
 import CommonService from './commonService';
 import { CreateEventDto, UpdateEventDto } from 'features/event/api/dtos';
 
@@ -20,5 +21,8 @@ export default class EventService extends CommonService {
 
   getEventById(eventId: string) {
     return this.get('/Event/GetEvent/' + eventId);
+  }
+  getEvents(data: FilterParams) {
+    return this.post('/Event/GetEvents', data);
   }
 }

@@ -129,14 +129,7 @@ const EditProfileForm = () => {
   };
 
   return (
-    <Box
-      marginTop={!isMobile ? '0px' : '430px'}
-      marginBottom={!isMobile ? '0px' : '30px'}
-      width="100%"
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Box width="100%" display="flex" justifyContent="center" alignItems="center">
       {(isLoading || isImageWidgetLoading) && <Loader />}
       <Stack
         spacing={6}

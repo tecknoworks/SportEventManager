@@ -1,15 +1,4 @@
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  TableContainer,
-  Text,
-  Button,
-  useDisclosure,
-  useToast,
-} from '@chakra-ui/react';
+import { Table, Thead, Tbody, Tr, Th, TableContainer, Text, Button, useDisclosure, useToast } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import UserRow from '../User/UserRow';
 import CreateUserModal from '../Moldal/CreateUserModal';
@@ -29,7 +18,7 @@ type User = {
 };
 
 const TableManagement: React.FC = () => {
-  const toast = useToast()
+  const toast = useToast();
 
   const [users, setUsers] = useState<User[]>([]);
   const [newUser, setNewUser] = useState({
@@ -42,8 +31,8 @@ const TableManagement: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const dispatch: AppDispatch = useDispatch();
-  const allUsers = useSelector(selectAllUsers)
-  const error = useSelector(selectAdminStateError)
+  const allUsers = useSelector(selectAllUsers);
+  const error = useSelector(selectAdminStateError);
 
   useEffect(() => {
     if (error.editUser) {
@@ -58,38 +47,41 @@ const TableManagement: React.FC = () => {
   }, [error]);
 
   useEffect(() => {
-    dispatch(getAllUsersThunk())
-    setUsers(allUsers)
-  }, [])
+    dispatch(getAllUsersThunk());
+    setUsers(allUsers);
+  }, []);
 
   useEffect(() => {
-    setUsers(allUsers)
-  }, [allUsers])
+    setUsers(allUsers);
+  }, [allUsers]);
 
   const editUserOrAdmin = async (editedUser: any, userId: number) => {
-    await dispatch(editUserOrAdminThunk({
-      userId,
-      ...editedUser
-    }));
+    await dispatch(
+      editUserOrAdminThunk({
+        userId,
+        ...editedUser,
+      })
+    );
     await dispatch(getAllUsersThunk());
   };
 
   const deleteUser = (userId: any) => {
     dispatch(deleteUserThunk(userId));
-    const updatedUsers = users.filter(user => user.userId !== userId);
+    const updatedUsers = users.filter((user) => user.userId !== userId);
     setUsers(updatedUsers);
     toast({
       title: 'User deleted successfully.',
       status: 'success',
-    })
-  }
+    });
+  };
 
   const sendRecoveryEmail = (email: string) => {
-    dispatch(sendRecoverPasswordEmailThunk({ email }))
+    dispatch(sendRecoverPasswordEmailThunk({ email }));
     toast({
-      title: "If there's an account associated with this email address, we've sent instructions for resetting the password.",
+      title:
+        "If there's an account associated with this email address, we've sent instructions for resetting the password.",
       status: 'success',
-    })
+    });
   };
 
   return (
@@ -102,12 +94,20 @@ const TableManagement: React.FC = () => {
                 <Th>UserName</Th>
                 <Th>Email</Th>
                 <Th>Phone Number</Th>
-                <Th display='flex' justifyContent='flex-end'>Actions</Th>
+                <Th display="flex" justifyContent="flex-end">
+                  Actions
+                </Th>
               </Tr>
             </Thead>
             <Tbody>
               {users.map((user, index: number) => (
-                <UserRow key={index} user={user} deleteUser={deleteUser} sendRecoveryEmail={sendRecoveryEmail} editUserOrAdmin={editUserOrAdmin} />
+                <UserRow
+                  key={index}
+                  user={user}
+                  deleteUser={deleteUser}
+                  sendRecoveryEmail={sendRecoveryEmail}
+                  editUserOrAdmin={editUserOrAdmin}
+                />
               ))}
             </Tbody>
           </Table>
@@ -115,13 +115,10 @@ const TableManagement: React.FC = () => {
           <Text fontSize="2xl">We have 0 users</Text>
         )}
       </TableContainer>
-      <Button mt="6" onClick={onOpen}>Add User</Button>
-      <CreateUserModal
-        isOpen={isOpen}
-        onClose={onClose}
-        newUser={newUser}
-        setNewUser={setNewUser}
-      />
+      <Button mt="6" onClick={onOpen}>
+        Add User
+      </Button>
+      <CreateUserModal isOpen={isOpen} onClose={onClose} newUser={newUser} setNewUser={setNewUser} />
     </>
   );
 };

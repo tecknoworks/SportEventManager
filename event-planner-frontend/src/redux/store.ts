@@ -9,6 +9,7 @@ import accountConfirmationReducer from 'features/account-confirmation/store/slic
 import eventReducer from 'features/event/store/slices/eventSlice';
 import adminReducer from 'features/admin-management/store/slices/adminSlice';
 import detailsReducer from 'features/details-page/store/slices/detailsSlice';
+import eventsReducer from 'features/browse-events/store/eventsPageSlice';
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     eventPage: eventReducer,
     adminPage: adminReducer,
     detailsPage: detailsReducer,
+    browseEventsPage: eventsReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),

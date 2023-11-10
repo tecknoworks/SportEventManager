@@ -17,6 +17,7 @@ import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
 import SeeProfilePage from 'features/profile/views/SeeProfilePage';
 import DetailsPage from 'features/details-page/DetailsPage';
+import BrowseEvents from 'features/browse-events/BrowseEvents';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -118,6 +119,7 @@ const RouterComponent: FC = () => {
               </PrivateRoute>
             }
           />
+          <Route path="/browseevents" element={<BrowseEvents />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
