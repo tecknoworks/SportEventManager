@@ -8,6 +8,7 @@ import profileReducer from 'features/profile/store/slices/profileSlice';
 import accountConfirmationReducer from 'features/account-confirmation/store/slices/accountConfirmationSlice';
 import eventReducer from 'features/event/store/slices/eventSlice';
 import adminReducer from 'features/admin-management/store/slices/adminSlice';
+import detailsReducer from 'features/details-page/store/slices/detailsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     confirmAccount: accountConfirmationReducer,
     eventPage: eventReducer,
     adminPage: adminReducer,
+    detailsPage: detailsReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
