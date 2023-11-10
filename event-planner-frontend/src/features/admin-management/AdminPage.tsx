@@ -4,7 +4,7 @@ import TableManagement from './components/Table/TableManagement';
 
 const AdminPage = () => {
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" width="100%" height="100%">
+    <Box display="flex" h="100%" justifyContent="center" width="100%" alignItems="center">
       <div className="resizable-div">
         <Text fontSize="5xl">Admin Page</Text>
         <TableManagement />

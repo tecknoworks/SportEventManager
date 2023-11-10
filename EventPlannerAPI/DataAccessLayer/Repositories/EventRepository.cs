@@ -45,7 +45,8 @@ namespace DataAccessLayer.Repositories
         {
             var query = (IQueryable<Event>)_eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
-                .Include(evnt => evnt.Author);
+                .Include(evnt => evnt.Author)
+                .Include(evnt => evnt.EventPositions);
 
             if (!string.IsNullOrEmpty(searchData))
             {
@@ -149,9 +150,12 @@ namespace DataAccessLayer.Repositories
                                     ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
                                     : null;
 
+                var currentEvent = _eventPlannerContext.Events.Where(x => x.Id == eventId);
+
                 if (eventPosition != null && eventPosition.AvailablePositions > 0)
                 {
                     eventPosition.AvailablePositions -= 1;
+                    participant.Event.MaximumParticipants -= 1;
                 }
                 else
                 {

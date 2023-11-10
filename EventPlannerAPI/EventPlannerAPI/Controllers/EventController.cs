@@ -22,7 +22,7 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpPost("GetEvents")]
-        public async Task<ActionResult<PaginatedResult<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
+        public async Task<ActionResult<PaginatedResult<GetEventForBrowse>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
         {

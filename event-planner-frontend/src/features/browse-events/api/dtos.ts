@@ -13,6 +13,14 @@ type EventDto = {
   isClosed: boolean;
   authorUserId: string;
   authorUserName: string;
+  eventPositions: EventExtendedPosition[];
+};
+
+export type EventExtendedPosition = {
+  eventId: string;
+  positionId: string;
+  positionName: string;
+  availablePositions: number;
 };
 
 type EventsResponse = {

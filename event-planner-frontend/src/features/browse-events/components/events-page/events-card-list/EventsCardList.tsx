@@ -1,8 +1,11 @@
 import { Box, Stack } from '@chakra-ui/react';
 import EventCard from 'common/components/card/EventCard';
 import { EventDto } from 'features/browse-events/api/dtos';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { useEffect } from 'react';
 import { Paginate } from 'react-paginate-chakra-ui';
+import { useSelector } from 'react-redux';
+import { getUserFromToken } from 'services/auth/context/AuthContext';
 
 interface Props {
   events: EventDto[];
@@ -14,7 +17,9 @@ interface Props {
 }
 
 const EventsCardList = ({ events, showPagination, page, count, pageSize, onPageChange }: Props) => {
-  const eventCards = Array.from(events, (event) => <EventCard event={event} />);
+  const token = useSelector(selectToken);
+  const user = getUserFromToken(token || '');
+  const eventCards = Array.from(events, (event) => <EventCard event={event} currentUser={user} />);
 
   return (
     <Box
