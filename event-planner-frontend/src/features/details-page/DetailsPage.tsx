@@ -98,48 +98,52 @@ const DetailsPage = () => {
 
     return (
         <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md">
-
-            <VStack spacing={4} align="stretch">
-                <Heading as="h1" size="xl" color="purple.700">{name}</Heading>
-                <Heading as="h3" size="md" color="purple.300">Organizer : {authorUserName}</Heading>
-                <Text fontSize="md">{description} descriptions</Text>
-                <Text fontSize="md">{sportTypeName}</Text>
-                <Text fontSize="md">Location: {locationName}</Text>
-                <Text fontSize="md">Start Date:{formattedDateStart} </Text>
-                <Text fontSize="md">End Date:{formattedDateEnd}</Text>
-                <HStack>
-                    <Text fontSize="md">Skill Level:</Text>
-                    <Tag size="sm" variant="solid" colorScheme={getColorScheme(skillLevel)}>
-                        {getSkillLevelText(skillLevel)}
-                    </Tag>
-                </HStack>
-                <Divider />
-                <VStack spacing={2} align="stretch">
-                    <Heading as="h3" size="md" color="purple.500">Positions</Heading>
-                    <Box>
-                        <Text fontSize="md">Midfielder: 0 available positions</Text>
-                        <Button size="sm" disabled>Join</Button>
+            <Flex direction={{ base: 'column', md: 'row' }} wrap="wrap" justifyContent="space-between">
+                <VStack spacing={4} align="stretch" flex="1" minW={{ base: "100%", md: "65%" }}>
+                    <Heading as="h1" size="xl" color="purple.700">{name}</Heading>
+                    <Heading as="h3" size="md" color="purple.300">Organizer : {authorUserName}</Heading>
+                    <Text fontSize="md">{description} descriptions</Text>
+                    <Text fontSize="md">{sportTypeName}</Text>
+                    <Text fontSize="md">Location: {locationName}</Text>
+                    <Text fontSize="md">Start Date:{formattedDateStart} </Text>
+                    <Text fontSize="md">End Date:{formattedDateEnd}</Text>
+                    <HStack>
+                        <Text fontSize="md">Skill Level:</Text>
+                        <Tag size="sm" variant="solid" colorScheme={getColorScheme(skillLevel)}>
+                            {getSkillLevelText(skillLevel)}
+                        </Tag>
+                    </HStack>
+                    <Box mx={"3"}>
+                        <Map isResizable={true} center={center} />
                     </Box>
-                </VStack>
-                <Divider />
-                <VStack spacing={2} align="stretch">
-                    <Heading as="h3" size="md" color="purple.500">Participants</Heading>
-                    <Box>
-                        <HStack justifyContent="space-between">
-                            <Text fontSize="md">Midfielder</Text>
-                            <Text fontSize="md">User 1</Text>
-                        </HStack>
-                        <HStack justifyContent="space-between">
-                            <Text fontSize="md">Midfielder</Text>
-                            <Text fontSize="md">User 2</Text>
-                        </HStack>
-                    </Box>
-                </VStack>
-                <div >
-                    <Map isResizable={isResizable} center={center} />
-                </div>
 
-            </VStack>
+
+                    <Divider />
+                    <VStack spacing={2} align="stretch">
+                        <Heading as="h3" size="md" color="purple.500">Positions</Heading>
+                        <Box>
+                            <Text fontSize="md">Midfielder: 0 available positions</Text>
+                            <Button size="sm" disabled>Join</Button>
+                        </Box>
+                    </VStack>
+                    <Divider />
+                    <VStack spacing={2} align="stretch">
+                        <Heading as="h3" size="md" color="purple.500">Participants</Heading>
+                        <Box>
+                            <HStack justifyContent="space-between">
+                                <Text fontSize="md">Midfielder</Text>
+                                <Text fontSize="md">User 1</Text>
+                            </HStack>
+                            <HStack justifyContent="space-between">
+                                <Text fontSize="md">Midfielder</Text>
+                                <Text fontSize="md">User 2</Text>
+                            </HStack>
+                        </Box>
+                    </VStack>
+
+
+                </VStack>
+            </Flex>
         </Container>
     );
 }
