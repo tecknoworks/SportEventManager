@@ -1,69 +1,79 @@
 import { Input } from '@chakra-ui/input';
 import { VStack, HStack } from '@chakra-ui/layout';
-import React from 'react';
+import React, { useEffect } from 'react';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import MessagesList from '../MessagesList/MessagesList';
+import { ChatDetails } from 'features/chat/models/chatDetails';
 
-const IndividualChat = () => {
+const messagesData = [
+  {
+    sender: 'user123',
+    content:
+      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
+    timestamp: '12:00 PM',
+    isCurrentUser: false,
+  },
+  {
+    sender: 'currentUser',
+    content:
+      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
+    timestamp: '12:01 PM',
+    isCurrentUser: true,
+  },
+  {
+    sender: 'user123',
+    content:
+      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
+    timestamp: '12:00 PM',
+    isCurrentUser: false,
+  },
+  {
+    sender: 'currentUser',
+    content:
+      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
+    timestamp: '12:01 PM',
+    isCurrentUser: true,
+  },
+  {
+    sender: 'user123',
+    content:
+      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
+    timestamp: '12:00 PM',
+    isCurrentUser: false,
+  },
+  {
+    sender: 'currentUser',
+    content:
+      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
+    timestamp: '12:01 PM',
+    isCurrentUser: true,
+  },
+];
+
+type Props = {
+  chatDetails?: ChatDetails;
+};
+
+const IndividualChat = ({ chatDetails }: Props) => {
   const [newMessage, setNewMessage] = React.useState('');
 
-  const messagesData = [
-    {
-      sender: 'user123',
-      content:
-        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-      timestamp: '12:00 PM',
-      isCurrentUser: false,
-    },
-    {
-      sender: 'currentUser',
-      content:
-        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-      timestamp: '12:01 PM',
-      isCurrentUser: true,
-    },
-    {
-      sender: 'user123',
-      content:
-        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-      timestamp: '12:00 PM',
-      isCurrentUser: false,
-    },
-    {
-      sender: 'currentUser',
-      content:
-        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-      timestamp: '12:01 PM',
-      isCurrentUser: true,
-    },
-    {
-      sender: 'user123',
-      content:
-        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-      timestamp: '12:00 PM',
-      isCurrentUser: false,
-    },
-    {
-      sender: 'currentUser',
-      content:
-        'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-      timestamp: '12:01 PM',
-      isCurrentUser: true,
-    },
-  ];
+  // useEffect(() => {
+  //   // fetch old chat messages
+  // }, []);
 
-  const handleSendMessage = () => {};
+  const handleSendMessage = () => {
+    // handle send message
+  };
 
-  return (
+  return chatDetails ? (
     <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor="whiteAlpha.800">
       <ChatHeader
-        title="Chat Title"
-        avatarUrl={'https://cdn-icons-png.flaticon.com/512/11865/11865338.png'}
-        participantsCount={20}
+        title={chatDetails.name}
+        avatarUrl={chatDetails.imageUrl}
+        participantsCount={chatDetails.participantsCount}
       />
-
       <VStack
         flex="1"
         overflowY="auto"
@@ -85,6 +95,8 @@ const IndividualChat = () => {
         <PrimaryButton text={<ArrowRightIcon />} onClick={handleSendMessage} />
       </HStack>
     </VStack>
+  ) : (
+    <></>
   );
 };
 
