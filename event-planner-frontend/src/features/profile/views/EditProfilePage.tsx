@@ -12,7 +12,7 @@ function EditProfilePage() {
     if (isSuccess) handleGenericSuccess('You have successfully updated your profile.');
   }, [isSuccess]);
   return (
-    <Box display="flex" justifyContent="center" width="100%" alignItems="center">
+    <Box paddingTop="50px">
       <EditProfileForm />
     </Box>
   );

@@ -6,16 +6,15 @@ import { AuthProvider } from 'services/auth/context/AuthContext';
 const Layout = () => {
   return (
     <AuthProvider>
-      <Box bgGradient="linear(to-r, #610C9F, #E95793)">
+      <Box height="100vh" display="flex" flexDirection="column">
         <NavigationMenu />
         <Box
           display="flex"
-          alignItems="center"
-          justifyContent="center"
+          flexDirection="column"
           bgGradient="linear(to-r, #610C9F, #E95793)"
-          paddingX="50px"
+          paddingBottom="50px"
           overflowY="auto"
-          height="calc(100vh - 64px)"
+          flex="1"
         >
           <Outlet />
         </Box>
