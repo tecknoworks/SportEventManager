@@ -38,14 +38,46 @@ namespace DataAccessLayer.Repositories
         {
             return await _eventPlannerContext.Participants.AnyAsync(participant => participant.UserId == userId && participant.Event.ChatEvent.Id == chatId);
         }
-        public async Task<IList<Guid>> GetUserChats(string userId)
+        public async Task<IEnumerable<Guid>> GetUserChatIds(string userId)
         {
-           return   await _eventPlannerContext.Participants
-                            .Include(participant => participant.Event)
-                                .ThenInclude(evnt => evnt.ChatEvent)
-                            .Where(participant => participant.UserId == userId)
-                            .Select(participant => participant.Event.ChatEvent.Id)
-                            .ToListAsync();
+           var result = await _eventPlannerContext.Participants
+                    .Where(participant => participant.UserId == userId)
+                    .Include(participant => participant.Event)
+                        .ThenInclude(evnt => evnt.ChatEvent)
+                    .Select(participant => participant.Event.ChatEvent.Id)
+                    .ToListAsync();
+            return result;
         }
+
+        public async Task<IEnumerable<ChatEvent>> GetChatDetailsForUser(string userId)
+        {
+            return await _eventPlannerContext.Participants
+                    .Include(participant => participant.Event)
+                        .ThenInclude(evnt => evnt.ChatEvent)
+                    .Where(participant => participant.UserId == userId && participant.Event.ChatEvent.IsClosed == false)
+                    .Select(participant => participant.Event.ChatEvent)
+                    .ToListAsync();
+        }
+
+        public async Task<int> GetChatParticipantsCount(Guid chatId)
+        {
+            return await _eventPlannerContext.ChatEvents
+                .Where(chatEvent => chatEvent.Id == chatId)
+                    .Include(chatEvent => chatEvent.Event)
+                    .Select(chatEvent => chatEvent.Event.Participants.Count)
+                    .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<Message>> GetChatMessagesAsync(Guid chatId)
+        {
+            return await _eventPlannerContext.ChatEvents
+                    .Where(chatEvent => chatEvent.Id == chatId)
+                    .Include(chatEvent => chatEvent.ChatMessages)
+                        .ThenInclude(chatMessage => chatMessage.Message)
+                    .SelectMany(chatEvent => chatEvent.ChatMessages)
+                    .Select(chatMessage => chatMessage.Message)
+                    .ToListAsync();
+        }
+
     }
 }

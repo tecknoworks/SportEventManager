@@ -55,10 +55,13 @@ namespace BusinessLayer.Services
 
         private async Task<string> LinkEventToChat(Event createdEvent)
         {
+            var sportType = await _eventRepository.GetEventSportTypeAsync(createdEvent.Id);
             var newChatEvent = new ChatEvent()
             {
                 EventID = createdEvent.Id,
                 IsClosed = false,
+                Name = createdEvent.Name,
+                ImageUrl = sportType.ImageUrl
             };
             return await _chatRepository.SaveChatEventAsync(newChatEvent);
         }

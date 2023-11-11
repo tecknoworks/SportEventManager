@@ -5,7 +5,12 @@ import ChatHeader from '../ChatHeader/ChatHeader';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import MessagesList from '../MessagesList/MessagesList';
-import { ChatDetails } from 'features/chat/models/chatDetails';
+import { ChatDetails } from 'features/chat/api/dtos/dtos';
+import { AppDispatch } from 'redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { getChatsMessagesThunk } from 'features/chat/store/thunks/getChatMessagesThunk';
+import { selectChatMessages } from 'features/chat/store/selectors/chatSelector';
+import { sendMessage } from 'services/signalService';
 
 const messagesData = [
   {
@@ -57,14 +62,20 @@ type Props = {
 };
 
 const IndividualChat = ({ chatDetails }: Props) => {
+  const dispatch: AppDispatch = useDispatch();
+  const chatMessages = useSelector(selectChatMessages);
   const [newMessage, setNewMessage] = React.useState('');
 
-  // useEffect(() => {
-  //   // fetch old chat messages
-  // }, []);
+  useEffect(() => {
+    if (chatDetails) {
+      dispatch(getChatsMessagesThunk(chatDetails.id));
+    }
+  }, [chatDetails]);
 
   const handleSendMessage = () => {
-    // handle send message
+    if (!chatDetails) return;
+    sendMessage(newMessage, chatDetails.id);
+    setNewMessage('');
   };
 
   return chatDetails ? (
@@ -88,7 +99,7 @@ const IndividualChat = ({ chatDetails }: Props) => {
           scrollbarWidth: 'none',
         }}
       >
-        <MessagesList messages={messagesData} currentUser="currentUser" />
+        <MessagesList messages={chatMessages} currentUser="currentUser" />
       </VStack>
       <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="1rem">
         <Input placeholder="Type a message..." value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />

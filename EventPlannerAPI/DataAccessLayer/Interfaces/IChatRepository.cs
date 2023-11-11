@@ -8,6 +8,9 @@ namespace DataAccessLayer.Interfaces
         Task<string> SaveChatMessageAsync(ChatMessage newChatMessage);
         Task<string> SaveChatEventAsync(ChatEvent newChatEvent);
         Task<bool> CanUserJoinChatAsync(string userId, Guid chatId);
-        Task<IList<Guid>> GetUserChats(string userId);
+        Task<IEnumerable<Guid>> GetUserChatIds(string userId);
+        Task<IEnumerable<ChatEvent>> GetChatDetailsForUser(string userId);
+        Task<int> GetChatParticipantsCount(Guid chatId);
+        Task<IEnumerable<Message>> GetChatMessagesAsync(Guid chatId);
     }
 }

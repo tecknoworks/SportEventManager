@@ -165,5 +165,14 @@ namespace DataAccessLayer.Repositories
             };
             return await Task.FromResult("User joined the event successfully.") ;
         }
+
+        public async Task<SportType?> GetEventSportTypeAsync(Guid eventId)
+        {
+            return await _eventPlannerContext.Events
+                        .Where(evnt => evnt.Id == eventId)
+                        .Include(evnt => evnt.SportType)
+                        .Select(evnt => evnt.SportType)
+                        .FirstOrDefaultAsync();
+        }
     }
 }

@@ -34,7 +34,7 @@ namespace EventPlannerAPI.Hubs
                 Context.Abort();
             }
 
-            var chats = await _chatService.GetUserChats(userId);
+            var chats = await _chatService.GetUserChatIds(userId);
             foreach (var chatId in chats)
             {
                 Console.WriteLine($"user with id {userId} is in chat with id {chatId}");
@@ -47,7 +47,7 @@ namespace EventPlannerAPI.Hubs
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             var userId = Context.User?.FindFirst(SolutionConfigurationConstants.JwtIdClaim)?.Value;
-            var chats = await _chatService.GetUserChats(userId);
+            var chats = await _chatService.GetUserChatIds(userId);
 
             foreach (var chatId in chats)
             {

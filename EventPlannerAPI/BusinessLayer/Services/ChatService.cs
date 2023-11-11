@@ -1,6 +1,11 @@
-﻿using BusinessLayer.Interfaces;
+﻿using AutoMapper;
+using AutoMapper.Configuration.Conventions;
+using BusinessLayer.DTOs;
+using BusinessLayer.Interfaces;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Runtime.InteropServices;
 
 namespace BusinessLayer.Services
 {
@@ -8,9 +13,11 @@ namespace BusinessLayer.Services
     {
 
         private readonly IChatRepository _chatRepository;
-        public ChatService(IChatRepository chatRepository)
+        private readonly IMapper _mapper;
+        public ChatService(IChatRepository chatRepository, IMapper mapper)
         {
             _chatRepository = chatRepository;
+            _mapper = mapper;
         }
 
         public async Task SaveMessageAsync(Guid chatId, string userId, string message)
@@ -19,6 +26,7 @@ namespace BusinessLayer.Services
             {
                 MessageText = message,
                 UserId = userId,
+                Date = DateTime.Now,
             };
 
             await _chatRepository.SaveMessageAsync(newMessage);
@@ -41,9 +49,28 @@ namespace BusinessLayer.Services
         {
             return await _chatRepository.CanUserJoinChatAsync(userId, chatId);  
         }
-        public async Task<IList<Guid>> GetUserChats(string userId)
+        public async Task<IEnumerable<Guid>> GetUserChatIds(string userId)
         {
-            return await _chatRepository.GetUserChats(userId);
+            return await _chatRepository.GetUserChatIds(userId);
+        }
+
+        public async Task<IEnumerable<ChatDetailsDto>> GetChatDetailsForUser(string userId)
+        {
+            var chatEvents = await _chatRepository.GetChatDetailsForUser(userId);
+            var chatDetailsDto = _mapper.Map<IEnumerable<ChatDetailsDto>>(chatEvents);
+            foreach (var dto in chatDetailsDto)
+            {
+                var participantsCount = await _chatRepository.GetChatParticipantsCount(dto.Id);
+                dto.ParticipantsCount = participantsCount;
+            }
+            return chatDetailsDto;
+        }
+
+        public async Task<IEnumerable<MessageDto>> GetChatMessagesAsync(Guid chatId)
+        {
+            var messages = await _chatRepository.GetChatMessagesAsync(chatId);
+
+            return _mapper.Map<IEnumerable<MessageDto>>(messages);
         }
 
     }

@@ -1,14 +1,16 @@
 import React from 'react';
 import { Text, VStack, HStack, Avatar } from '@chakra-ui/react';
-import { ChatDetails } from 'features/chat/models/chatDetails';
+import { ChatDetails } from 'features/chat/api/dtos/dtos';
+import { Message } from 'features/chat/api/dtos/dtos';
 
 type Props = {
   chats: ChatDetails[];
+  lastMessage: Message;
   setSelectedChatDetails: any;
-  selectedChatDetails: ChatDetails;
+  selectedChatDetails?: ChatDetails;
 };
 
-const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props) => {
+const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails, lastMessage }: Props) => {
   return (
     <VStack
       width="100%"
@@ -39,14 +41,14 @@ const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props
             bg: chat.id === selectedChatDetails?.id ? undefined : 'gray.100',
             cursor: 'pointer',
           }}
-          bg={chat.id === selectedChatDetails.id ? 'gray.300' : 'transparent'}
+          bg={chat.id === selectedChatDetails?.id ? 'gray.300' : 'transparent'}
           onClick={() => setSelectedChatDetails(chat)}
         >
           <Avatar name={chat.name} src={chat.imageUrl} />
           <VStack align="start" spacing={1}>
             <Text fontWeight="bold">{chat.name}</Text>
             <Text fontSize="sm" color="gray.500">
-              <b>{chat.lastMessage.from}:</b> {chat.lastMessage.content}
+              <b>{lastMessage.username}:</b> {lastMessage.messageText}
             </Text>
           </VStack>
         </HStack>

@@ -129,7 +129,8 @@ namespace DataAccessLayer.Contexts
             modelBuilder.Entity<SportType>().HasData(new SportType
             {
                 Id = footballId,
-                Name = "Football"
+                Name = "Football",
+                ImageUrl = "https://cdn-icons-png.flaticon.com/512/5417/5417184.png"
             });
 
             // Seed Position data for Football

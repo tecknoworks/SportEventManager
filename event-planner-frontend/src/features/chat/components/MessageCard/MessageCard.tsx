@@ -1,15 +1,13 @@
 import React from 'react';
 import { Text, Box, useColorModeValue } from '@chakra-ui/react';
+import { Message } from 'features/chat/api/dtos/dtos';
 
 type Props = {
-  key: number;
-  sender: string;
-  message: string;
-  timestamp: string;
+  message: Message;
   isCurrentUser: boolean;
 };
 
-const MessageCard = ({ key, sender, message, timestamp, isCurrentUser }: Props) => {
+const MessageCard = ({ message, isCurrentUser }: Props) => {
   const bgColor = 'gray.100';
   const bgGradient = useColorModeValue(
     'linear(to-r, pink.400, purple.600)', //
@@ -27,14 +25,14 @@ const MessageCard = ({ key, sender, message, timestamp, isCurrentUser }: Props) 
       borderRadius="lg"
       padding="3"
       marginY="2"
-      key={key}
     >
       <Text fontSize="sm" color={isCurrentUser ? 'white' : 'gray.500'}>
-        <b>{sender}</b>
+        <b>{message.username}</b>
       </Text>
-      <Text color={isCurrentUser ? 'white' : textColor}>{message}</Text>
+      <Text color={isCurrentUser ? 'white' : textColor}>{message.messageText}</Text>
       <Text fontSize="xs" alignSelf="flex-end" color={isCurrentUser ? 'blue.200' : 'gray.400'}>
-        {timestamp}
+        {/* {message?.date.getTime() || new Date().getTime()} */}
+        {new Date().getTime()}
       </Text>
     </Box>
   );

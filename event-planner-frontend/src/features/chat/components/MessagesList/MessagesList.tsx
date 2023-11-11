@@ -25,13 +25,7 @@ const MessagesList = ({ messages, currentUser }: Props) => {
       }}
     >
       {messages.map((message, index) => (
-        <MessageCard
-          key={index}
-          sender={message.sender}
-          message={message.content}
-          timestamp={message.timestamp}
-          isCurrentUser={message.sender === currentUser}
-        />
+        <MessageCard key={index} message={message} isCurrentUser={message.sender === currentUser} />
       ))}
     </VStack>
   );
