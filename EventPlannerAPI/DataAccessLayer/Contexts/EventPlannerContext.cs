@@ -91,7 +91,7 @@ namespace DataAccessLayer.Contexts
 
             modelBuilder.Entity<ChatEvent>()
                 .HasOne(chatEvent => chatEvent.Event)
-                .WithOne()
+                .WithOne(evnt => evnt.ChatEvent)
                 .HasForeignKey<ChatEvent>(chatEvent => chatEvent.EventID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);

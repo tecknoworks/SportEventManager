@@ -125,11 +125,5 @@ namespace DataAccessLayer.Repositories
             };
             return await Task.FromResult("User joined the event successfully.") ;
         }
-
-        public async Task<bool> IsUserParticipantOfEvent(string userId, Guid eventId)
-        {
-            var result = await _eventPlannerContext.Participants.AnyAsync(participant => participant.UserId == userId && participant.EventId == eventId);
-            return result;
-        }
     }
 }

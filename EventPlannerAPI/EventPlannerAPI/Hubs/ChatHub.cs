@@ -2,6 +2,7 @@
 using DataAccessLayer.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace EventPlannerAPI.Hubs
@@ -9,42 +10,49 @@ namespace EventPlannerAPI.Hubs
     [Authorize]
     public class ChatHub : Hub
     {
-        private readonly IEventService _eventService;
+        private readonly IChatService _chatService;
         
-        public ChatHub(IEventService eventService) 
+        public ChatHub(IChatService chatService) 
         {
-            _eventService = eventService;
+            _chatService = chatService;
         }
 
-        public Task SendMessageToEventGroup(string eventId, string message)
+        public async Task<Task> SendMessageToChatGroup(string chatId, string message)
         {
-            return Clients.Group(eventId).SendAsync("ReceiveMessage", message);
+            var userId = Context.User?.FindFirst(SolutionConfigurationConstants.JwtIdClaim)?.Value;
+            await _chatService.SaveMessageAsync(new Guid(chatId), userId, message);    
+            return Clients.Group(chatId.ToUpper()).SendAsync("ReceiveMessage", message, userId);
         }
-
         public override async Task OnConnectedAsync()
         {
-            var eventId = new Guid(Context.GetHttpContext().Request.Query["eventId"]);
-            var currentUserId = Context.User?.FindFirst(SolutionConfigurationConstants.JwtIdClaim)?.Value;
-            if (await _eventService.IsUserParticipantOfEvent(currentUserId, eventId))
-            {
-                await Groups.AddToGroupAsync(Context.ConnectionId, eventId.ToString());
+            var userId = Context.User?.FindFirst(SolutionConfigurationConstants.JwtIdClaim)?.Value;
 
-                await base.OnConnectedAsync();
-
-                Console.WriteLine($"User with id {currentUserId} connected to the group chat of event {eventId}");
-            }
-            else
+            if (userId.IsNullOrEmpty())
             {
-                await Clients.Caller.SendAsync("UnauthorizedAccess", "You are not authorized to join this event chat.");
+                await Clients.Caller.SendAsync("UnauthorizedAccess", "You are not authorized.");
                 await Task.Delay(500);
                 Context.Abort();
             }
+
+            var chats = await _chatService.GetUserChats(userId);
+            foreach (var chatId in chats)
+            {
+                Console.WriteLine($"user with id {userId} is in chat with id {chatId}");
+                await Groups.AddToGroupAsync(Context.ConnectionId, chatId.ToString().ToUpper());
+            }
+
+            await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            string eventId = Context.GetHttpContext().Request.Query["eventId"];
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, eventId);
+            var userId = Context.User?.FindFirst(SolutionConfigurationConstants.JwtIdClaim)?.Value;
+            var chats = await _chatService.GetUserChats(userId);
+
+            foreach (var chatId in chats)
+            {
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, chatId.ToString().ToUpper());
+            }
 
             await base.OnDisconnectedAsync(exception);
         }

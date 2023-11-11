@@ -16,6 +16,7 @@ namespace BusinessLayer.Services
     {
 
         private readonly IEventRepository _eventRepository;
+        private readonly IChatRepository _chatRepository;
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly Serilog.ILogger _logger;
@@ -23,10 +24,11 @@ namespace BusinessLayer.Services
         private readonly IConfiguration _configuration;
 
 
-        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService, IConfiguration configuration)
+        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IChatRepository chatRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService, IConfiguration configuration)
         {
             _eventRepository = eventRepository;
             _userRepository = userRepository;
+            _chatRepository = chatRepository;
             _mapper = mapper;
             _logger = logger;
             _mailService = mailService;
@@ -40,13 +42,25 @@ namespace BusinessLayer.Services
                 var errorMessage = await ValidateCreateEventDtoAsync(newEvent);
                 if (!errorMessage.IsNullOrEmpty()) throw new EventPlannerException(errorMessage);
                 var eventEntity = _mapper.Map<Event>(newEvent);
-                return await _eventRepository.CreateEventAsync(eventEntity);
+                var result = await _eventRepository.CreateEventAsync(eventEntity);
+                await LinkEventToChat(eventEntity);
+                return result;
             }
             catch (Exception ex) 
             {
                 _logger.Error(ex, $"An error occurred while creating the event {newEvent.Name}");
                 throw;
             }
+        }
+
+        private async Task<string> LinkEventToChat(Event createdEvent)
+        {
+            var newChatEvent = new ChatEvent()
+            {
+                EventID = createdEvent.Id,
+                IsClosed = false,
+            };
+            return await _chatRepository.SaveChatEventAsync(newChatEvent);
         }
 
         public async Task<GetEventWithDetailsDto> GetEventByIdAsync(Guid eventId)
@@ -232,11 +246,6 @@ namespace BusinessLayer.Services
                 _logger.Error(ex, $"An error occurred while joining the event");
                 throw;
             }
-        }
-
-        public async Task<bool> IsUserParticipantOfEvent(string userId, Guid eventId)
-        {
-            return await _eventRepository.IsUserParticipantOfEvent(userId, eventId);
         }
     }
 }

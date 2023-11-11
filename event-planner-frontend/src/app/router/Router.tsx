@@ -16,6 +16,7 @@ import CreateEventPage from 'features/event/views/CreateEventPage';
 import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
 import SeeProfilePage from 'features/profile/views/SeeProfilePage';
+import ChatPage from 'features/chat/views/ChatPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -106,6 +107,14 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <EditEventPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="chat"
+            element={
+              <PrivateRoute>
+                <ChatPage />
               </PrivateRoute>
             }
           />
