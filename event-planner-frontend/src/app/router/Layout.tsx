@@ -12,7 +12,6 @@ const Layout = () => {
           display="flex"
           flexDirection="column"
           bgGradient="linear(to-r, #610C9F, #E95793)"
-          paddingBottom="50px"
           overflowY="auto"
           flex="1"
         >
