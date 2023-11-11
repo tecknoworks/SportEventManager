@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, Box } from '@chakra-ui/react';
+import { Text, Box, useColorModeValue } from '@chakra-ui/react';
 
 type Props = {
   key: number;
@@ -11,6 +11,10 @@ type Props = {
 
 const MessageCard = ({ key, sender, message, timestamp, isCurrentUser }: Props) => {
   const bgColor = 'gray.100';
+  const bgGradient = useColorModeValue(
+    'linear(to-r, pink.400, purple.600)', //
+    'linear(to-r, pink.600, purple.800)' // Dark mode gradient
+  );
   const alignSelf = isCurrentUser ? 'flex-end' : 'flex-start';
   const textColor = 'gray.800';
 
@@ -18,7 +22,8 @@ const MessageCard = ({ key, sender, message, timestamp, isCurrentUser }: Props) 
     <Box
       alignSelf={alignSelf}
       maxW="80%"
-      bg={isCurrentUser ? '#915d91' : bgColor}
+      bg={isCurrentUser ? 'transparent' : bgColor}
+      bgGradient={isCurrentUser ? bgGradient : 'none'}
       borderRadius="lg"
       padding="3"
       marginY="2"

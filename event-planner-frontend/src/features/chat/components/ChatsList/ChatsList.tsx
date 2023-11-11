@@ -19,7 +19,7 @@ const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props
       gap={0}
       overflowY="auto"
       bgColor="white"
-      borderRadius="2rem"
+      borderRadius="1rem"
       className="hide-scrollbar"
       sx={{
         '&::-webkit-scrollbar': {

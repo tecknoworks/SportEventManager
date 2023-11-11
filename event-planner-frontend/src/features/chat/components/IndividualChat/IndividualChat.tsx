@@ -90,7 +90,7 @@ const IndividualChat = ({ chatDetails }: Props) => {
       >
         <MessagesList messages={messagesData} currentUser="currentUser" />
       </VStack>
-      <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="2rem">
+      <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="1rem">
         <Input placeholder="Type a message..." value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
         <PrimaryButton text={<ArrowRightIcon />} onClick={handleSendMessage} />
       </HStack>

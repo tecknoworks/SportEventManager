@@ -10,7 +10,7 @@ type Props = {
 
 const ChatHeader = ({ title, avatarUrl, participantsCount }: Props) => {
   return (
-    <HStack spacing={2} p={4} height="5rem" bg="gray.100" w="100%" borderTopRadius="2rem">
+    <HStack spacing={2} p={4} height="5rem" bg="gray.100" w="100%" borderTopRadius="1rem">
       <Avatar name={title} src={avatarUrl} />
       <VStack align="start">
         <Text fontSize="xl">{title}</Text>
