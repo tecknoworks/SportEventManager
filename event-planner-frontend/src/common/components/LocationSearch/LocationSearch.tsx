@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { Input, List, ListItem } from '@chakra-ui/react';
 import { geocode, RequestType, setKey } from 'react-geocode';

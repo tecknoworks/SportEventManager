@@ -101,7 +101,7 @@ namespace BusinessLayer.Services
         {
             try
             {
-                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserName, filters.SkillLevel);
+                var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserName, filters.SkillLevel, filters.AuthorId);
                 return _mapper.Map<PaginatedResult<GetEventForBrowse>> (eventEntities);
             }
             catch (Exception ex)

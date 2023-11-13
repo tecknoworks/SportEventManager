@@ -24,7 +24,6 @@ interface Props {
 
 const EventCard = ({ event, currentUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [reloadEvent, setReloadEvent] = useState<boolean>(false);
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const [isMobile] = useMediaQuery('(max-width: 768px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
