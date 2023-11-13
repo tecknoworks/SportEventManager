@@ -114,13 +114,15 @@ const DetailsPage = () => {
             <Box>
               {eventPositions &&
                 eventPositions.map((position, index) => (
-                  <HStack key={index} justifyContent="space-between">
+                  <HStack key={index} justifyContent="space-between" mt={"2"}>
                     <Text fontSize="md">
                       {position.positionName} : {position.availablePositions}
                     </Text>
-                    <Button colorScheme="blue" onClick={() => console.log('merge')}>
-                      Join
-                    </Button>
+                    {(position.availablePositions ?? 0) > 0 && (
+                      <Button colorScheme="blue" onClick={() => console.log('merge')}>
+                        Join
+                      </Button>
+                    )}
                   </HStack>
                 ))}
             </Box>

@@ -91,7 +91,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        [Authorize]
+        /*[Authorize]*/
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
         {
@@ -109,7 +109,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        [Authorize]
+      /*  [Authorize]*/
         [HttpPut("UpdateEvent/{eventId}")]
         public async Task<ActionResult> UpdateEvent(Guid eventId, [FromBody] UpdateEventDto updateEventDto)
         {
@@ -134,8 +134,8 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
-
-        [Authorize]
+/*
+        [Authorize]*/
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
         {
