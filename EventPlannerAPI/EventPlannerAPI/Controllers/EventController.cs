@@ -133,7 +133,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
         {
