@@ -28,6 +28,7 @@ namespace BusinessLayer.Profiles
                 .ForMember(dest => dest.HasPositions, opt => opt.MapFrom(src => src.SportType.HasPositions));
 
             CreateMap<EventPosition, GetEventPositionDto>()
+                .ForMember(dest => dest.PositionId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name));
 
             CreateMap<Participant, ParticipantDto>()
@@ -64,7 +65,9 @@ namespace BusinessLayer.Profiles
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description))
-                .ForMember(dest => dest.SportTypeName, opt => opt.MapFrom(src => src.SportType.Name));
+                .ForMember(dest => dest.SportTypeName, opt => opt.MapFrom(src => src.SportType.Name))
+                .ForMember(dest => dest.EventPositions, opt => opt.MapFrom(src => src.EventPositions))
+                .ForMember(dest => dest.HasPositions, opt => opt.MapFrom(src => src.SportType.HasPositions));
 
             CreateMap<PaginatedResult<Event>, PaginatedResult<GetEventForBrowse>>()
                 .ForMember(dest => dest.TotalEvents, opt => opt.MapFrom(src => src.TotalEvents))

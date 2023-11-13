@@ -47,7 +47,8 @@ namespace DataAccessLayer.Repositories
             var query = (IQueryable<Event>)_eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
-                .Include(evnt => evnt.EventPositions);
+                .Include(evnt => evnt.EventPositions)
+                .ThenInclude(ep => ep.Position);
 
             if (!string.IsNullOrEmpty(searchData))
             {
@@ -99,9 +100,6 @@ namespace DataAccessLayer.Repositories
             };
         }
 
-
-
-
         public async Task<IList<SportType>> GetAvailableSportTypesAsync()
         {
             return await _eventPlannerContext.SportTypes.ToListAsync();
@@ -151,9 +149,7 @@ namespace DataAccessLayer.Repositories
                                     ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
                                     : null;
 
-                var currentEvent = _eventPlannerContext.Events.Where(x => x.Id == eventId);
-
-                if (eventPosition != null && eventPosition.AvailablePositions > 0)
+                if (eventPosition != null && eventPosition.AvailablePositions > 0 && participant.Event.MaximumParticipants > 0)
                 {
                     eventPosition.AvailablePositions -= 1;
                     participant.Event.MaximumParticipants -= 1;
@@ -169,7 +165,7 @@ namespace DataAccessLayer.Repositories
             {
                 throw;
             };
-            return await Task.FromResult("User joined the event successfully.") ;
+            return await Task.FromResult("User joined the event successfully.");
         }
     }
 }

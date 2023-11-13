@@ -45,4 +45,10 @@ type FilterParams = {
   authorUserName?: string;
 };
 
-export type { EventDto, SportType, FilterParams, EventsResponse };
+type JoinEventDto = {
+  userId: string | undefined;
+  eventId: string;
+  eventPositionId: string;
+};
+
+export type { EventDto, SportType, FilterParams, EventsResponse, JoinEventDto };

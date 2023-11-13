@@ -7,7 +7,7 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import { FilterParams } from 'features/browse-events/api/dtos';
 import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectEvents } from 'features/browse-events/store/eventsPageSelector';
+import { selectEvents } from 'features/browse-events/store/selectors/eventsPageSelector';
 import { getEventsThunk } from 'features/browse-events/thunks/browseEventsThunks';
 
 const EventsPage = () => {
