@@ -31,14 +31,7 @@ const SeeProfile = ({ userId }: Props) => {
   }, []);
 
   return (
-    <Box
-      marginTop={!isMobile ? '0px' : '430px'}
-      marginBottom={!isMobile ? '0px' : '30px'}
-      display="flex"
-      width="70%"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Box width="100%" display="flex" justifyContent="center" alignItems="center">
       <Stack
         spacing={6}
         p={6}

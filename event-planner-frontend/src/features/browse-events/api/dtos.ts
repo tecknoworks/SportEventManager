@@ -13,6 +13,14 @@ type EventDto = {
   isClosed: boolean;
   authorUserId: string;
   authorUserName: string;
+  eventPositions: EventExtendedPosition[];
+};
+
+export type EventExtendedPosition = {
+  eventId: string;
+  positionId: string;
+  positionName: string;
+  availablePositions: number;
 };
 
 type EventsResponse = {
@@ -37,4 +45,10 @@ type FilterParams = {
   authorUserName?: string;
 };
 
-export type { EventDto, SportType, FilterParams, EventsResponse };
+type JoinEventDto = {
+  userId: string | undefined;
+  eventId: string;
+  eventPositionId: string;
+};
+
+export type { EventDto, SportType, FilterParams, EventsResponse, JoinEventDto };
