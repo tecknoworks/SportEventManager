@@ -9,11 +9,22 @@ import { format, parseISO } from 'date-fns';
 import { center } from '@cloudinary/url-gen/qualifiers/textAlignment';
 import Map from 'common/components/Map/Map';
 import { LatLng } from 'common/components/Map/models';
+import { getUserFromToken } from 'services/auth/context/AuthContext';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
+import { log } from 'console';
+import { JoinEventDto } from 'features/browse-events/api/dtos';
+import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const details = useSelector(selectEventDetails);
   const { eventId } = useParams();
+  const token = useSelector(selectToken);
+  const user = getUserFromToken(token || '');
+
+  console.log(user);
+
+
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));
@@ -39,6 +50,24 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
+
+  const handleJoinEvent = async () => {
+    const data: JoinEventDto = {
+      userId: user?.userId,
+      eventId: id || '',
+      eventPositionId: selectedPosition,
+    };
+    await dispatch(joinEventThunk(data));
+    onJoinSuccess();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+  };
+
+  console.log(details);
+
+
+
   const [latString, lngString] = location ? location.split(',') : [null, null];
   const lat = latString ? parseFloat(latString) : 0;
   const lng = lngString ? parseFloat(lngString) : 0;
@@ -47,7 +76,7 @@ const DetailsPage = () => {
     lng: lng,
   };
 
-  console.log(details);
+  // console.log(details);
 
   const parsedDateStart = startDate ? parseISO(startDate) : null;
   const formattedDateStart = parsedDateStart ? format(parsedDateStart, 'HH:mm dd-MM-yyyy') : '';
@@ -149,3 +178,7 @@ const DetailsPage = () => {
 };
 
 export default DetailsPage;
+function onJoinSuccess() {
+  throw new Error('Function not implemented.');
+}
+
