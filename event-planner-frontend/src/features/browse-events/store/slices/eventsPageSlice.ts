@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { EventsResponse } from '../../api/dtos';
 import { getEventsThunk } from '../../thunks/browseEventsThunks';
+import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 
 type State = {
   isLoading: boolean;
@@ -35,6 +36,20 @@ const eventsSlice = createSlice({
     });
     builder.addCase(getEventsThunk.rejected, (state, action) => {
       state.isLoading = false;
+      state.error = action.payload as string;
+    });
+    builder.addCase(joinEventThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(joinEventThunk.fulfilled, (state) => {
+      state.isLoading = false;
+      state.isSuccess = true;
+      state.isDone = true;
+    });
+    builder.addCase(joinEventThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isDone = true;
       state.error = action.payload as string;
     });
   },

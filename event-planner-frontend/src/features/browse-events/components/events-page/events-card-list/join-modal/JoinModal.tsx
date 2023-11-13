@@ -12,9 +12,10 @@ import {
 } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { EventExtendedPosition, JoinEventDto } from 'features/browse-events/api/dtos';
+import { joinEventIsSuccess } from 'features/browse-events/store/selectors/eventsPageSelector';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 
 interface Props {
@@ -23,15 +24,25 @@ interface Props {
   eventPositions: EventExtendedPosition[];
   eventId: string;
   userId: string | undefined;
-  onJoinSuccess: () => void;
 }
 
-const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId, onJoinSuccess }: Props) => {
+const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId }: Props) => {
   const dispatch: AppDispatch = useDispatch();
   const [selectedPosition, setSelectedPosition] = useState<string>('');
+  const isSuccess = useSelector(joinEventIsSuccess);
+  const [reloadOnce, setReloadOnce] = useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedPosition(event.target.value);
   };
+
+  useEffect(() => {
+    if (isSuccess && !reloadOnce) {
+      setReloadOnce(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  }, [isSuccess, reloadOnce]);
 
   const handleJoinEvent = async () => {
     const data: JoinEventDto = {
@@ -39,11 +50,8 @@ const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId, onJoinSuc
       eventId: eventId,
       eventPositionId: selectedPosition,
     };
+
     await dispatch(joinEventThunk(data));
-    onJoinSuccess();
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
   };
 
   return (
