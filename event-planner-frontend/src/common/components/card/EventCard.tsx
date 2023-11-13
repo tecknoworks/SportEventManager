@@ -4,12 +4,14 @@ import { EventDto } from 'features/browse-events/api/dtos';
 import { format } from 'date-fns';
 import { LatLng } from '../Map/models';
 import Map from '../Map/Map';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   event: EventDto;
 }
 
 const EventCard = ({ event }: Props) => {
+  const navigate = useNavigate()
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
   const [latString, lngString] = event.location.split(',');
@@ -37,7 +39,7 @@ const EventCard = ({ event }: Props) => {
         <Map isResizable={isResizable} center={center} />
       </CardBody>
       <CardFooter>
-        <SecondaryButton text="More details" />
+        <SecondaryButton text="More details" onClick={() => navigate(`/Event/GetEvent/${event.id}`)} />
       </CardFooter>
     </Card>
   );
