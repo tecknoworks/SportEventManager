@@ -136,6 +136,7 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
+
         
 /*
         [Authorize]*/

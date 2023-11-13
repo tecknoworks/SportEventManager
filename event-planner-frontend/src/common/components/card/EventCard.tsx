@@ -39,10 +39,6 @@ const EventCard = ({ event, currentUser }: Props) => {
     lng: lng,
   };
 
-  const handleReloadEvent = () => {
-    setReloadEvent(!reloadEvent);
-  };
-
   return (
     <>
       <Card variant="elevated" w="100%">
@@ -88,7 +84,6 @@ const EventCard = ({ event, currentUser }: Props) => {
         eventPositions={event.eventPositions}
         eventId={event.id}
         userId={currentUser?.userId}
-        onJoinSuccess={handleReloadEvent}
       />
     </>
   );

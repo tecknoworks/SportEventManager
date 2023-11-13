@@ -10,7 +10,6 @@ import eventReducer from 'features/event/store/slices/eventSlice';
 import adminReducer from 'features/admin-management/store/slices/adminSlice';
 import detailsReducer from 'features/details-page/store/slices/detailsSlice';
 import eventsReducer from 'features/browse-events/store/slices/eventsPageSlice';
-import joinEventReducer from 'features/browse-events/store/slices/joinEventSlice';
 
 export const store = configureStore({
   reducer: {
@@ -24,7 +23,6 @@ export const store = configureStore({
     adminPage: adminReducer,
     detailsPage: detailsReducer,
     browseEventsPage: eventsReducer,
-    joinEvent: joinEventReducer,
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),

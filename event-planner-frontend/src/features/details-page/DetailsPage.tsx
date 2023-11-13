@@ -6,14 +6,13 @@ import { AppDispatch } from 'redux/store';
 import { selectEventDetails } from './store/selectors/detailsSelector';
 import { useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
-import { center } from '@cloudinary/url-gen/qualifiers/textAlignment';
 import Map from 'common/components/Map/Map';
 import { LatLng } from 'common/components/Map/models';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
-import { log } from 'console';
 import { JoinEventDto } from 'features/browse-events/api/dtos';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
+import PrimaryButton from 'common/components/buttons/PrimaryButton';
 
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -21,9 +20,6 @@ const DetailsPage = () => {
   const { eventId } = useParams();
   const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');
-
-  console.log(user);
-
 
 
   useEffect(() => {
@@ -51,20 +47,15 @@ const DetailsPage = () => {
   } = details;
 
 
-  const handleJoinEvent = async () => {
+  const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
       userId: user?.userId,
-      eventId: id || '',
-      eventPositionId: selectedPosition,
+      eventId: eventId || '',
+      eventPositionId: positionId,
     };
     await dispatch(joinEventThunk(data));
-    onJoinSuccess();
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+    await dispatch(getEventThunk(`${eventId}`));
   };
-
-  console.log(details);
 
 
 
@@ -75,8 +66,6 @@ const DetailsPage = () => {
     lat: lat,
     lng: lng,
   };
-
-  // console.log(details);
 
   const parsedDateStart = startDate ? parseISO(startDate) : null;
   const formattedDateStart = parsedDateStart ? format(parsedDateStart, 'HH:mm dd-MM-yyyy') : '';
@@ -120,7 +109,7 @@ const DetailsPage = () => {
           <Heading as="h3" size="md" color="purple.300">
             Organizer : {authorUserName}
           </Heading>
-          <Text fontSize="md">{description} descriptions</Text>
+          <Text fontSize="md">{description}</Text>
           <Text fontSize="md">{sportTypeName}</Text>
           <Text fontSize="md">Location: {locationName}</Text>
           <Text fontSize="md">Start Date: {formattedDateStart} </Text>
@@ -148,9 +137,7 @@ const DetailsPage = () => {
                       {position.positionName} : {position.availablePositions}
                     </Text>
                     {(position.availablePositions ?? 0) > 0 && (
-                      <Button colorScheme="blue" onClick={() => console.log('merge')}>
-                        Join
-                      </Button>
+                      <PrimaryButton text="Join Event on this position" onClick={() => handleJoinEvent(position.positionId)} />
                     )}
                   </HStack>
                 ))}
@@ -178,7 +165,5 @@ const DetailsPage = () => {
 };
 
 export default DetailsPage;
-function onJoinSuccess() {
-  throw new Error('Function not implemented.');
-}
+
 
