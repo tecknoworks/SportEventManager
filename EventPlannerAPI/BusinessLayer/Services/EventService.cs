@@ -90,12 +90,12 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<PaginatedResult<GetEventDto>> GetEventsAsync(PaginationFilter filters)
+        public async Task<PaginatedResult<GetEventForBrowse>> GetEventsAsync(PaginationFilter filters)
         {
             try
             {
                 var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserName, filters.SkillLevel);
-                return _mapper.Map<PaginatedResult<GetEventDto>> (eventEntities);
+                return _mapper.Map<PaginatedResult<GetEventForBrowse>> (eventEntities);
             }
             catch (Exception ex)
             {
@@ -190,9 +190,7 @@ namespace BusinessLayer.Services
                 Guid eventId = joinEventDto.EventId;
                 Guid? eventPositionId = joinEventDto.EventPositionId;
 
-                var joinResult= await _eventRepository.JoinEventAsync(userId, eventId, eventPositionId);
-
-                var fullEvent =await _eventRepository.GetEventByIdAsync(eventId);
+                var fullEvent = await _eventRepository.GetEventByIdAsync(eventId);
                 if (fullEvent == null)
                 {
                     _logger.Error($"Event with id {eventId} not found.");
@@ -200,21 +198,21 @@ namespace BusinessLayer.Services
                 }
 
                 var authorId = fullEvent.AuthorUserId;
-                var author=await _userRepository.GetUserByIdAsync(authorId);
+                var author = await _userRepository.GetUserByIdAsync(authorId);
                 if (author == null)
                 {
                     _logger.Error($"Author with id {authorId} not found.");
                     throw new KeyNotFoundException("Author not found");
                 }
 
-                var user =await _userRepository.GetUserByIdAsync(userId);
+                var user = await _userRepository.GetUserByIdAsync(userId);
                 if (user == null)
                 {
                     _logger.Error($"User with id {userId} not found.");
                     throw new KeyNotFoundException("User not found");
                 }
 
-                var userDetails=await _userRepository.GetUserProfileDetailsAsync(userId);
+                var userDetails = await _userRepository.GetUserProfileDetailsAsync(userId);
                 if (userDetails == null)
                 {
                     _logger.Error($"User details for user id {userId} not found.");
@@ -222,6 +220,8 @@ namespace BusinessLayer.Services
                 }
                  
                 var profileLink = $"{baseUrl}/profile/{userId}";
+
+                var joinResult = await _eventRepository.JoinEventAsync(userId, eventId, eventPositionId);
 
                 var mail = MailRequest.JoinEventNotification(author.Email, user.UserName, userDetails.ProfilePhoto, profileLink);
                 await _mailService.SendEmailAsync(mail);

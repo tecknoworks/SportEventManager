@@ -1,18 +1,33 @@
-import { Card, CardBody, Text, CardFooter, StackDivider, Stack, Box, useMediaQuery } from '@chakra-ui/react';
+import { Card, CardBody, Text, CardFooter, StackDivider, Stack, useMediaQuery, useDisclosure } from '@chakra-ui/react';
 import SecondaryButton from '../buttons/SecondaryButton';
 import { EventDto } from 'features/browse-events/api/dtos';
 import { format } from 'date-fns';
 import { LatLng } from '../Map/models';
 import Map from '../Map/Map';
+import JoinButton from '../buttons/JoinButton';
+import JoinModal from './join-modal/JoinModal';
 import { useNavigate } from 'react-router-dom';
+
+type User =
+  | {
+    userId: string;
+    name: string;
+    email: string;
+    role: string;
+  }
+  | undefined;
+
 
 interface Props {
   event: EventDto;
+  currentUser: User;
 }
 
-const EventCard = ({ event }: Props) => {
+const EventCard = ({ event, currentUser }: Props) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate()
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
+  const [isMobile] = useMediaQuery('(max-width: 768px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
   const [latString, lngString] = event.location.split(',');
   const lat = parseFloat(latString);
@@ -21,27 +36,50 @@ const EventCard = ({ event }: Props) => {
     lat: lat,
     lng: lng,
   };
-  return (
-    <Card variant="elevated" w="100%">
-      <CardBody
-        display="flex"
-        alignItems="center"
-        flexDirection={!isResizable ? 'row' : 'column'}
-        justifyContent="space-between"
-      >
-        <Stack width={!isResizable ? '40%' : '100%'} divider={<StackDivider />}>
-          <Text as="b">{event.name}</Text>
-          <Text>{formattedStartDate}</Text>
-          <Text>{event.description}</Text>
-          {event.location}
-        </Stack>
 
-        <Map isResizable={isResizable} center={center} />
-      </CardBody>
-      <CardFooter>
-        <SecondaryButton text="More details" onClick={() => navigate(`/Event/GetEvent/${event.id}`)} />
-      </CardFooter>
-    </Card>
+  return (
+    <>
+      <Card variant="elevated" w="100%">
+        <CardBody
+          display="flex"
+          alignItems="center"
+          flexDirection={!isResizable ? 'row' : 'column'}
+          justifyContent="space-between"
+        >
+          <Stack width={!isResizable ? '40%' : '100%'} divider={<StackDivider />}>
+            <Text as="b">{event.name}</Text>
+            <Text>{formattedStartDate}</Text>
+            <Text>{event.description}</Text>
+            {event.location}
+          </Stack>
+
+          <Map isResizable={isResizable} center={center} />
+        </CardBody>
+        <CardFooter
+          display="flex"
+          alignItems="center"
+          flexDirection={!isMobile ? 'row' : 'column'}
+          justifyContent={!isMobile ? '' : 'space-between'}
+        >
+          <SecondaryButton text="More details" w={!isMobile ? '' : '100%'} onClick={() => navigate(`/Event/GetEvent/${event.id}`)} />
+          <JoinButton
+            text="Join Event"
+            isDisabled={event.isClosed ? true : false}
+            w={!isMobile ? '' : '100%'}
+            marginTop={!isMobile ? '' : '10px'}
+            marginLeft={!isMobile ? '30px' : ''}
+            onClick={onOpen}
+          />
+        </CardFooter>
+      </Card>
+      <JoinModal
+        isOpen={isOpen}
+        onClose={onClose}
+        eventPositions={event.eventPositions}
+        eventId={event.id}
+        userId={currentUser?.userId}
+      />
+    </>
   );
 };
 

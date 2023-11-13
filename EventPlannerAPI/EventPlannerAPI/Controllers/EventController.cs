@@ -24,7 +24,7 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpPost("GetEvents")]
-        public async Task<ActionResult<PaginatedResult<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
+        public async Task<ActionResult<PaginatedResult<GetEventForBrowse>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
         {
             try
             {
@@ -91,6 +91,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
+
         /*[Authorize]*/
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
@@ -108,6 +109,7 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
+
 
       /*  [Authorize]*/
         [HttpPut("UpdateEvent/{eventId}")]
@@ -134,6 +136,7 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
+        
 /*
         [Authorize]*/
         [HttpPost("JoinEvent")]
