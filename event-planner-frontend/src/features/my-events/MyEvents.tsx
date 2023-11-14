@@ -3,7 +3,7 @@ import MyEventsPage from './components/MyEventsPage';
 
 const MyEvents = () => {
   return (
-    <Box display="flex" justifyContent="center">
+    <Box display="flex" h="100%">
       <MyEventsPage />
     </Box>
   );

@@ -51,8 +51,8 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
   };
 
   return (
-    <Box bg={'white'} borderRight="1px" padding="20px" borderRightColor={'gray.200'} h={'100%'} {...rest}>
-      <Flex h="20" alignItems="center" justify="space-between">
+    <Box overflow="auto" bg={'white'} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
+      <Flex h="20" alignItems="center">
         <Text color="gray.500" as="b" fontSize="3xl">
           Filters
         </Text>

@@ -62,12 +62,15 @@ const EventsPage = () => {
 
   return (
     <Box display="flex" w="100%" h="100%" overflow="hidden">
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" h="100%">
+      <Box h="100%">
         <FilterForm
+          isMyEvents={false}
           onClose={() => onClose}
           onSendFilter={handleSendFilter}
-          isMyEvents={false}
-          display={{ base: 'none', md: 'block' }}
+          display={{ base: 'none', md: 'flex' }}
+          flexDirection="column"
+          justifyContent="space-between"
+          h={'100%'}
         />
         <Drawer
           isOpen={isOpen}
@@ -88,22 +91,20 @@ const EventsPage = () => {
         </Drawer>
       </Box>
       <Stack spacing="3" width="100%" h="100%" padding="20px" justifyContent="space-between">
-        <Box display="flex" flexDirection="column" justifyContent="center">
-          <Text color="white" textAlign="center" fontSize="30px">
-            Browse Events
-          </Text>
-          <Box display="flex">
-            {isMobile && (
-              <IconButton
-                bg={'white'}
-                variant="outline"
-                onClick={onOpen}
-                aria-label="open menu"
-                icon={<SettingsIcon />}
-              />
-            )}
-            <SearchBar onSearch={handleSearch} />
-          </Box>
+        <Text color="white" textAlign="center" fontSize="30px">
+          Browse Events
+        </Text>
+        <Box display="flex">
+          {isMobile && (
+            <IconButton
+              bg={'white'}
+              variant="outline"
+              onClick={onOpen}
+              aria-label="open menu"
+              icon={<SettingsIcon />}
+            />
+          )}
+          <SearchBar onSearch={handleSearch} />
         </Box>
         <EventsCardList
           events={browseEvents.events}

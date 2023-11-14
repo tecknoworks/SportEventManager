@@ -2,7 +2,6 @@ import { Box, Stack } from '@chakra-ui/react';
 import EventCard from 'common/components/card/EventCard';
 import { EventDto } from 'features/browse-events/api/dtos';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
-import { useEffect } from 'react';
 import { Paginate } from 'react-paginate-chakra-ui';
 import { useSelector } from 'react-redux';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
