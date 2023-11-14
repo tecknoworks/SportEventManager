@@ -11,13 +11,12 @@ import { useNavigate } from 'react-router-dom';
 
 type User =
   | {
-    userId: string;
-    name: string;
-    email: string;
-    role: string;
-  }
+      userId: string;
+      name: string;
+      email: string;
+      role: string;
+    }
   | undefined;
-
 
 interface Props {
   event: EventDto;
@@ -26,7 +25,7 @@ interface Props {
 
 const EventCard = ({ event, currentUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [reloadEvent, setReloadEvent] = useState<boolean>(false);
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const [isMobile] = useMediaQuery('(max-width: 768px)');
@@ -65,7 +64,11 @@ const EventCard = ({ event, currentUser }: Props) => {
           flexDirection={!isMobile ? 'row' : 'column'}
           justifyContent={!isMobile ? '' : 'space-between'}
         >
-          <SecondaryButton text="More details" w={!isMobile ? '' : '100%'} onClick={() => navigate(`/Event/GetEvent/${event.id}`)} />
+          <SecondaryButton
+            text="More details"
+            w={!isMobile ? '' : '100%'}
+            onClick={() => navigate(`/Event/GetEvent/${event.id}`)}
+          />
           <JoinButton
             text="Join Event"
             isDisabled={event.isClosed || event.maximumParticipants === 0 ? true : false}

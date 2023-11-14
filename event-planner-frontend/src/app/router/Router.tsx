@@ -16,8 +16,10 @@ import CreateEventPage from 'features/event/views/CreateEventPage';
 import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
 import SeeProfilePage from 'features/profile/views/SeeProfilePage';
-import ChatPage from 'features/chat/views/ChatPage';
+import DetailsPage from 'features/details-page/DetailsPage';
 import BrowseEvents from 'features/browse-events/BrowseEvents';
+import MyEvents from 'features/my-events/MyEvents';
+import ChatPage from 'features/chat/views/ChatPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -47,6 +49,7 @@ const RouterComponent: FC = () => {
               </LoggedInRoute>
             }
           />
+          <Route path="event/getEvent/:eventId" element={<DetailsPage />} />
           <Route
             path="confirm-account"
             element={
@@ -108,6 +111,14 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <EditEventPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="my-events"
+            element={
+              <PrivateRoute>
+                <MyEvents />
               </PrivateRoute>
             }
           />
