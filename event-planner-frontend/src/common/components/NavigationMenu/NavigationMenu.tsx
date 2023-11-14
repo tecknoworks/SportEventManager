@@ -67,6 +67,12 @@ const NavigationMenu = () => {
       availableForUser: true,
       linkTo: '/my-events',
     },
+    {
+      key: 6,
+      title: 'Browse Events',
+      availableForUser: true,
+      linkTo: '/browseevents',
+    },
   ];
 
   const token = useSelector(selectToken);
