@@ -13,7 +13,6 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     [Authorize]
     public class EventController : ControllerBase
     {
@@ -91,7 +90,6 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-
         [Authorize]
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
@@ -109,7 +107,6 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
-
 
         [Authorize]
         [HttpPut("UpdateEvent/{eventId}")]
@@ -136,8 +133,6 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
-
-
 
         [Authorize]
         [HttpPost("JoinEvent")]

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { selectEventDetails } from './store/selectors/detailsSelector';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import Map from 'common/components/Map/Map';
 import { LatLng } from 'common/components/Map/models';
@@ -13,14 +13,15 @@ import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { JoinEventDto } from 'features/browse-events/api/dtos';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
+import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
 
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
   const details = useSelector(selectEventDetails);
   const { eventId } = useParams();
   const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');
-
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));
@@ -46,7 +47,6 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
-
   const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
       userId: user?.userId,
@@ -56,8 +56,6 @@ const DetailsPage = () => {
     await dispatch(joinEventThunk(data));
     await dispatch(getEventThunk(`${eventId}`));
   };
-
-
 
   const [latString, lngString] = location ? location.split(',') : [null, null];
   const lat = latString ? parseFloat(latString) : 0;
@@ -73,32 +71,6 @@ const DetailsPage = () => {
   const parsedDateEnd = endDate ? parseISO(endDate) : null;
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
 
-  const getColorScheme = (skillLevel: any) => {
-    switch (skillLevel) {
-      case 0:
-        return 'green';
-      case 1:
-        return 'blue';
-      case 2:
-        return 'red';
-      default:
-        return 'gray';
-    }
-  };
-
-  const getSkillLevelText = (skillLevel: any) => {
-    switch (skillLevel) {
-      case 0:
-        return 'Beginner';
-      case 1:
-        return 'Intermediate';
-      case 2:
-        return 'Advanced';
-      default:
-        return 'Unknown';
-    }
-  };
-
   return (
     <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'}>
       <Flex direction={{ base: 'column', md: 'row' }} wrap="wrap" justifyContent="space-between">
@@ -106,7 +78,7 @@ const DetailsPage = () => {
           <Heading as="h1" size="xl" color="purple.700">
             {name}
           </Heading>
-          <Heading as="h3" size="md" color="purple.300">
+          <Heading as="h3" size="md" color="purple.300" onClick={() => { navigate(`/profile/${authorUserId}`) }} cursor="pointer">
             Organizer : {authorUserName}
           </Heading>
           <Text fontSize="md">{description}</Text>
@@ -165,5 +137,3 @@ const DetailsPage = () => {
 };
 
 export default DetailsPage;
-
-

@@ -26,7 +26,7 @@ interface Props {
 
 const EventCard = ({ event, currentUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
- const navigate = useNavigate()
+  const navigate = useNavigate()
   const [reloadEvent, setReloadEvent] = useState<boolean>(false);
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const [isMobile] = useMediaQuery('(max-width: 768px)');

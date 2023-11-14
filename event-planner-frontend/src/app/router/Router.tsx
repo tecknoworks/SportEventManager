@@ -50,9 +50,7 @@ const RouterComponent: FC = () => {
           <Route
             path="event/getEvent/:eventId"
             element={
-
               <DetailsPage />
-
             }
           />
           <Route
