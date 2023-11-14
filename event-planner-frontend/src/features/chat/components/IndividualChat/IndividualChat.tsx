@@ -10,7 +10,7 @@ import { AppDispatch, RootState } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChatsMessagesThunk } from 'features/chat/store/thunks/getChatMessagesThunk';
 import { selectChatMessages } from 'features/chat/store/selectors/chatSelector';
-import { registerMessageReceived, sendMessage } from 'services/signalService';
+import { registerMessageReceived, sendMessage, unregisterMessageReceived } from 'services/signalService';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
 import { AddMessagePaylod, addMessage } from 'features/chat/store/slices/chatSlice';
@@ -40,15 +40,21 @@ const IndividualChat = ({ chatDetails }: Props) => {
 
   useEffect(() => {
     const messageReceived = (message: Message) => {
-      const payload: AddMessagePaylod = {
-        chatId: chatDetails?.id || '',
-        message: message,
-      };
-      dispatch(addMessage(payload));
+      if (chatDetails && message.chatId === chatDetails.id) {
+        const payload: AddMessagePaylod = {
+          chatId: chatDetails?.id || '',
+          message: message,
+        };
+        dispatch(addMessage(payload));
+      }
     };
 
     registerMessageReceived(messageReceived);
-  }, [dispatch]);
+
+    return () => {
+      unregisterMessageReceived(messageReceived);
+    };
+  }, [dispatch, chatDetails]);
 
   const handleSendMessage = () => {
     if (!chatDetails) return;

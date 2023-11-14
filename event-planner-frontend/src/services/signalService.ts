@@ -22,14 +22,6 @@ export const connect = async () => {
   }
 };
 
-// export const removeHandlerFromFunction = (functionName: string, callback: (message: Message) => void) => {
-//   connection.off(functionName, callback);
-// };
-
-export const registerUnauthorizedAccessHandler = (callback: (message: string) => void) => {
-  connection.on('UnauthorizedAccess', callback);
-};
-
 export const sendMessage = async (message: string, chatId: string) => {
   try {
     await connection.invoke('SendMessageToChatGroup', chatId, message);
@@ -40,6 +32,10 @@ export const sendMessage = async (message: string, chatId: string) => {
 
 export const registerMessageReceived = (callback: (message: Message) => void) => {
   connection.on('ReceiveMessage', callback);
+};
+
+export const unregisterMessageReceived = (callback: (message: Message) => void) => {
+  connection.off('ReceiveMessage', callback);
 };
 
 export const disconnect = async () => {

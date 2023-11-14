@@ -7,6 +7,7 @@ export interface ChatDetails {
 
 export interface Message {
   username: string;
+  chatId: string;
   userId: string;
   messageText: string;
   date: string;

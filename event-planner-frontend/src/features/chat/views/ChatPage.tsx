@@ -32,7 +32,7 @@ const ChatPage = () => {
       <Box display="flex" flexDirection="column" justifyContent="center" gap="1rem">
         <ChatSearch />
         <ChatsList
-          lastMessage={{ username: 'ana', userId: '123', messageText: 'am mere', date: '' }}
+          lastMessage={{ username: 'ana', chatId: '2', userId: '123', messageText: 'am mere', date: '' }}
           chats={chats}
           selectedChatDetails={selectedChatDetails}
           setSelectedChatDetails={setSelectedChatDetails}

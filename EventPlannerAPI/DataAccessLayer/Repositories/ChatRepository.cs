@@ -21,6 +21,7 @@ namespace DataAccessLayer.Repositories
 
             var messageWithUser = await _eventPlannerContext.Messages
                 .Include(message => message.User)
+                .Include(message => message.ChatMessage)
                 .FirstOrDefaultAsync(m => m.Id == newMessage.Id);
             
             return messageWithUser;
