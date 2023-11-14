@@ -82,7 +82,7 @@ namespace EventPlannerAPI.Controllers
             return Ok("Password reset successfully.");
         }
 
-        [Authorize]
+        /*[Authorize]*/
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet("GetUserProfileDetails/{userId}")]
@@ -102,7 +102,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        [Authorize]
+        /*[Authorize]*/
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPut("UpdateUserProfileDetails/{userId}")]

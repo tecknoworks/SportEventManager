@@ -47,6 +47,8 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
+  console.log(details);
+
   const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
       userId: user?.userId,
@@ -78,7 +80,15 @@ const DetailsPage = () => {
           <Heading as="h1" size="xl" color="purple.700">
             {name}
           </Heading>
-          <Heading as="h3" size="md" color="purple.300" onClick={() => { navigate(`/profile/${authorUserId}`) }} cursor="pointer">
+          <Heading
+            as="h3"
+            size="md"
+            color="purple.300"
+            onClick={() => {
+              navigate(`/profile/${authorUserId}`);
+            }}
+            cursor="pointer"
+          >
             Organizer : {authorUserName}
           </Heading>
           <Text fontSize="md">{description}</Text>
@@ -97,24 +107,31 @@ const DetailsPage = () => {
           </Box>
 
           <Divider />
-          <VStack spacing={2} align="stretch">
-            <Heading as="h3" size="md" color="purple.500">
-              Positions
-            </Heading>
-            <Box>
-              {eventPositions &&
-                eventPositions.map((position, index) => (
-                  <HStack key={index} justifyContent="space-between" mt={"2"}>
-                    <Text fontSize="md">
-                      {position.positionName} : {position.availablePositions}
-                    </Text>
-                    {(position.availablePositions ?? 0) > 0 && (
-                      <PrimaryButton text="Join Event on this position" onClick={() => handleJoinEvent(position.positionId)} />
-                    )}
-                  </HStack>
-                ))}
-            </Box>
-          </VStack>
+          {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
+            <PrimaryButton text="Join Event" onClick={() => handleJoinEvent(null)} />
+          ) : (
+            <VStack spacing={2} align="stretch">
+              <Heading as="h3" size="md" color="purple.500">
+                Positions
+              </Heading>
+              <Box>
+                {eventPositions &&
+                  eventPositions.map((position, index) => (
+                    <HStack key={index} justifyContent="space-between" mt={'2'}>
+                      <Text fontSize="md">
+                        {position.positionName} : {position.availablePositions}
+                      </Text>
+                      {(position.availablePositions ?? 0) > 0 && (
+                        <PrimaryButton
+                          text="Join Event on this position"
+                          onClick={() => handleJoinEvent(position.positionId)}
+                        />
+                      )}
+                    </HStack>
+                  ))}
+              </Box>
+            </VStack>
+          )}
           <Divider />
           <VStack spacing={2} align="stretch">
             <Heading as="h3" size="md" color="purple.500">
@@ -124,8 +141,14 @@ const DetailsPage = () => {
               {participants &&
                 participants.map((participant, index) => (
                   <HStack key={index} justifyContent="space-between">
-                    <Text fontSize="md">{participant.positionName} :</Text>
-                    <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
+                    {!hasPositions ? (
+                      <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
+                    ) : (
+                      <>
+                        <Text fontSize="md">{participant.positionName}:</Text>
+                        <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
+                      </>
+                    )}
                   </HStack>
                 ))}
             </Box>
