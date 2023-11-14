@@ -111,9 +111,11 @@ const DetailsPage = () => {
             <PrimaryButton text="Join Event" onClick={() => handleJoinEvent(null)} />
           ) : (
             <VStack spacing={2} align="stretch">
-              <Heading as="h3" size="md" color="purple.500">
-                Positions
-              </Heading>
+              {hasPositions === true && (
+                <Heading as="h3" size="md" color="purple.500">
+                  Positions
+                </Heading>
+              )}
               <Box>
                 {eventPositions &&
                   eventPositions.map((position, index) => (
