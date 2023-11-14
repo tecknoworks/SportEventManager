@@ -43,6 +43,7 @@ type FilterParams = {
   maximumDuration?: number;
   location?: string;
   authorUserName?: string;
+  authorId?: string;
 };
 
 type JoinEventDto = {

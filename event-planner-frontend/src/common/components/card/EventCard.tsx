@@ -65,11 +65,9 @@ const EventCard = ({ event, currentUser }: Props) => {
           flexDirection={!isMobile ? 'row' : 'column'}
           justifyContent={!isMobile ? '' : 'space-between'}
         >
-
           <SecondaryButton text="More details" w={!isMobile ? '' : '100%'} onClick={() => navigate(`/Event/GetEvent/${event.id}`)} />
           <JoinButton
             text="Join Event"
-
             isDisabled={event.isClosed || event.maximumParticipants === 0 ? true : false}
             w={!isMobile ? '' : '100%'}
             marginTop={!isMobile ? '' : '10px'}
