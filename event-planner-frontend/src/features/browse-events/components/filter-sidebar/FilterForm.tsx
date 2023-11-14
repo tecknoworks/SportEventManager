@@ -14,9 +14,10 @@ import { AppDispatch } from 'redux/store';
 interface SidebarProps extends BoxProps {
   onClose: () => void;
   onSendFilter: (value: FilterParams) => void;
+  isMyEvents: boolean;
 }
 
-const FilterForm = ({ onClose, onSendFilter, ...rest }: SidebarProps) => {
+const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps) => {
   const dispatch: AppDispatch = useDispatch();
   const [selectedSport, setSelectedSport] = useState<GetSportTypesDto | undefined>(undefined);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -50,8 +51,8 @@ const FilterForm = ({ onClose, onSendFilter, ...rest }: SidebarProps) => {
   };
 
   return (
-    <Box bg={'white'} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
-      <Flex h="20" alignItems="center" justify="space-between">
+    <Box overflow="auto" bg={'white'} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
+      <Flex h="20" alignItems="center">
         <Text color="gray.500" as="b" fontSize="3xl">
           Filters
         </Text>
@@ -91,17 +92,19 @@ const FilterForm = ({ onClose, onSendFilter, ...rest }: SidebarProps) => {
             }}
           />
         </FormControl>
-        <FormControl>
-          <FormLabel>Creator of Events</FormLabel>
-          <Input
-            type="text"
-            placeholder="Creator of Events"
-            value={author}
-            onChange={(e) => {
-              setAuthor(e.target.value);
-            }}
-          />
-        </FormControl>
+        {!isMyEvents && (
+          <FormControl>
+            <FormLabel>Creator of Events</FormLabel>
+            <Input
+              type="text"
+              placeholder="Creator of Events"
+              value={author}
+              onChange={(e) => {
+                setAuthor(e.target.value);
+              }}
+            />
+          </FormControl>
+        )}
         <FormControl>
           <FormLabel>Location</FormLabel>
           <LocationSearch

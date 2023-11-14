@@ -41,7 +41,7 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
-        public async Task<PaginatedResult<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserName, int skillLevel)
+        public async Task<PaginatedResult<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserName, int skillLevel, string authorId)
         {
             var query = (IQueryable<Event>)_eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
@@ -85,6 +85,10 @@ namespace DataAccessLayer.Repositories
                 query = query.Where(evnt => evnt.SkillLevel == skillLevel);
             }
 
+            if(!string.IsNullOrEmpty(authorId))
+            {
+                query = query.Where(evnt => evnt.AuthorUserId ==  authorId);
+            }
             var totalEvents = await query.CountAsync();
 
             var paginatedEvents = await query
