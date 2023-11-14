@@ -14,11 +14,16 @@ namespace DataAccessLayer.Repositories
             _eventPlannerContext = eventPlannerContext;
         }
 
-        public async Task<string> SaveMessageAsync(Message newMessage)
+        public async Task<Message> SaveMessageAsync(Message newMessage)
         {
             await _eventPlannerContext.Messages.AddAsync(newMessage);
             await _eventPlannerContext.SaveChangesAsync();
-            return "Message saved";
+
+            var messageWithUser = await _eventPlannerContext.Messages
+                .Include(message => message.User)
+                .FirstOrDefaultAsync(m => m.Id == newMessage.Id);
+            
+            return messageWithUser;
         }
 
         public async Task<string> SaveChatMessageAsync(ChatMessage newChatMessage)
@@ -74,6 +79,7 @@ namespace DataAccessLayer.Repositories
                     .Where(chatEvent => chatEvent.Id == chatId)
                     .Include(chatEvent => chatEvent.ChatMessages)
                         .ThenInclude(chatMessage => chatMessage.Message)
+                            .ThenInclude(message => message.User)
                     .SelectMany(chatEvent => chatEvent.ChatMessages)
                     .Select(chatMessage => chatMessage.Message)
                     .ToListAsync();

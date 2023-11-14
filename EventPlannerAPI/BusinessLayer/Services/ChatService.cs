@@ -20,7 +20,7 @@ namespace BusinessLayer.Services
             _mapper = mapper;
         }
 
-        public async Task SaveMessageAsync(Guid chatId, string userId, string message)
+        public async Task<MessageDto> SaveMessageAsync(Guid chatId, string userId, string message)
         {
             var newMessage = new Message()
             {
@@ -29,7 +29,7 @@ namespace BusinessLayer.Services
                 Date = DateTime.Now,
             };
 
-            await _chatRepository.SaveMessageAsync(newMessage);
+            var messageToReturn = await _chatRepository.SaveMessageAsync(newMessage);
 
             var newChatMessage = new ChatMessage()
             {
@@ -38,6 +38,7 @@ namespace BusinessLayer.Services
             };
 
             await _chatRepository.SaveChatMessageAsync(newChatMessage);
+            return _mapper.Map<MessageDto>(messageToReturn);
         }
 
         public async Task<IEnumerable<ChatMessage>> GetMessageHistoryAsync(string eventId)

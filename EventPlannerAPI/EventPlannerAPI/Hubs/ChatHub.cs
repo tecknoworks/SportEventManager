@@ -20,8 +20,8 @@ namespace EventPlannerAPI.Hubs
         public async Task<Task> SendMessageToChatGroup(string chatId, string message)
         {
             var userId = Context.User?.FindFirst(SolutionConfigurationConstants.JwtIdClaim)?.Value;
-            await _chatService.SaveMessageAsync(new Guid(chatId), userId, message);    
-            return Clients.Group(chatId.ToUpper()).SendAsync("ReceiveMessage", message, userId);
+            var savedMessage = await _chatService.SaveMessageAsync(new Guid(chatId), userId, message);    
+            return Clients.Group(chatId.ToUpper()).SendAsync("ReceiveMessage", savedMessage);
         }
         public override async Task OnConnectedAsync()
         {
