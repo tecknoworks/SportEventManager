@@ -9,5 +9,10 @@ export interface Message {
   username: string;
   userId: string;
   messageText: string;
-  date: Date;
+  date: string;
+}
+
+export interface GetMessagesResponse {
+  messages: Message[];
+  chatId: string;
 }

@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { VStack } from '@chakra-ui/react';
 import MessageCard from '../MessageCard/MessageCard';
+import { Message } from 'features/chat/api/dtos/dtos';
 
 type Props = {
-  messages: Array<any>;
+  messages: Message[];
   currentUser: string;
 };
 
 const MessagesList = ({ messages, currentUser }: Props) => {
+  const endOfMessagesRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
   return (
     <VStack
       spacing={4}
@@ -25,8 +35,9 @@ const MessagesList = ({ messages, currentUser }: Props) => {
       }}
     >
       {messages.map((message, index) => (
-        <MessageCard key={index} message={message} isCurrentUser={message.sender === currentUser} />
+        <MessageCard key={index} message={message} isCurrentUser={message.username === currentUser} />
       ))}
+      <div ref={endOfMessagesRef} />
     </VStack>
   );
 };

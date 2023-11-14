@@ -1,18 +1,23 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { getChatsDetailsThunk } from '../thunks/getChatsDetailsThunk';
-import { ChatDetails, Message } from 'features/chat/api/dtos/dtos';
+import { ChatDetails, GetMessagesResponse, Message } from 'features/chat/api/dtos/dtos';
 import { getChatsMessagesThunk } from '../thunks/getChatMessagesThunk';
+
+export type AddMessagePaylod = {
+  chatId: string;
+  message: Message;
+};
 
 type State = {
   chatsDetails: ChatDetails[];
   isLoading: boolean;
   error: string;
-  chatMessages: Message[];
+  chatMessages: { [chatId: string]: Message[] };
 };
 
 const initialState: State = {
   chatsDetails: [],
-  chatMessages: [],
+  chatMessages: {},
   isLoading: false,
   error: '',
 };
@@ -20,7 +25,15 @@ const initialState: State = {
 const chatSlice = createSlice({
   name: 'chatSlice',
   initialState,
-  reducers: {},
+  reducers: {
+    addMessage: (state, action: PayloadAction<AddMessagePaylod>) => {
+      const { chatId, message } = action.payload;
+      if (!state.chatMessages[chatId]) {
+        state.chatMessages[chatId] = [];
+      }
+      state.chatMessages[chatId].push(message);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getChatsDetailsThunk.pending, (state) => {
       state.isLoading = true;
@@ -41,7 +54,8 @@ const chatSlice = createSlice({
 
     builder.addCase(getChatsMessagesThunk.fulfilled, (state, action) => {
       state.isLoading = false;
-      state.chatMessages = action.payload as Message[];
+      const { chatId, messages } = action.payload as GetMessagesResponse;
+      state.chatMessages[chatId] = messages;
     });
 
     builder.addCase(getChatsMessagesThunk.rejected, (state, action) => {
@@ -50,5 +64,7 @@ const chatSlice = createSlice({
     });
   },
 });
+
+export const { addMessage } = chatSlice.actions;
 
 export default chatSlice.reducer;

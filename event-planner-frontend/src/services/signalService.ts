@@ -1,4 +1,5 @@
 import * as signalR from '@microsoft/signalr';
+import { Message } from 'features/chat/api/dtos/dtos';
 
 const getJwtToken = () => {
   let token = localStorage.getItem('token') || '';
@@ -18,9 +19,12 @@ export const connect = async () => {
     console.log('SignalR Connected.');
   } catch (err) {
     console.error('SignalR Connection Error: ', err);
-    setTimeout(connect, 5000);
   }
 };
+
+// export const removeHandlerFromFunction = (functionName: string, callback: (message: Message) => void) => {
+//   connection.off(functionName, callback);
+// };
 
 export const registerUnauthorizedAccessHandler = (callback: (message: string) => void) => {
   connection.on('UnauthorizedAccess', callback);
@@ -34,7 +38,7 @@ export const sendMessage = async (message: string, chatId: string) => {
   }
 };
 
-export const registerMessageReceived = (callback: (userId: string, message: string) => void) => {
+export const registerMessageReceived = (callback: (message: Message) => void) => {
   connection.on('ReceiveMessage', callback);
 };
 

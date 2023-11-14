@@ -1,61 +1,19 @@
 import { Input } from '@chakra-ui/input';
 import { VStack, HStack } from '@chakra-ui/layout';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ChatHeader from '../ChatHeader/ChatHeader';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { ArrowRightIcon } from '@chakra-ui/icons';
 import MessagesList from '../MessagesList/MessagesList';
-import { ChatDetails } from 'features/chat/api/dtos/dtos';
-import { AppDispatch } from 'redux/store';
+import { ChatDetails, Message } from 'features/chat/api/dtos/dtos';
+import { AppDispatch, RootState } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChatsMessagesThunk } from 'features/chat/store/thunks/getChatMessagesThunk';
 import { selectChatMessages } from 'features/chat/store/selectors/chatSelector';
-import { sendMessage } from 'services/signalService';
-
-const messagesData = [
-  {
-    sender: 'user123',
-    content:
-      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-    timestamp: '12:00 PM',
-    isCurrentUser: false,
-  },
-  {
-    sender: 'currentUser',
-    content:
-      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-    timestamp: '12:01 PM',
-    isCurrentUser: true,
-  },
-  {
-    sender: 'user123',
-    content:
-      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-    timestamp: '12:00 PM',
-    isCurrentUser: false,
-  },
-  {
-    sender: 'currentUser',
-    content:
-      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-    timestamp: '12:01 PM',
-    isCurrentUser: true,
-  },
-  {
-    sender: 'user123',
-    content:
-      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-    timestamp: '12:00 PM',
-    isCurrentUser: false,
-  },
-  {
-    sender: 'currentUser',
-    content:
-      'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Eius iusto, perspiciatis officiis incidunt saepe ex quia. Possimus fugiat porro, praesentium incidunt qui suscipit quidem. Explicabo culpa velit earum assumenda sed.',
-    timestamp: '12:01 PM',
-    isCurrentUser: true,
-  },
-];
+import { registerMessageReceived, sendMessage } from 'services/signalService';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
+import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
+import { AddMessagePaylod, addMessage } from 'features/chat/store/slices/chatSlice';
 
 type Props = {
   chatDetails?: ChatDetails;
@@ -63,14 +21,34 @@ type Props = {
 
 const IndividualChat = ({ chatDetails }: Props) => {
   const dispatch: AppDispatch = useDispatch();
-  const chatMessages = useSelector(selectChatMessages);
-  const [newMessage, setNewMessage] = React.useState('');
+  const messagesSelector = useSelector((state: RootState) => selectChatMessages(state, chatDetails?.id || ''));
+  const [newMessage, setNewMessage] = useState('');
+  const token = useSelector(selectToken);
+  const [userDetails, setUserDetails] = useState<UserDetails>();
+
+  useEffect(() => {
+    if (token) {
+      setUserDetails(getUserFromToken(token));
+    }
+  }, []);
 
   useEffect(() => {
     if (chatDetails) {
       dispatch(getChatsMessagesThunk(chatDetails.id));
     }
-  }, [chatDetails]);
+  }, [dispatch, chatDetails]);
+
+  useEffect(() => {
+    const messageReceived = (message: Message) => {
+      const payload: AddMessagePaylod = {
+        chatId: chatDetails?.id || '',
+        message: message,
+      };
+      dispatch(addMessage(payload));
+    };
+
+    registerMessageReceived(messageReceived);
+  }, [dispatch]);
 
   const handleSendMessage = () => {
     if (!chatDetails) return;
@@ -78,7 +56,14 @@ const IndividualChat = ({ chatDetails }: Props) => {
     setNewMessage('');
   };
 
-  return chatDetails ? (
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  return chatDetails && messagesSelector ? (
     <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor="whiteAlpha.800">
       <ChatHeader
         title={chatDetails.name}
@@ -99,10 +84,15 @@ const IndividualChat = ({ chatDetails }: Props) => {
           scrollbarWidth: 'none',
         }}
       >
-        <MessagesList messages={chatMessages} currentUser="currentUser" />
+        <MessagesList messages={messagesSelector} currentUser={userDetails?.username || ''} />
       </VStack>
       <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="1rem">
-        <Input placeholder="Type a message..." value={newMessage} onChange={(e) => setNewMessage(e.target.value)} />
+        <Input
+          placeholder="Type a message..."
+          onKeyDown={handleKeyPress}
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
         <PrimaryButton text={<ArrowRightIcon />} onClick={handleSendMessage} />
       </HStack>
     </VStack>
