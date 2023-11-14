@@ -12,6 +12,7 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     [Authorize(Roles = RoleConstants.ADMIN_ROLE)]
     public class AdminController:ControllerBase
     {

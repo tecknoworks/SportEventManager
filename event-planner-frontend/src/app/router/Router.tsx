@@ -16,6 +16,7 @@ import CreateEventPage from 'features/event/views/CreateEventPage';
 import EditEventPage from 'features/event/views/EditEventPage';
 import { LoggedInRoute, OnlyAdminRoute, PrivateRoute } from './PrivateRoute';
 import SeeProfilePage from 'features/profile/views/SeeProfilePage';
+import DetailsPage from 'features/details-page/DetailsPage';
 import BrowseEvents from 'features/browse-events/BrowseEvents';
 import MyEvents from 'features/my-events/MyEvents';
 
@@ -45,6 +46,12 @@ const RouterComponent: FC = () => {
               <LoggedInRoute>
                 <SignUpPage />
               </LoggedInRoute>
+            }
+          />
+          <Route
+            path="event/getEvent/:eventId"
+            element={
+              <DetailsPage />
             }
           />
           <Route

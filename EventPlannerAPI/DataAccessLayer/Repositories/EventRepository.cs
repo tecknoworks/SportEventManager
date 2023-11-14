@@ -28,6 +28,7 @@ namespace DataAccessLayer.Repositories
         {
             var eventEntity = await _eventPlannerContext.Events
                 .Include(evnt => evnt.Participants)
+                    .ThenInclude(participant => participant.User)
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
