@@ -69,6 +69,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
         public async Task<IList<SportTypeDto>> GetAvailableSportTypesAsync()
         {
             try

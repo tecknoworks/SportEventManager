@@ -7,6 +7,7 @@ import Map from '../Map/Map';
 import JoinButton from '../buttons/JoinButton';
 import JoinModal from '../../../features/browse-events/components/events-page/events-card-list/join-modal/JoinModal';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type User =
   | {
@@ -33,6 +34,11 @@ const EventCard = ({ event, currentUser }: Props) => {
   const center: LatLng = {
     lat: lat,
     lng: lng,
+  };
+  const navigate = useNavigate();
+
+  const handleEventUserClick = () => {
+    navigate(`/event-users/${event.id}`);
   };
 
   return (
@@ -70,6 +76,15 @@ const EventCard = ({ event, currentUser }: Props) => {
             marginLeft={!isMobile ? '30px' : ''}
             onClick={onOpen}
           />
+          {event.authorUserId === currentUser?.userId && (
+            <SecondaryButton
+              text="Event Users"
+              w={!isMobile ? '' : '100%'}
+              marginTop={!isMobile ? '' : '10px'}
+              marginLeft={!isMobile ? '30px' : ''}
+              onClick={handleEventUserClick}
+            />
+          )}
         </CardFooter>
       </Card>
       <JoinModal

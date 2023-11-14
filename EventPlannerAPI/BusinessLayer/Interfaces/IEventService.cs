@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs;
 using DataAccessLayer.Models;
+
 namespace BusinessLayer.Interfaces
 {
     public interface IEventService
