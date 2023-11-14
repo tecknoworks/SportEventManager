@@ -13,6 +13,7 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -22,7 +23,7 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpPost("GetEvents")]
-        public async Task<ActionResult<PaginatedResult<GetEventDto>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
+        public async Task<ActionResult<PaginatedResult<GetEventForBrowse>>> GetEvents([FromBody(EmptyBodyBehavior = EmptyBodyBehavior.Allow)] PaginationFilter filters)
         {
             try
             {

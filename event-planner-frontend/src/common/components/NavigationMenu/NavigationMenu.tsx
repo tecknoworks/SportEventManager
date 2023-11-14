@@ -61,6 +61,12 @@ const NavigationMenu = () => {
       availableForUser: true,
       linkTo: '/chat',
     },
+    {
+      key: 5,
+      title: 'My Events',
+      availableForUser: true,
+      linkTo: '/my-events',
+    },
   ];
 
   const token = useSelector(selectToken);

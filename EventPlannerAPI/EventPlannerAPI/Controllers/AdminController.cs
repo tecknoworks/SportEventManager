@@ -12,6 +12,7 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     [Authorize(Roles = RoleConstants.ADMIN_ROLE)]
     public class AdminController:ControllerBase
     {
@@ -61,9 +62,6 @@ namespace EventPlannerAPI.Controllers
         [HttpDelete("DeleteUser")]
 
         public async Task<IActionResult> DeleteUser(string userId)
-
-       
-
         {
             var result = await _adminService.DeleteUserAsyncLogic(userId);
             if (!result.Succeeded) return BadRequest(result.Errors);

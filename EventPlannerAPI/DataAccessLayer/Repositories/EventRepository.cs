@@ -27,6 +27,7 @@ namespace DataAccessLayer.Repositories
         {
             var eventEntity = await _eventPlannerContext.Events
                 .Include(evnt => evnt.Participants)
+                    .ThenInclude(participant => participant.User)
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
@@ -40,11 +41,13 @@ namespace DataAccessLayer.Repositories
             return eventEntity;
         }
 
-        public async Task<PaginatedResult<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserName, int skillLevel)
+        public async Task<PaginatedResult<Event>> GetEventsAsync(int pageNumber, int pageSize, string searchData, Guid sportTypeId, DateTime startDate, double maximumDuration, string location, string authorUserName, int skillLevel, string authorId)
         {
             var query = (IQueryable<Event>)_eventPlannerContext.Events
                 .Include(evnt => evnt.SportType)
-                .Include(evnt => evnt.Author);
+                .Include(evnt => evnt.Author)
+                .Include(evnt => evnt.EventPositions)
+                .ThenInclude(ep => ep.Position);
 
             if (!string.IsNullOrEmpty(searchData))
             {
@@ -82,6 +85,10 @@ namespace DataAccessLayer.Repositories
                 query = query.Where(evnt => evnt.SkillLevel == skillLevel);
             }
 
+            if(!string.IsNullOrEmpty(authorId))
+            {
+                query = query.Where(evnt => evnt.AuthorUserId ==  authorId);
+            }
             var totalEvents = await query.CountAsync();
 
             var paginatedEvents = await query
@@ -95,9 +102,6 @@ namespace DataAccessLayer.Repositories
                 Events = paginatedEvents
             };
         }
-
-
-
 
         public async Task<IList<SportType>> GetAvailableSportTypesAsync()
         {
@@ -148,9 +152,10 @@ namespace DataAccessLayer.Repositories
                                     ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
                                     : null;
 
-                if (eventPosition != null && eventPosition.AvailablePositions > 0)
+                if (eventPosition != null && eventPosition.AvailablePositions > 0 && participant.Event.MaximumParticipants > 0)
                 {
                     eventPosition.AvailablePositions -= 1;
+                    participant.Event.MaximumParticipants -= 1;
                 }
                 else
                 {
@@ -163,7 +168,7 @@ namespace DataAccessLayer.Repositories
             {
                 throw;
             };
-            return await Task.FromResult("User joined the event successfully.") ;
+            return await Task.FromResult("User joined the event successfully.");
         }
 
         public async Task<SportType?> GetEventSportTypeAsync(Guid eventId)
