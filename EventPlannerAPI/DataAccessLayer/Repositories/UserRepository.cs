@@ -223,5 +223,22 @@ namespace DataAccessLayer.Repositories
         {
             return await _eventPlannerContext.Users.AnyAsync(user => user.Id == userId);
         }
+
+
+ 
+
+        public async Task<List<Event>> GetJoinedEvents(string userId)
+        {
+            try
+            {
+                var participantEvents = await _eventPlannerContext.Participants.Where(p => p.UserId == userId).Select(p => p.Event).ToListAsync();
+                return participantEvents;
+            }catch (Exception ex)
+            {
+                _logger.Error(ex, "An error occurred while retrieving events for user with ID {UserId}", userId);
+                throw new EventPlannerException($"An error occurred while retrieving events for user with ID {userId}");
+            }
+        }
+
     }
 }

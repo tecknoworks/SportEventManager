@@ -6,6 +6,7 @@ using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Web;
 
 namespace BusinessLayer.Services
@@ -185,6 +186,18 @@ namespace BusinessLayer.Services
         public async Task<IList<string>> GetRolesAsync(EventPlannerUser user)
         {
             return await _userRepository.GetRolesAsync(user);
+        }
+
+        public async Task<List<Event>> GetJoinedEventsAsync(string userId)
+        {
+            try
+            {
+               return await _userRepository.GetJoinedEvents(userId);
+            }catch(Exception ex)
+            {
+                _logger.Error(ex, $"Something went wrong while retrieving events for user with ID {userId}");
+                throw;
+            }
         }
     }
 }
