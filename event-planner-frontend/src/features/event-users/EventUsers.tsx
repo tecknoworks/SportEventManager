@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AppDispatch } from 'redux/store';
+import { ParticipantStatus } from './api/dtos';
 
 const EventUsers = () => {
   const { eventId } = useParams<{ eventId?: string }>();
@@ -18,45 +19,63 @@ const EventUsers = () => {
     if (eventId) {
       dispatch(getEventThunk(eventId));
     }
-    console.log(event);
   }, [eventId, dispatch]);
+
+  const pendingParticipants =
+    event?.participants?.filter((participant) => participant.status === ParticipantStatus.Pending) || [];
+  const joinedParticipants =
+    event?.participants?.filter((participant) => participant.status === ParticipantStatus.Accepted) || [];
 
   return (
     <Box w="100%" h="100%">
-      <Text
-        marginTop="20px"
-        fontWeight="semibold"
-        textAlign="center"
-        backgroundColor="whiteAlpha.500"
-        w="auto"
-        borderRadius="10px"
-      >
+      <Text w="100%" textAlign="center" fontSize="20px" backgroundColor={'whiteAlpha.500'} marginTop="10px">
         {event?.name}
       </Text>
       <Box w="100%" h="100%" display="flex" justifyContent="space-between" padding="20px 10px 0 10px">
-        {event?.participants &&
-          event.participants.map((participant) => (
-            <>
-              <Board id="board-1" boardTitle="Pending Users">
-                <UserCardDnd id={participant.userId}>
-                  <Text
-                    color="purple.300"
-                    onClick={() => {
-                      navigate(`/profile/${participant.userId}`);
-                    }}
-                    cursor="pointer"
-                    border="1px solid red"
-                    w="fit-content"
-                  >
-                    {participant.userName}
-                  </Text>
-                </UserCardDnd>
-              </Board>
-              <Board id="board-2" boardTitle="Joined Users">
-                <UserCardDnd id="card-4">Card Four</UserCardDnd>
-              </Board>
-            </>
+        <Board id="board-1" boardTitle="Pending Users" eventId={event?.id}>
+          {pendingParticipants.map((participant) => (
+            <UserCardDnd key={participant.userId} id={participant.userId} eventId={event?.id}>
+              <Text
+                color="purple.300"
+                onClick={() => {
+                  navigate(`/profile/${participant.userId}`);
+                }}
+                cursor="pointer"
+                border="1px solid red"
+                overflow="hidden"
+                whiteSpace="nowrap"
+                textOverflow="ellipsis"
+                w="100%"
+                maxWidth="100%"
+                p="2"
+              >
+                {participant.userName}
+              </Text>
+            </UserCardDnd>
           ))}
+        </Board>
+        <Board id="board-2" boardTitle="Joined Users" eventId={event?.id}>
+          {joinedParticipants.map((participant) => (
+            <UserCardDnd key={participant.userId} id={participant.userId} eventId={event?.id}>
+              <Text
+                color="purple.300"
+                onClick={() => {
+                  navigate(`/profile/${participant.userId}`);
+                }}
+                cursor="pointer"
+                border="1px solid red"
+                overflow="hidden"
+                whiteSpace="nowrap"
+                textOverflow="ellipsis"
+                w="100%"
+                maxWidth="100%"
+                p="2"
+              >
+                {participant.userName}
+              </Text>
+            </UserCardDnd>
+          ))}
+        </Board>
       </Box>
     </Box>
   );

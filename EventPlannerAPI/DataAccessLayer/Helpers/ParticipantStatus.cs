@@ -9,7 +9,6 @@ namespace DataAccessLayer.Helpers
     public enum ParticipantStatus:int
     {
         Pending = 0,
-        Fulfilled = 1,
-        Rejected = 2
+        Accepted = 1
     }
 }

@@ -151,5 +151,43 @@ namespace EventPlannerAPI.Controllers
                 return Problem("An unexpected error occurred.");
             }
         }
+
+        [Authorize]
+        [HttpPost("ChangeUserStatus")]
+        public async Task<ActionResult> ChangeUserStatus([FromBody] UpdatedParticipant updatedParticipant)
+        {
+            try
+            {
+                var response = await _eventService.ChangeUserStatusAsync(updatedParticipant);
+                return Ok(response);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("An unexpected error occurred.");
+            }
+        }
+
+        [Authorize]
+        [HttpDelete("DeleteParticipant")]
+        public async Task<ActionResult> DeleteParticipant(string userId, Guid eventId)
+        {
+            try
+            {
+                var response = await _eventService.DeleteParticipantAsync(userId, eventId);
+                return Ok(response);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("An unexpected error occurred.");
+            }
+        }
     }
 }

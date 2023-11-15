@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Models;
+﻿using DataAccessLayer.Helpers;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DataAccessLayer.Interfaces
@@ -15,5 +16,7 @@ namespace DataAccessLayer.Interfaces
         Task<bool> SportTypeExistsAsync(Guid sportTypeId);
         Task<bool> PositionBelongsToSportTypeAsync(Guid positionId, Guid sportTypeId);
         Task<string> JoinEventAsync(string userId, Guid eventId, Guid? eventPositionId);
+        Task<Participant> GetParticipant(Guid eventId, string userId);
+        Task<string> DeleteParticipantAsync(string userId, Guid eventId);
     }
 }

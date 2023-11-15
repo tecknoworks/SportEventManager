@@ -1,14 +1,21 @@
 import { Box, Text } from '@chakra-ui/react';
+import { ChangeStatusDto, ParticipantStatus } from 'features/event-users/api/dtos';
+import { changeUserStatusThunk } from 'features/event-users/thunks/changeUserStatusThunk';
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from 'redux/store';
 
 interface Props {
   children: React.ReactNode;
   id: string;
   boardTitle: string;
+  eventId: string | undefined;
 }
 
-const Board = ({ children, id, boardTitle }: Props) => {
-  const drop = (e: React.DragEvent<HTMLDivElement>) => {
+const Board = ({ children, id, boardTitle, eventId }: Props) => {
+  const dispatch: AppDispatch = useDispatch();
+
+  const drop: React.DragEventHandler<HTMLDivElement> = (e) => {
     e.preventDefault();
 
     const cardId = e.dataTransfer.getData('cardId');
@@ -18,6 +25,23 @@ const Board = ({ children, id, boardTitle }: Props) => {
 
     if (targetBoard instanceof HTMLElement && targetBoard.classList.contains('drop-target') && draggedCard) {
       targetBoard.appendChild(draggedCard);
+
+      if (boardTitle === 'Pending Users') {
+        const data: ChangeStatusDto = {
+          userId: cardId,
+          eventId: eventId,
+          status: ParticipantStatus.Pending,
+        };
+        dispatch(changeUserStatusThunk(data));
+      } else if (boardTitle === 'Joined Users') {
+        const data: ChangeStatusDto = {
+          userId: cardId,
+          eventId: eventId,
+          status: ParticipantStatus.Accepted,
+        };
+
+        dispatch(changeUserStatusThunk(data));
+      }
     }
   };
 
