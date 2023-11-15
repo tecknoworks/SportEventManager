@@ -1,5 +1,5 @@
-import { Box } from '@chakra-ui/layout';
-import React, { useEffect, useState } from 'react';
+import { Box, Text } from '@chakra-ui/layout';
+import { useEffect, useState } from 'react';
 import ChatsList from '../components/ChatsList/ChatsList';
 import IndividualChat from '../components/IndividualChat/IndividualChat';
 import ChatSearch from '../components/ChatSearch/ChatSearch';
@@ -14,6 +14,7 @@ const ChatPage = () => {
   const chats = useSelector(selectChatsDetails);
   const dispatch: AppDispatch = useDispatch();
   const [selectedChatDetails, setSelectedChatDetails] = useState<ChatDetails>();
+  const [foundChats, setFoundChats] = useState<ChatDetails[]>([]);
 
   useEffect(() => {
     dispatch(getChatsDetailsThunk());
@@ -30,10 +31,10 @@ const ChatPage = () => {
   return (
     <Box className="mybox" display="flex" gap="2rem" padding="2rem" height="100%">
       <Box display="flex" flexDirection="column" justifyContent="center" gap="1rem">
-        <ChatSearch />
+        <ChatSearch allChats={chats} setFoundChats={setFoundChats} />
         <ChatsList
           lastMessage={{ username: 'ana', chatId: '2', userId: '123', messageText: 'am mere', date: '' }}
-          chats={chats}
+          chats={foundChats}
           selectedChatDetails={selectedChatDetails}
           setSelectedChatDetails={setSelectedChatDetails}
         />

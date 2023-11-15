@@ -1,7 +1,8 @@
-import React from 'react';
-import { Text, VStack, HStack, Avatar } from '@chakra-ui/react';
+import { Box, Text, VStack } from '@chakra-ui/react';
 import { ChatDetails } from 'features/chat/api/dtos/dtos';
 import { Message } from 'features/chat/api/dtos/dtos';
+import ChatCard from '../ChatCard/ChatCard';
+import AssistantChatCard from '../AssistantChatCard/AssistantChatCard';
 
 type Props = {
   chats: ChatDetails[];
@@ -11,10 +12,18 @@ type Props = {
 };
 
 const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails, lastMessage }: Props) => {
+  const assistantChat: ChatDetails = {
+    id: 'GPT',
+    name: 'Your assistant',
+    imageUrl:
+      'https://png.pngtree.com/png-vector/20230521/ourmid/pngtree-artificial-intelligence-chat-gpt-chatting-web-speech-vector-png-image_52368004.jpg',
+    participantsCount: 0,
+  };
   return (
     <VStack
       width="100%"
-      maxW="400px"
+      minW="300px"
+      maxW="300px"
       height="100%"
       borderColor="gray.200"
       spacing={4}
@@ -31,28 +40,26 @@ const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails, lastMes
         scrollbarWidth: 'none',
       }}
     >
+      <AssistantChatCard
+        chat={assistantChat}
+        setSelectedChatDetails={setSelectedChatDetails}
+        selectedChatDetails={selectedChatDetails}
+      />
+
       {chats.map((chat) => (
-        <HStack
-          key={chat.id}
-          w="100%"
-          p={5}
-          spacing={4}
-          _hover={{
-            bg: chat.id === selectedChatDetails?.id ? undefined : 'gray.100',
-            cursor: 'pointer',
-          }}
-          bg={chat.id === selectedChatDetails?.id ? 'gray.300' : 'transparent'}
-          onClick={() => setSelectedChatDetails(chat)}
-        >
-          <Avatar name={chat.name} src={chat.imageUrl} />
-          <VStack align="start" spacing={1}>
-            <Text fontWeight="bold">{chat.name}</Text>
-            <Text fontSize="sm" color="gray.500">
-              <b>{lastMessage.username}:</b> {lastMessage.messageText}
-            </Text>
-          </VStack>
-        </HStack>
+        <ChatCard
+          chat={chat}
+          selectedChatDetails={selectedChatDetails}
+          setSelectedChatDetails={setSelectedChatDetails}
+          lastMessage={{ messageText: 'ana', userId: 'asdad', chatId: 'aaaaa', username: 'mere', date: '12:22' }}
+        />
       ))}
+
+      {chats.length === 0 && (
+        <Box display="flex" justifyContent="center" alignItems="center" padding="1rem">
+          <Text>Nothing found</Text>
+        </Box>
+      )}
     </VStack>
   );
 };

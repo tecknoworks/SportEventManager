@@ -1,11 +1,28 @@
-import { Search2Icon } from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
 import { Box } from '@chakra-ui/layout';
-import PrimaryButton from 'common/components/buttons/PrimaryButton';
-import React, { useState } from 'react';
+import { ChatDetails } from 'features/chat/api/dtos/dtos';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 
-const ChatSearch = () => {
+type Props = {
+  allChats: ChatDetails[];
+  setFoundChats: (chats: ChatDetails[]) => void;
+};
+
+const ChatSearch = ({ setFoundChats, allChats }: Props) => {
   const [searchValue, setSearchValue] = useState<string>('');
+  const [debouncedSearchValue] = useDebounce(searchValue, 500);
+
+  useEffect(() => {
+    if (debouncedSearchValue) {
+      const foundChats = allChats.filter((chat) =>
+        chat.name.toLocaleLowerCase().includes(debouncedSearchValue.toLowerCase())
+      );
+      setFoundChats(foundChats);
+    } else {
+      setFoundChats(allChats);
+    }
+  }, [debouncedSearchValue, allChats, setFoundChats]);
 
   return (
     <Box display="flex" gap="0.5rem" padding="0.5rem">
@@ -16,7 +33,6 @@ const ChatSearch = () => {
         onChange={(e) => setSearchValue(e.target.value)}
         borderRadius="2rem"
       />
-      <PrimaryButton text={<Search2Icon />} />
     </Box>
   );
 };
