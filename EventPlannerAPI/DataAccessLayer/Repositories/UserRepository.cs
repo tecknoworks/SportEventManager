@@ -224,9 +224,6 @@ namespace DataAccessLayer.Repositories
             return await _eventPlannerContext.Users.AnyAsync(user => user.Id == userId);
         }
 
-
- 
-
         public async Task<List<Event>> GetJoinedEvents(string userId)
         {
             try
