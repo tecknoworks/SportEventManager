@@ -49,7 +49,7 @@ type FilterParams = {
 type JoinEventDto = {
   userId: string | undefined;
   eventId: string;
-  eventPositionId: string;
+  eventPositionId?: string;
 };
 
 export type { EventDto, SportType, FilterParams, EventsResponse, JoinEventDto };
