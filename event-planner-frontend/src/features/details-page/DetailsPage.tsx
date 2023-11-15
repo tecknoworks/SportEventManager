@@ -47,8 +47,6 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
-  console.log(details);
-
   const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
       userId: user?.userId,
