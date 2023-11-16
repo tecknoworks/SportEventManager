@@ -7,7 +7,6 @@ const chatService = new ChatService();
 export const getChatsDetailsThunk = createAsyncThunk('chats/getChatsDetails', async (_, { rejectWithValue }) => {
   try {
     const response = await chatService.getChatsDetails();
-    console.log(JSON.stringify(response.data));
     return response.data;
   } catch (error: any) {
     handleApiError(error);

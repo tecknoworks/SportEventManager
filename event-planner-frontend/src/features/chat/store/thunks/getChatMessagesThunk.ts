@@ -15,7 +15,6 @@ export const getChatsMessagesThunk = createAsyncThunk(
   async ({ chatId, pageNumber, pageSize }: GetMessagesRequest, { rejectWithValue }) => {
     try {
       const response = await chatService.getChatMessages(chatId, pageNumber, pageSize);
-      console.log(JSON.stringify(response.data));
       return response.data;
     } catch (error: any) {
       handleApiError(error);
