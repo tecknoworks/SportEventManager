@@ -28,6 +28,7 @@ namespace DataAccessLayer.Repositories
         {
             var eventEntity = await _eventPlannerContext.Events
                 .Include(evnt => evnt.Participants)
+                    .ThenInclude(participant => participant.User)
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
@@ -157,6 +158,10 @@ namespace DataAccessLayer.Repositories
             try
             {
                 participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+                if (eventPositionId !=null)
+                {
+                    participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
+                }
                 participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
                 participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
 
@@ -164,7 +169,10 @@ namespace DataAccessLayer.Repositories
                                     ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
                                     : null;
 
-                if (eventPosition != null && eventPosition.AvailablePositions > 0 && participant.Event.MaximumParticipants > 0)
+                if (eventPosition == null) {
+                    participant.Event.MaximumParticipants -= 1;
+                }
+                else if (eventPosition != null && eventPosition.AvailablePositions > 0 && participant.Event.MaximumParticipants > 0)
                 {
                     eventPosition.AvailablePositions -= 1;
                     participant.Event.MaximumParticipants -= 1;

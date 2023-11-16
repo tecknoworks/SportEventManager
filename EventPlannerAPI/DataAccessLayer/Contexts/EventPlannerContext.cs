@@ -138,6 +138,14 @@ namespace DataAccessLayer.Contexts
                 new Position { Id = Guid.NewGuid(), Name = "midfielder", SportTypeId = footballId },
                 new Position { Id = Guid.NewGuid(), Name = "attacker", SportTypeId = footballId }
             );
+
+            // Seed SportType data for Hiking
+            var hikingId = Guid.NewGuid();  // Generate a unique identifier for hiking
+            modelBuilder.Entity<SportType>().HasData(new SportType
+            {
+                Id = hikingId,
+                Name = "Hiking"
+            });
         }
     }   
 }

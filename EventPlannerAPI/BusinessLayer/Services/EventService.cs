@@ -40,11 +40,15 @@ namespace BusinessLayer.Services
                 var errorMessage = await ValidateCreateEventDtoAsync(newEvent);
                 if (!errorMessage.IsNullOrEmpty()) throw new EventPlannerException(errorMessage);
 
-                newEvent.MaximumParticipants = 0;
-                foreach (var eventPosition in newEvent.EventPositions)
+                if (newEvent.EventPositions.Count != 0)
                 {
-                    newEvent.MaximumParticipants += eventPosition.AvailablePositions;
+                    newEvent.MaximumParticipants = 0;
+                    foreach (var eventPosition in newEvent.EventPositions)
+                    {
+                        newEvent.MaximumParticipants += eventPosition.AvailablePositions;
+                    }
                 }
+               
 
                 var eventEntity = _mapper.Map<Event>(newEvent);
                 return await _eventRepository.CreateEventAsync(eventEntity);

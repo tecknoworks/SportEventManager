@@ -21,9 +21,11 @@ import PositionSelection from '../fields/PositionSelection';
 import SkillLevelField from '../fields/SkillLevelField';
 import MaxParticipantsField from '../fields/MaxParticipantsField';
 import DateTimeField from '../fields/DateTimeField';
+import { useNavigate } from 'react-router-dom';
 
 function CreateEventForm() {
   const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate()
   const [selectedSport, setSelectedSport] = React.useState<GetSportTypesDto | undefined>(undefined);
   const [eventName, setEventName] = useState('');
   const [eventDescription, setEventDescription] = useState('');
@@ -101,6 +103,7 @@ function CreateEventForm() {
     };
 
     dispatch(createEventThunk(createEventDto));
+    navigate('/my-events')
   };
 
   return (
