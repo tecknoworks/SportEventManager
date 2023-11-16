@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs;
 using DataAccessLayer.Contexts;
+using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
@@ -49,7 +50,7 @@ namespace DataAccessLayer.Repositories
         public async Task<IEnumerable<Guid>> GetUserChatIds(string userId)
         {
            var result = await _eventPlannerContext.Participants
-                    .Where(participant => participant.UserId == userId)
+                    .Where(participant => participant.UserId == userId && participant.Status == ParticipantStatus.Accepted)
                     .Include(participant => participant.Event)
                         .ThenInclude(evnt => evnt.ChatEvent)
                     .Select(participant => participant.Event.ChatEvent.Id)
@@ -62,7 +63,7 @@ namespace DataAccessLayer.Repositories
             return await _eventPlannerContext.Participants
                     .Include(participant => participant.Event)
                         .ThenInclude(evnt => evnt.ChatEvent)
-                    .Where(participant => participant.UserId == userId && participant.Event.ChatEvent.IsClosed == false)
+                    .Where(participant => participant.UserId == userId && participant.Event.ChatEvent.IsClosed == false && participant.Status == ParticipantStatus.Accepted)
                     .Select(participant => participant.Event.ChatEvent)
                     .ToListAsync();
         }

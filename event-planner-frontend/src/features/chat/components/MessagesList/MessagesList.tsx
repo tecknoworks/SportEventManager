@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { VStack, space } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 import MessageCard from '../MessageCard/MessageCard';
 import { Message } from 'features/chat/api/dtos/dtos';
-import Loader from 'common/components/Loader/Loader';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 
 type Props = {

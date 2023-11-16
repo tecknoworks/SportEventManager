@@ -188,11 +188,11 @@ namespace BusinessLayer.Services
             return await _userRepository.GetRolesAsync(user);
         }
 
-        public async Task<List<Event>> GetJoinedEventsAsync(string userId)
+        public async Task<IEnumerable<GetEventWithDetailsDto>> GetJoinedEventsAsync(string userId)
         {
             try
             {
-               return await _userRepository.GetJoinedEvents(userId);
+               return _mapper.Map<IEnumerable<GetEventWithDetailsDto>>(await _userRepository.GetJoinedEventsAsync(userId));
             }catch(Exception ex)
             {
                 _logger.Error(ex, $"Something went wrong while retrieving events for user with ID {userId}");

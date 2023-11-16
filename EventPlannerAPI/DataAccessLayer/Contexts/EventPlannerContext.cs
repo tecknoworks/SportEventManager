@@ -145,7 +145,8 @@ namespace DataAccessLayer.Contexts
             modelBuilder.Entity<SportType>().HasData(new SportType
             {
                 Id = hikingId,
-                Name = "Hiking"
+                Name = "Hiking",
+                ImageUrl = ""
             });
         }
     }   

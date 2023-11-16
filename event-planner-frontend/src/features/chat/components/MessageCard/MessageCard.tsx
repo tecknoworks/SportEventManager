@@ -11,10 +11,7 @@ type Props = {
 
 const MessageCard = ({ message, isCurrentUser }: Props) => {
   const bgColor = 'gray.100';
-  const bgGradient = useColorModeValue(
-    'linear(to-r, pink.400, purple.600)', //
-    'linear(to-r, pink.600, purple.800)' // Dark mode gradient
-  );
+  const bgGradient = useColorModeValue('linear(to-r, pink.400, purple.600)', 'linear(to-r, pink.600, purple.800)');
   const alignSelf = isCurrentUser ? 'flex-end' : 'flex-start';
   const textColor = 'gray.800';
 
