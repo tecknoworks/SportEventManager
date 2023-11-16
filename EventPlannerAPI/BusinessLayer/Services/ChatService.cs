@@ -67,11 +67,11 @@ namespace BusinessLayer.Services
             return chatDetailsDto;
         }
 
-        public async Task<IEnumerable<MessageDto>> GetChatMessagesAsync(Guid chatId)
+        public async Task<(IEnumerable<MessageDto>, int TotalCount)> GetChatMessagesAsync(Guid chatId, int pageNumber, int pageSize)
         {
-            var messages = await _chatRepository.GetChatMessagesAsync(chatId);
+            var (messages, totalCount) = await _chatRepository.GetChatMessagesAsync(chatId, pageNumber, pageSize);
 
-            return _mapper.Map<IEnumerable<MessageDto>>(messages);
+            return (_mapper.Map<IEnumerable<MessageDto>>(messages), totalCount);
         }
 
     }

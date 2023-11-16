@@ -29,13 +29,14 @@ namespace EventPlannerAPI.Controllers
         }
 
         [HttpGet("GetChatMessages/{chatId}")]
-        public async Task<ActionResult<GetMessagesResponse>> GetChatMessages(Guid chatId)
+        public async Task<ActionResult<GetMessagesResponse>> GetChatMessages(Guid chatId, int pageNumber = 1, int pageSize = 10)
         {
-            var messages = await _chatService.GetChatMessagesAsync(chatId);
+            var (messages, totalCount)= await _chatService.GetChatMessagesAsync(chatId, pageNumber, pageSize);
             return new GetMessagesResponse()
             {
                 Messages = messages,
-                ChatId = chatId
+                ChatId = chatId,
+                TotalCount = totalCount
             };
         }
     }

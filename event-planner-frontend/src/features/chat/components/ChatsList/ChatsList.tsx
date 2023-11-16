@@ -2,16 +2,15 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ChatDetails } from 'features/chat/api/dtos/dtos';
 import { Message } from 'features/chat/api/dtos/dtos';
 import ChatCard from '../ChatCard/ChatCard';
-import AssistantChatCard from '../AssistantChatCard/AssistantChatCard';
+import AssistantChatCard from '../AssistantCard/AssistantChatCard';
 
 type Props = {
   chats: ChatDetails[];
-  lastMessage: Message;
   setSelectedChatDetails: any;
   selectedChatDetails?: ChatDetails;
 };
 
-const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails, lastMessage }: Props) => {
+const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props) => {
   const assistantChat: ChatDetails = {
     id: 'GPT',
     name: 'Your assistant',
@@ -51,7 +50,6 @@ const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails, lastMes
           chat={chat}
           selectedChatDetails={selectedChatDetails}
           setSelectedChatDetails={setSelectedChatDetails}
-          lastMessage={{ messageText: 'ana', userId: 'asdad', chatId: 'aaaaa', username: 'mere', date: '12:22' }}
         />
       ))}
 

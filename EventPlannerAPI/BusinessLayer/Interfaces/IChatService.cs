@@ -8,6 +8,6 @@ namespace BusinessLayer.Interfaces
         Task<bool> CanUserJoinChatAsync(string userId, Guid chatId);
         Task<IEnumerable<Guid>> GetUserChatIds(string userId);
         Task<IEnumerable<ChatDetailsDto>> GetChatDetailsForUser(string userId);
-        Task<IEnumerable<MessageDto>> GetChatMessagesAsync(Guid chatId);
+        Task<(IEnumerable<MessageDto>, int TotalCount)> GetChatMessagesAsync(Guid chatId, int pageNumber, int pageSize);
     }
 }

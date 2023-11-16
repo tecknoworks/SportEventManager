@@ -1,7 +1,9 @@
-﻿using DataAccessLayer.Contexts;
+﻿using BusinessLayer.DTOs;
+using DataAccessLayer.Contexts;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Runtime.InteropServices;
 
 namespace DataAccessLayer.Repositories
@@ -74,17 +76,23 @@ namespace DataAccessLayer.Repositories
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Message>> GetChatMessagesAsync(Guid chatId)
+        public async Task<(IEnumerable<Message> Messages, int TotalCount)> GetChatMessagesAsync(Guid chatId, int pageNumber, int pageSize)
         {
-            return await _eventPlannerContext.ChatEvents
+            int skip = (pageNumber - 1) * pageSize;
+            var query = _eventPlannerContext.ChatEvents
                     .Where(chatEvent => chatEvent.Id == chatId)
                     .Include(chatEvent => chatEvent.ChatMessages)
                         .ThenInclude(chatMessage => chatMessage.Message)
                             .ThenInclude(message => message.User)
                     .SelectMany(chatEvent => chatEvent.ChatMessages)
                     .Select(chatMessage => chatMessage.Message)
-                    .ToListAsync();
-        }
+                    .OrderByDescending(message => message.Date);
 
+            var totalCount = await query.CountAsync();
+            var messages = await query.Skip(skip)
+                    .Take(pageSize)
+                    .ToListAsync();
+            return (messages, totalCount);
+        }
     }
 }

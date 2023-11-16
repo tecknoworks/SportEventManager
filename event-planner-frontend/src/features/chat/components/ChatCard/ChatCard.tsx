@@ -5,10 +5,9 @@ type Props = {
   chat: ChatDetails;
   selectedChatDetails?: ChatDetails;
   setSelectedChatDetails: any;
-  lastMessage: Message;
 };
 
-const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails, lastMessage }: Props) => {
+const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails }: Props) => {
   return (
     <HStack
       key={chat.id}
@@ -25,9 +24,6 @@ const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails, lastMessa
       <Avatar name={chat.name} src={chat.imageUrl} />
       <VStack align="start" spacing={1}>
         <Text fontWeight="bold">{chat.name}</Text>
-        <Text fontSize="sm" color="gray.500">
-          <b>{lastMessage.username}:</b> {lastMessage.messageText}
-        </Text>
       </VStack>
     </HStack>
   );

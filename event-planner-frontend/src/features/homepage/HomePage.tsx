@@ -11,7 +11,7 @@ const HomePage = () => {
       alignItems="center"
       flexDirection="column"
       gap="1rem"
-      backgroundImage="url('https://res.cloudinary.com/dmzqbknlx/image/upload/v1699368590/aogsuhx5we2nqvd1ibim.jpg')"
+      backgroundImage="url('https://res.cloudinary.com/dmzqbknlx/image/upload/v1699368590/hd9xgwdgds13x8xspqu9.jpg')"
       backgroundPosition="center"
       backgroundRepeat="no-repeat"
       backgroundSize="cover"

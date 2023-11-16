@@ -13,11 +13,13 @@ type State = {
   isLoading: boolean;
   error: string;
   chatMessages: { [chatId: string]: Message[] };
+  hasMoreMessages: { [chatId: string]: boolean };
 };
 
 const initialState: State = {
   chatsDetails: [],
   chatMessages: {},
+  hasMoreMessages: {},
   isLoading: false,
   error: '',
 };
@@ -54,8 +56,10 @@ const chatSlice = createSlice({
 
     builder.addCase(getChatsMessagesThunk.fulfilled, (state, action) => {
       state.isLoading = false;
-      const { chatId, messages } = action.payload as GetMessagesResponse;
-      state.chatMessages[chatId] = messages;
+      const { chatId, messages, totalCount } = action.payload as GetMessagesResponse;
+      const existingMessages = state.chatMessages[chatId] || [];
+      state.chatMessages[chatId] = [...messages, ...existingMessages];
+      state.hasMoreMessages[chatId] = existingMessages.length + messages.length < totalCount;
     });
 
     builder.addCase(getChatsMessagesThunk.rejected, (state, action) => {

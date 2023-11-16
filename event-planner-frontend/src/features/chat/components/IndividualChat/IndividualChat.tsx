@@ -9,7 +9,7 @@ import { ChatDetails, Message } from 'features/chat/api/dtos/dtos';
 import { AppDispatch, RootState } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getChatsMessagesThunk } from 'features/chat/store/thunks/getChatMessagesThunk';
-import { selectChatMessages } from 'features/chat/store/selectors/chatSelector';
+import { selectChatHasMore, selectChatMessages } from 'features/chat/store/selectors/chatSelector';
 import { registerMessageReceived, sendMessage, unregisterMessageReceived } from 'services/signalService';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
@@ -26,6 +26,10 @@ const IndividualChat = ({ chatDetails }: Props) => {
   const token = useSelector(selectToken);
   const [userDetails, setUserDetails] = useState<UserDetails>();
 
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [pageSize] = useState(100);
+  const hasMore = useSelector((state: RootState) => selectChatHasMore(state, chatDetails?.id || ''));
+
   useEffect(() => {
     if (token) {
       setUserDetails(getUserFromToken(token));
@@ -34,9 +38,13 @@ const IndividualChat = ({ chatDetails }: Props) => {
 
   useEffect(() => {
     if (chatDetails) {
-      dispatch(getChatsMessagesThunk(chatDetails.id));
+      const areMessagesCached = messagesSelector && messagesSelector.length > 0;
+
+      if (!areMessagesCached) {
+        dispatch(getChatsMessagesThunk({ chatId: chatDetails.id, pageNumber, pageSize }));
+      }
     }
-  }, [dispatch, chatDetails]);
+  }, [chatDetails]);
 
   useEffect(() => {
     const messageReceived = (message: Message) => {
@@ -48,13 +56,20 @@ const IndividualChat = ({ chatDetails }: Props) => {
         dispatch(addMessage(payload));
       }
     };
-
     registerMessageReceived(messageReceived);
 
     return () => {
       unregisterMessageReceived(messageReceived);
     };
   }, [dispatch, chatDetails]);
+
+  const fetchMoreMessages = async () => {
+    if (chatDetails && hasMore) {
+      const nextPage = pageNumber + 1;
+      dispatch(getChatsMessagesThunk({ chatId: chatDetails.id, pageNumber: nextPage, pageSize }));
+      setPageNumber(nextPage);
+    }
+  };
 
   const handleSendMessage = () => {
     if (!chatDetails) return;
@@ -90,7 +105,12 @@ const IndividualChat = ({ chatDetails }: Props) => {
           scrollbarWidth: 'none',
         }}
       >
-        <MessagesList messages={messagesSelector} currentUser={userDetails?.username || ''} />
+        <MessagesList
+          hasMore={hasMore}
+          loadMoreMessages={fetchMoreMessages}
+          messages={messagesSelector}
+          currentUser={userDetails?.username || ''}
+        />
       </VStack>
       <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="1rem">
         <Input

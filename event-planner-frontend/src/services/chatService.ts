@@ -5,7 +5,7 @@ export default class ChatService extends CommonService {
     return this.get('/Chat/GetChatsDetails');
   }
 
-  getChatMessages(chatId: string) {
-    return this.get('/Chat/GetChatMessages/' + chatId);
+  getChatMessages(chatId: string, pageNumber: number, pageSize: number) {
+    return this.get(`/Chat/GetChatMessages/${chatId}?pageNumber=${pageNumber}&pageSize=${pageSize}`);
   }
 }

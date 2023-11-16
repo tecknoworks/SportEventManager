@@ -4,11 +4,17 @@ import { handleApiError } from 'services/notificationHandlingService';
 
 const chatService = new ChatService();
 
+export type GetMessagesRequest = {
+  chatId: string;
+  pageNumber: number;
+  pageSize: number;
+};
+
 export const getChatsMessagesThunk = createAsyncThunk(
   'chats/getChatsMessages',
-  async (chatId: string, { rejectWithValue }) => {
+  async ({ chatId, pageNumber, pageSize }: GetMessagesRequest, { rejectWithValue }) => {
     try {
-      const response = await chatService.getChatMessages(chatId);
+      const response = await chatService.getChatMessages(chatId, pageNumber, pageSize);
       console.log(JSON.stringify(response.data));
       return response.data;
     } catch (error: any) {

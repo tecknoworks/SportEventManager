@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/layout';
+import { Box } from '@chakra-ui/layout';
 import { useEffect, useState } from 'react';
 import ChatsList from '../components/ChatsList/ChatsList';
 import IndividualChat from '../components/IndividualChat/IndividualChat';
@@ -33,7 +33,6 @@ const ChatPage = () => {
       <Box display="flex" flexDirection="column" justifyContent="center" gap="1rem">
         <ChatSearch allChats={chats} setFoundChats={setFoundChats} />
         <ChatsList
-          lastMessage={{ username: 'ana', chatId: '2', userId: '123', messageText: 'am mere', date: '' }}
           chats={foundChats}
           selectedChatDetails={selectedChatDetails}
           setSelectedChatDetails={setSelectedChatDetails}

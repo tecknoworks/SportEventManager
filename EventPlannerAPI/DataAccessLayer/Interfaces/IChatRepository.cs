@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.Models;
+﻿using BusinessLayer.DTOs;
+using DataAccessLayer.Models;
 
 namespace DataAccessLayer.Interfaces
 {
@@ -11,6 +12,6 @@ namespace DataAccessLayer.Interfaces
         Task<IEnumerable<Guid>> GetUserChatIds(string userId);
         Task<IEnumerable<ChatEvent>> GetChatDetailsForUser(string userId);
         Task<int> GetChatParticipantsCount(Guid chatId);
-        Task<IEnumerable<Message>> GetChatMessagesAsync(Guid chatId);
+        Task<(IEnumerable<Message> Messages, int TotalCount)> GetChatMessagesAsync(Guid chatId, int pageNumber, int pageSize);
     }
 }

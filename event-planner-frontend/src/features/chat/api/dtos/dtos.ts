@@ -6,6 +6,7 @@ export interface ChatDetails {
 }
 
 export interface Message {
+  id: string;
   username: string;
   chatId: string;
   userId: string;
@@ -16,4 +17,5 @@ export interface Message {
 export interface GetMessagesResponse {
   messages: Message[];
   chatId: string;
+  totalCount: number;
 }
