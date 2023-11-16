@@ -214,5 +214,25 @@ namespace EventPlannerAPI.Controllers
                 return Problem("An unexpected error occurred.");
             }
         }
+
+        //[Authorize]
+        [HttpPost("PostReview")]
+
+        public async Task<ActionResult> PostReview([FromBody] PostReviewDto postReview)
+        {
+            try
+            {
+                var response = await _eventService.PostReviewAsync(postReview);
+                return Ok(response);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("An unexpected error occurred.");
+            }
+        }
     }
 }
