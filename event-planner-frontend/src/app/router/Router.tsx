@@ -20,6 +20,7 @@ import DetailsPage from 'features/details-page/DetailsPage';
 import BrowseEvents from 'features/browse-events/BrowseEvents';
 import MyEvents from 'features/my-events/MyEvents';
 import EventUsers from 'features/event-users/EventUsers';
+import ReviewEventPage from 'features/review-event/ReviewEventPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -127,6 +128,14 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <EventUsers />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="review-event"
+            element={
+              <PrivateRoute>
+                <ReviewEventPage />
               </PrivateRoute>
             }
           />

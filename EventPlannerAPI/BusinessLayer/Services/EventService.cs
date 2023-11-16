@@ -138,11 +138,21 @@ namespace BusinessLayer.Services
             try 
             {
                 var eventEntity = await _eventRepository.GetEventByIdAsync(eventId);
+
                 if (eventEntity != null)
                 {
                     eventEntity.IsClosed = true;
+                    foreach (var participant in eventEntity.Participants)
+                    {
+                        var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
+                        var reviewLink = baseUrl + "/review-event?user=" + participant.User.Id + "&event=" + eventEntity.Id;
+                        var mail = MailRequest.CloseEventNotification(participant.User.Email, participant.User.UserName, eventEntity.Name, reviewLink);
+                        await _mailService.SendEmailAsync(mail);
+                    }
                 }
-                return await _eventRepository.SaveChangesAsync();
+
+                var saveChanges = await _eventRepository.SaveChangesAsync();
+                return saveChanges;
             }
             catch (Exception ex)
             {

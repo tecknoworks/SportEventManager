@@ -23,7 +23,7 @@ export function LoggedInRoute({ children }: PrivateRouteProps) {
 
 export function OnlyAdminRoute({ children }: PrivateRouteProps) {
   const token = useSelector(selectToken);
-  const user = getUserFromToken(token || "");
+  const user = getUserFromToken(token || '');
   const isAdmin = user?.role === 'Admin' ? true : false;
 
   return <>{isAdmin ? children : <Navigate to="/" replace />}</>;
