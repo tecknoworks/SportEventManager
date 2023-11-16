@@ -57,10 +57,8 @@ const EventCard = ({ event, currentUser }: Props) => {
             <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis" maxWidth={!isMobile ? '200px' : '100%'}>
               {event.description}
             </Text>
-            {event.location}
+            <Text>{event.locationName}</Text>
           </Stack>
-
-          <Map isResizable={isResizable} center={center} />
         </CardBody>
         <CardFooter
           display="flex"
