@@ -20,6 +20,6 @@ namespace DataAccessLayer.Interfaces
  		Task<IList<string>> GetRolesAsync(EventPlannerUser user);
         Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier);
         Task<bool> UserExistsAsync(string userId);
-        Task<List<Event>> GetJoinedEvents(string userId);
+        Task<IEnumerable<Event>> GetJoinedEventsAsync(string userId);
     }
 }

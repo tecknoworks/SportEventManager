@@ -14,19 +14,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CloseEventDto } from 'features/event/api/dtos';
 import { useEffect, useState } from 'react';
 import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
-
-type User =
-  | {
-      userId: string;
-      name: string;
-      email: string;
-      role: string;
-    }
-  | undefined;
+import { UserDetails } from 'services/auth/context/AuthContext';
 
 interface Props {
   event: EventDto;
-  currentUser: User;
+  currentUser?: UserDetails;
 }
 
 const EventCard = ({ event, currentUser }: Props) => {

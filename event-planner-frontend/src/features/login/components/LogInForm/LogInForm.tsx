@@ -120,7 +120,7 @@ const LogInForm = () => {
             Log In
           </Button>
           <Text>
-            Don't have an account?
+            Don't have an account?{' '}
             <Link color="purple" href="/signup">
               Sign up
             </Link>

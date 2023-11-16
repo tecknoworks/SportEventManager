@@ -4,7 +4,6 @@ using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DataAccessLayer.Repositories
 {
@@ -219,6 +218,15 @@ namespace DataAccessLayer.Repositories
             _eventPlannerContext.Participants.Remove(participantEntity);
             await _eventPlannerContext.SaveChangesAsync();
             return "Participant deleted successfully";
+        }
+
+        public async Task<SportType?> GetEventSportTypeAsync(Guid eventId)
+        {
+            return await _eventPlannerContext.Events
+                        .Where(evnt => evnt.Id == eventId)
+                        .Include(evnt => evnt.SportType)
+                        .Select(evnt => evnt.SportType)
+                        .FirstOrDefaultAsync();
         }
     }
 }

@@ -131,12 +131,7 @@ namespace EventPlannerAPI.Controllers
         {
             try
             {
-                var events = await _userService.GetJoinedEventsAsync(userId);
-                if (events == null || events.Count == 0)
-                {
-                    return NotFound($"No events found for user with ID {userId}.");
-                }
-                return Ok(events);
+                return Ok(await _userService.GetJoinedEventsAsync(userId));
             }
             catch (EventPlannerException ex)
             {

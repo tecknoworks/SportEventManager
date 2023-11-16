@@ -11,7 +11,7 @@ interface PrivateRouteProps {
 export function PrivateRoute({ children }: PrivateRouteProps) {
   const token = useSelector(selectToken);
   const isAuthenticated = !!token;
-  return <>{isAuthenticated ? children : <Navigate to="/" replace />}</>;
+  return <>{isAuthenticated ? children : <Navigate to="/login" replace />}</>;
 }
 
 export function LoggedInRoute({ children }: PrivateRouteProps) {

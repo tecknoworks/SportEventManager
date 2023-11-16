@@ -19,6 +19,7 @@ import SeeProfilePage from 'features/profile/views/SeeProfilePage';
 import DetailsPage from 'features/details-page/DetailsPage';
 import BrowseEvents from 'features/browse-events/BrowseEvents';
 import MyEvents from 'features/my-events/MyEvents';
+import ChatPage from 'features/chat/views/ChatPage';
 import EventUsers from 'features/event-users/EventUsers';
 import ReviewEventPage from 'features/review-event/ReviewEventPage';
 
@@ -128,6 +129,14 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <EventUsers />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="chat"
+            element={
+              <PrivateRoute>
+                <ChatPage />
               </PrivateRoute>
             }
           />

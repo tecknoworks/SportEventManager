@@ -19,6 +19,7 @@ namespace DataAccessLayer.Contexts
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatEvent> ChatEvents { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -91,7 +92,7 @@ namespace DataAccessLayer.Contexts
 
             modelBuilder.Entity<ChatEvent>()
                 .HasOne(chatEvent => chatEvent.Event)
-                .WithOne()
+                .WithOne(evnt => evnt.ChatEvent)
                 .HasForeignKey<ChatEvent>(chatEvent => chatEvent.EventID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
@@ -124,12 +125,20 @@ namespace DataAccessLayer.Contexts
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Review>()
+                .HasOne(review => review.Comment)
+                .WithOne(comment => comment.Review)
+                .HasForeignKey<Comment>(comment => comment.ReviewId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
             // Seed SportType data for Football
             var footballId = Guid.NewGuid();  // Generate a unique identifier for Football
             modelBuilder.Entity<SportType>().HasData(new SportType
             {
                 Id = footballId,
-                Name = "Football"
+                Name = "Football",
+                ImageUrl = "https://cdn-icons-png.flaticon.com/512/5417/5417184.png"
             });
 
             // Seed Position data for Football
@@ -144,7 +153,8 @@ namespace DataAccessLayer.Contexts
             modelBuilder.Entity<SportType>().HasData(new SportType
             {
                 Id = hikingId,
-                Name = "Hiking"
+                Name = "Hiking",
+                ImageUrl = ""
             });
         }
     }   
