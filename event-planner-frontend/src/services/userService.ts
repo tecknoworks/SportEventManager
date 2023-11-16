@@ -54,4 +54,8 @@ export default class UserService extends CommonService {
   createUserOrAdmin(data: UserOrAdminDto) {
     return this.post('/Admin/AddUser', data)
   }
+
+  getAllJoinedEventsOfaUser(userId: string) {
+    return this.get("User/GetEventsByUserId/" + userId)
+  }
 }

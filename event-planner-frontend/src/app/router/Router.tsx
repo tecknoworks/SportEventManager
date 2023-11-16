@@ -21,6 +21,7 @@ import BrowseEvents from 'features/browse-events/BrowseEvents';
 import MyEvents from 'features/my-events/MyEvents';
 import ChatPage from 'features/chat/views/ChatPage';
 import EventUsers from 'features/event-users/EventUsers';
+import JoinedEvents from 'features/joined-events/JoinedEvents';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -73,6 +74,14 @@ const RouterComponent: FC = () => {
               <LoggedInRoute>
                 <CreateNewPasswordPage />
               </LoggedInRoute>
+            }
+          />
+          <Route
+            path="/joined-events"
+            element={
+              <PrivateRoute>
+                <JoinedEvents />
+              </PrivateRoute>
             }
           />
           <Route
