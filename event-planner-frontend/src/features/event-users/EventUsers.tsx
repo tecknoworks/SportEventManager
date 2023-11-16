@@ -41,7 +41,6 @@ const EventUsers = () => {
                   navigate(`/profile/${participant.userId}`);
                 }}
                 cursor="pointer"
-                border="1px solid red"
                 overflow="hidden"
                 whiteSpace="nowrap"
                 textOverflow="ellipsis"
