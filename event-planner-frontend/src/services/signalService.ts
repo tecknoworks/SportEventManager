@@ -16,7 +16,6 @@ const connection = new signalR.HubConnectionBuilder()
 export const connect = async () => {
   try {
     await connection.start();
-    console.log('SignalR Connected.');
   } catch (err) {
     console.error('SignalR Connection Error: ', err);
   }
@@ -41,7 +40,6 @@ export const unregisterMessageReceived = (callback: (message: Message) => void) 
 export const disconnect = async () => {
   try {
     await connection.stop();
-    console.log('SignalR Disconnected.');
   } catch (err) {
     console.error('SignalR Disconnect Error: ', err);
   }
