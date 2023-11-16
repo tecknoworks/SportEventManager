@@ -1,6 +1,7 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
+using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -119,6 +120,31 @@ namespace EventPlannerAPI.Controllers
             catch (Exception)
             {
                 return Problem("Something went wrong.");
+            }
+        }
+
+        [Authorize]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("GetEventsByUserId/{userId}")]
+        public async Task<ActionResult<List<Event>>> GetEventsByUserId(string userId)
+        {
+            try
+            {
+                var events = await _userService.GetJoinedEventsAsync(userId);
+                if (events == null || events.Count == 0)
+                {
+                    return NotFound($"No events found for user with ID {userId}.");
+                }
+                return Ok(events);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem("An error occurred while retrieving events.");
             }
         }
     }

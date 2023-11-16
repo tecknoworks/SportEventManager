@@ -48,7 +48,7 @@ const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId }: Props) 
     const data: JoinEventDto = {
       userId: userId,
       eventId: eventId,
-      eventPositionId: selectedPosition,
+      eventPositionId: selectedPosition ? selectedPosition : undefined,
     };
 
     await dispatch(joinEventThunk(data));
@@ -62,22 +62,22 @@ const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId }: Props) 
         <ModalCloseButton />
         <ModalBody display="flex" flexDirection="column" alignItems="center">
           <Text color="purple">Are you sure you want to join the event?</Text>
-          {
-            <>
-              <br></br>
-              <Select value={selectedPosition} onChange={handleChange} placeholder="Select position">
-                {eventPositions &&
-                  eventPositions.map((position) => (
-                    <option
-                      key={position.positionId}
-                      value={position.positionId}
-                      disabled={position.availablePositions === 0}
-                    >
-                      {position.positionName} -- Available: {position.availablePositions}
-                    </option>
-                  ))}
-              </Select>
-            </>
+          {eventPositions.length !== 0 && (<>
+            <br></br>
+            <Select value={selectedPosition} onChange={handleChange} placeholder="Select position">
+              {eventPositions &&
+                eventPositions.map((position) => (
+                  <option
+                    key={position.positionId}
+                    value={position.positionId}
+                    disabled={position.availablePositions === 0}
+                  >
+                    {position.positionName} -- Available: {position.availablePositions}
+                  </option>
+                ))}
+            </Select>
+          </>)
+
           }
         </ModalBody>
         <ModalFooter>

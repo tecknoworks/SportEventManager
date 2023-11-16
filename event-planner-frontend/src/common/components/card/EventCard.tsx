@@ -30,6 +30,10 @@ const EventCard = ({ event, currentUser }: Props) => {
     lng: lng,
   };
 
+  const handleEventUserClick = () => {
+    navigate(`/event-users/${event.id}`);
+  };
+
   return (
     <>
       <Card variant="elevated" w="100%">
@@ -69,6 +73,15 @@ const EventCard = ({ event, currentUser }: Props) => {
             marginLeft={!isMobile ? '30px' : ''}
             onClick={onOpen}
           />
+          {event.authorUserId === currentUser?.userId && (
+            <SecondaryButton
+              text="Event Users"
+              w={!isMobile ? '' : '100%'}
+              marginTop={!isMobile ? '' : '10px'}
+              marginLeft={!isMobile ? '30px' : ''}
+              onClick={handleEventUserClick}
+            />
+          )}
         </CardFooter>
       </Card>
       <JoinModal

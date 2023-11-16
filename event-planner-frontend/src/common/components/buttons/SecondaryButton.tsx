@@ -7,9 +7,11 @@ type Props = {
   onClick?: any;
   type?: 'submit' | 'reset' | 'button' | undefined;
   w?: string;
+  marginTop?: string;
+  marginLeft?: string;
 };
 
-function SecondaryButton({ text, isDisabled, className, onClick, type, w }: Props) {
+function SecondaryButton({ text, isDisabled, className, onClick, type, w, marginTop, marginLeft }: Props) {
   return (
     <Button
       type={type}
@@ -20,6 +22,8 @@ function SecondaryButton({ text, isDisabled, className, onClick, type, w }: Prop
       variant="outline"
       onClick={onClick}
       w={w}
+      marginTop={marginTop}
+      marginLeft={marginLeft}
     >
       {text}
     </Button>

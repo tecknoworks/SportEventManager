@@ -35,6 +35,10 @@ namespace BusinessLayer.Profiles
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
                 .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.EventPosition.Position.Name));
 
+            CreateMap<UpdatedParticipant, Participant>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status))
+                .ForMember(dest => dest.EventId, opt => opt.Ignore())
+                .ForMember(dest => dest.UserId, opt => opt.Ignore());
 
             CreateMap<SportType, SportTypeDto>();
             CreateMap<Position, PositionDto>();

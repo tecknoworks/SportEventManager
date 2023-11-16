@@ -38,6 +38,18 @@ namespace DataAccessLayer.Repositories
             {
                 throw new EventPlannerException($"Event with id {eventId} does not exist.");
             }
+
+            foreach (var participant in eventEntity.Participants)
+            {
+                var dbParticipant = await _eventPlannerContext.Participants
+                    .FirstOrDefaultAsync(p => p.UserId == participant.UserId);
+
+                if (dbParticipant != null)
+                {
+                    participant.Status = dbParticipant.Status;
+                }
+            }
+
             return eventEntity;
         }
 
@@ -145,6 +157,10 @@ namespace DataAccessLayer.Repositories
             try
             {
                 participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
+                if (eventPositionId !=null)
+                {
+                    participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
+                }
                 participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
                 participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
 
@@ -152,7 +168,10 @@ namespace DataAccessLayer.Repositories
                                     ? await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value)
                                     : null;
 
-                if (eventPosition != null && eventPosition.AvailablePositions > 0 && participant.Event.MaximumParticipants > 0)
+                if (eventPosition == null) {
+                    participant.Event.MaximumParticipants -= 1;
+                }
+                else if (eventPosition != null && eventPosition.AvailablePositions > 0 && participant.Event.MaximumParticipants > 0)
                 {
                     eventPosition.AvailablePositions -= 1;
                     participant.Event.MaximumParticipants -= 1;
@@ -169,6 +188,36 @@ namespace DataAccessLayer.Repositories
                 throw;
             };
             return await Task.FromResult("User joined the event successfully.");
+        }
+
+        public async Task<Participant> GetParticipant(Guid eventId, string userId)
+        {
+
+            var participantEntity = await _eventPlannerContext.Participants
+                .Where(participant => participant.UserId == userId)
+                .FirstOrDefaultAsync(participant => participant.EventId == eventId);
+
+            if (participantEntity == null)
+            {
+                throw new EventPlannerException($"Participant with user id {userId} and event id {eventId} does not exist.");
+            }
+            return participantEntity;
+        }
+
+        public async Task<string> DeleteParticipantAsync(string userId, Guid eventId)
+        {
+            var participantEntity = await _eventPlannerContext.Participants
+               .Where(participant => participant.UserId == userId)
+               .FirstOrDefaultAsync(participant => participant.EventId == eventId);
+
+            if (participantEntity == null)
+            {
+                throw new EventPlannerException($"Participant with user id {userId} and event id {eventId} does not exist.");
+            }
+
+            _eventPlannerContext.Participants.Remove(participantEntity);
+            await _eventPlannerContext.SaveChangesAsync();
+            return "Participant deleted successfully";
         }
 
         public async Task<SportType?> GetEventSportTypeAsync(Guid eventId)
