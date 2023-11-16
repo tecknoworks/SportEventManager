@@ -18,5 +18,6 @@
         public SportType SportType { get; set; }
         public ICollection<EventPosition> EventPositions { get; set; }
         public ICollection<Participant> Participants { get; set; }
+        public ChatEvent ChatEvent { get; set; }
     }
 }

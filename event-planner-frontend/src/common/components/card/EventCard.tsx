@@ -8,19 +8,11 @@ import JoinButton from '../buttons/JoinButton';
 import JoinModal from '../../../features/browse-events/components/events-page/events-card-list/join-modal/JoinModal';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-type User =
-  | {
-      userId: string;
-      name: string;
-      email: string;
-      role: string;
-    }
-  | undefined;
+import { UserDetails } from 'services/auth/context/AuthContext';
 
 interface Props {
   event: EventDto;
-  currentUser: User;
+  currentUser?: UserDetails;
 }
 
 const EventCard = ({ event, currentUser }: Props) => {

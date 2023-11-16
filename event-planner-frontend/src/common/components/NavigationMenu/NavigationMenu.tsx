@@ -57,9 +57,21 @@ const NavigationMenu = () => {
     },
     {
       key: 4,
+      title: 'Chat',
+      availableForUser: true,
+      linkTo: '/chat',
+    },
+    {
+      key: 5,
       title: 'My Events',
       availableForUser: true,
       linkTo: '/my-events',
+    },
+    {
+      key: 6,
+      title: 'Browse Events',
+      availableForUser: true,
+      linkTo: '/browseevents',
     },
   ];
 

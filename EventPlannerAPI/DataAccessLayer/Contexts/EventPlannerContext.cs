@@ -91,7 +91,7 @@ namespace DataAccessLayer.Contexts
 
             modelBuilder.Entity<ChatEvent>()
                 .HasOne(chatEvent => chatEvent.Event)
-                .WithOne()
+                .WithOne(evnt => evnt.ChatEvent)
                 .HasForeignKey<ChatEvent>(chatEvent => chatEvent.EventID)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
@@ -129,7 +129,8 @@ namespace DataAccessLayer.Contexts
             modelBuilder.Entity<SportType>().HasData(new SportType
             {
                 Id = footballId,
-                Name = "Football"
+                Name = "Football",
+                ImageUrl = "https://cdn-icons-png.flaticon.com/512/5417/5417184.png"
             });
 
             // Seed Position data for Football
@@ -144,7 +145,8 @@ namespace DataAccessLayer.Contexts
             modelBuilder.Entity<SportType>().HasData(new SportType
             {
                 Id = hikingId,
-                Name = "Hiking"
+                Name = "Hiking",
+                ImageUrl = ""
             });
         }
     }   
