@@ -8,6 +8,12 @@ import JoinButton from '../buttons/JoinButton';
 import JoinModal from '../../../features/browse-events/components/events-page/events-card-list/join-modal/JoinModal';
 import { useNavigate } from 'react-router-dom';
 import PrimaryButton from '../buttons/PrimaryButton';
+import { closeEventThunk } from 'features/event/store/thunks/closeEventThunk';
+import { AppDispatch } from 'redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { CloseEventDto } from 'features/event/api/dtos';
+import { useEffect, useState } from 'react';
+import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
 
 type User =
   | {
@@ -25,9 +31,9 @@ interface Props {
 
 const EventCard = ({ event, currentUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
-  const [isMobile] = useMediaQuery('(max-width: 768px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
   const [latString, lngString] = event.location.split(',');
   const lat = parseFloat(latString);
@@ -35,6 +41,28 @@ const EventCard = ({ event, currentUser }: Props) => {
   const center: LatLng = {
     lat: lat,
     lng: lng,
+  };
+  const [reloadOnce, setReloadOnce] = useState(false);
+  const isCloseSuccess = useSelector(selectCloseSuccess);
+
+  const handleEventUserClick = () => {
+    navigate(`/event-users/${event.id}`);
+  };
+
+  useEffect(() => {
+    if (isCloseSuccess && !reloadOnce) {
+      setReloadOnce(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    }
+  }, [isCloseSuccess, reloadOnce]);
+
+  const handleCloseEvent = () => {
+    const data: CloseEventDto = {
+      eventId: event.id,
+    };
+    dispatch(closeEventThunk(data));
   };
 
   return (
@@ -49,7 +77,12 @@ const EventCard = ({ event, currentUser }: Props) => {
           <Stack width={!isResizable ? '40%' : '100%'} divider={<StackDivider />}>
             <Text as="b">{event.name}</Text>
             <Text>{formattedStartDate}</Text>
-            <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis" maxWidth={!isMobile ? '200px' : '100%'}>
+            <Text
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+              maxWidth={!isResizable ? '200px' : '100%'}
+            >
               {event.description}
             </Text>
             {event.location}
@@ -60,35 +93,43 @@ const EventCard = ({ event, currentUser }: Props) => {
         <CardFooter
           display="flex"
           alignItems="center"
-          flexDirection={!isMobile ? 'row' : 'column'}
-          justifyContent={!isMobile ? '' : 'space-between'}
+          flexDirection={!isResizable ? 'row' : 'column'}
+          justifyContent={!isResizable ? '' : 'space-between'}
         >
           <SecondaryButton
             text="More details"
-            w={!isMobile ? '' : '100%'}
+            w={!isResizable ? '' : '100%'}
             onClick={() => navigate(`/event-details/${event.id}`)}
           />
           <JoinButton
             text="Join Event"
             isDisabled={event.isClosed || event.maximumParticipants === 0 ? true : false}
-            w={!isMobile ? '' : '100%'}
-            marginTop={!isMobile ? '' : '10px'}
-            marginLeft={!isMobile ? '30px' : ''}
+            w={!isResizable ? '' : '100%'}
+            marginTop={!isResizable ? '' : '10px'}
+            marginLeft={!isResizable ? '30px' : ''}
             onClick={onOpen}
           />
           {event.authorUserId === currentUser?.userId && event.isClosed === false && (
             <>
               <SecondaryButton
+                text="Event Users"
+                w={!isResizable ? '' : '100%'}
+                marginTop={!isResizable ? '' : '10px'}
+                marginLeft={!isResizable ? '30px' : ''}
+                onClick={handleEventUserClick}
+              />
+              <SecondaryButton
                 text="Close Event"
-                w={!isMobile ? '' : '100%'}
-                marginTop={!isMobile ? '' : '10px'}
-                marginLeft={!isMobile ? '30px' : ''}
+                w={!isResizable ? '' : '100%'}
+                marginTop={!isResizable ? '' : '10px'}
+                marginLeft={!isResizable ? '30px' : ''}
+                onClick={handleCloseEvent}
               />
               <PrimaryButton
                 text="Edit Event"
-                w={!isMobile ? '' : '100%'}
-                marginTop={!isMobile ? '' : '10px'}
-                marginLeft={!isMobile ? '30px' : ''}
+                w={!isResizable ? '' : '100%'}
+                marginTop={!isResizable ? '' : '10px'}
+                marginLeft={!isResizable ? '30px' : ''}
                 onClick={() => navigate(`/edit-event/${event.id}`)}
               />
             </>

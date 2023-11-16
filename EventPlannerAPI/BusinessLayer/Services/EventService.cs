@@ -73,6 +73,7 @@ namespace BusinessLayer.Services
                 throw;
             }
         }
+
         public async Task<IList<SportTypeDto>> GetAvailableSportTypesAsync()
         {
             try
@@ -128,6 +129,24 @@ namespace BusinessLayer.Services
             catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while updating the event with id {eventId}");
+                throw ex;
+            }
+        }
+
+        public async Task<string> CloseEventAsync(Guid eventId)
+        {
+            try 
+            {
+                var eventEntity = await _eventRepository.GetEventByIdAsync(eventId);
+                if (eventEntity != null)
+                {
+                    eventEntity.IsClosed = true;
+                }
+                return await _eventRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An error occurred while closing the event with id {eventId}");
                 throw ex;
             }
         }
@@ -241,6 +260,49 @@ namespace BusinessLayer.Services
             catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while joining the event");
+                throw;
+            }
+        }
+
+        public async Task<string> ChangeUserStatusAsync(UpdatedParticipant updatedParticipant)
+        {
+            try
+            {
+                var evnt  = await _eventRepository.GetEventByIdAsync(updatedParticipant.EventId);
+                if (evnt == null)
+                {
+                    _logger.Error($"Event with id {updatedParticipant.EventId} not found.");
+                    throw new KeyNotFoundException("Event not found");
+                }
+
+                var user = await _userRepository.GetUserByIdAsync(updatedParticipant.UserId);
+                if (user == null)
+                {
+                    _logger.Error($"User with id {updatedParticipant.UserId} not found.");
+                    throw new KeyNotFoundException("User not found");
+                }
+
+                var participantEntity = await _eventRepository.GetParticipant(updatedParticipant.EventId, updatedParticipant.UserId);
+                _mapper.Map(updatedParticipant, participantEntity);
+
+                return await _eventRepository.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An error occurred while changing the user status");
+                throw;
+            }
+        }
+
+        public async Task<string> DeleteParticipantAsync(string userId, Guid eventId)
+        {
+            try
+            {
+                return await _eventRepository.DeleteParticipantAsync(userId, eventId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An error occurred while deleting the participant");
                 throw;
             }
         }

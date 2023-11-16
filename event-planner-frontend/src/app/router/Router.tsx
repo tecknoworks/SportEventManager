@@ -19,6 +19,7 @@ import SeeProfilePage from 'features/profile/views/SeeProfilePage';
 import DetailsPage from 'features/details-page/DetailsPage';
 import BrowseEvents from 'features/browse-events/BrowseEvents';
 import MyEvents from 'features/my-events/MyEvents';
+import EventUsers from 'features/event-users/EventUsers';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -118,6 +119,14 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <MyEvents />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="event-users/:eventId"
+            element={
+              <PrivateRoute>
+                <EventUsers />
               </PrivateRoute>
             }
           />

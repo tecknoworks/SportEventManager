@@ -39,6 +39,18 @@ namespace DataAccessLayer.Repositories
             {
                 throw new EventPlannerException($"Event with id {eventId} does not exist.");
             }
+
+            foreach (var participant in eventEntity.Participants)
+            {
+                var dbParticipant = await _eventPlannerContext.Participants
+                    .FirstOrDefaultAsync(p => p.UserId == participant.UserId);
+
+                if (dbParticipant != null)
+                {
+                    participant.Status = dbParticipant.Status;
+                }
+            }
+
             return eventEntity;
         }
 
@@ -177,6 +189,36 @@ namespace DataAccessLayer.Repositories
                 throw;
             };
             return await Task.FromResult("User joined the event successfully.");
+        }
+
+        public async Task<Participant> GetParticipant(Guid eventId, string userId)
+        {
+
+            var participantEntity = await _eventPlannerContext.Participants
+                .Where(participant => participant.UserId == userId)
+                .FirstOrDefaultAsync(participant => participant.EventId == eventId);
+
+            if (participantEntity == null)
+            {
+                throw new EventPlannerException($"Participant with user id {userId} and event id {eventId} does not exist.");
+            }
+            return participantEntity;
+        }
+
+        public async Task<string> DeleteParticipantAsync(string userId, Guid eventId)
+        {
+            var participantEntity = await _eventPlannerContext.Participants
+               .Where(participant => participant.UserId == userId)
+               .FirstOrDefaultAsync(participant => participant.EventId == eventId);
+
+            if (participantEntity == null)
+            {
+                throw new EventPlannerException($"Participant with user id {userId} and event id {eventId} does not exist.");
+            }
+
+            _eventPlannerContext.Participants.Remove(participantEntity);
+            await _eventPlannerContext.SaveChangesAsync();
+            return "Participant deleted successfully";
         }
     }
 }

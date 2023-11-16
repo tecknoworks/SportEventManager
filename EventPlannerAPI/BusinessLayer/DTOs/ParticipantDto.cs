@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DataAccessLayer.Helpers;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessLayer.DTOs
 {
@@ -13,7 +14,7 @@ namespace BusinessLayer.DTOs
         [Required]
         public string PositionName { get; set; }
         [Required]
-        public Guid StatusId { get; set; }
+        public ParticipantStatus Status { get; set; }
         [Required]
         public string StatusName { get; set; }
     }
