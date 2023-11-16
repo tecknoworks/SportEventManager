@@ -48,12 +48,7 @@ const RouterComponent: FC = () => {
               </LoggedInRoute>
             }
           />
-          <Route
-            path="event/getEvent/:eventId"
-            element={
-              <DetailsPage />
-            }
-          />
+          <Route path="event-details/:eventId" element={<DetailsPage />} />
           <Route
             path="confirm-account"
             element={

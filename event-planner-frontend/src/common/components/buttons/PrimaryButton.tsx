@@ -7,9 +7,11 @@ type Props = {
   onClick?: any;
   type?: 'submit' | 'reset' | 'button' | undefined;
   w?: string;
+  marginTop?: string;
+  marginLeft?: string;
 };
 
-function PrimaryButton({ text, isDisabled, className, onClick, type, w }: Props) {
+function PrimaryButton({ text, isDisabled, className, onClick, type, w, marginTop, marginLeft }: Props) {
   return (
     <Button
       type={type}
@@ -20,6 +22,8 @@ function PrimaryButton({ text, isDisabled, className, onClick, type, w }: Props)
       variant="solid"
       onClick={onClick}
       w={w}
+      marginTop={marginTop}
+      marginLeft={marginLeft}
     >
       {text}
     </Button>

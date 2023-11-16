@@ -6,18 +6,17 @@ import { LatLng } from '../Map/models';
 import Map from '../Map/Map';
 import JoinButton from '../buttons/JoinButton';
 import JoinModal from '../../../features/browse-events/components/events-page/events-card-list/join-modal/JoinModal';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import PrimaryButton from '../buttons/PrimaryButton';
 
 type User =
   | {
-    userId: string;
-    name: string;
-    email: string;
-    role: string;
-  }
+      userId: string;
+      name: string;
+      email: string;
+      role: string;
+    }
   | undefined;
-
 
 interface Props {
   event: EventDto;
@@ -26,8 +25,7 @@ interface Props {
 
 const EventCard = ({ event, currentUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const navigate = useNavigate()
-  const [reloadEvent, setReloadEvent] = useState<boolean>(false);
+  const navigate = useNavigate();
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const [isMobile] = useMediaQuery('(max-width: 768px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
@@ -65,7 +63,11 @@ const EventCard = ({ event, currentUser }: Props) => {
           flexDirection={!isMobile ? 'row' : 'column'}
           justifyContent={!isMobile ? '' : 'space-between'}
         >
-          <SecondaryButton text="More details" w={!isMobile ? '' : '100%'} onClick={() => navigate(`/Event/GetEvent/${event.id}`)} />
+          <SecondaryButton
+            text="More details"
+            w={!isMobile ? '' : '100%'}
+            onClick={() => navigate(`/event-details/${event.id}`)}
+          />
           <JoinButton
             text="Join Event"
             isDisabled={event.isClosed || event.maximumParticipants === 0 ? true : false}
@@ -74,6 +76,23 @@ const EventCard = ({ event, currentUser }: Props) => {
             marginLeft={!isMobile ? '30px' : ''}
             onClick={onOpen}
           />
+          {event.authorUserId === currentUser?.userId && event.isClosed === false && (
+            <>
+              <SecondaryButton
+                text="Close Event"
+                w={!isMobile ? '' : '100%'}
+                marginTop={!isMobile ? '' : '10px'}
+                marginLeft={!isMobile ? '30px' : ''}
+              />
+              <PrimaryButton
+                text="Edit Event"
+                w={!isMobile ? '' : '100%'}
+                marginTop={!isMobile ? '' : '10px'}
+                marginLeft={!isMobile ? '30px' : ''}
+                onClick={() => navigate(`/edit-event/${event.id}`)}
+              />
+            </>
+          )}
         </CardFooter>
       </Card>
       <JoinModal
