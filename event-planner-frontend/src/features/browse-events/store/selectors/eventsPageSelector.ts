@@ -9,3 +9,5 @@ export const joinEventIsSuccess = (state: RootState) => state.browseEventsPage.i
 export const joinEventIsDone = (state: RootState) => state.browseEventsPage.isDone;
 
 export const joinEventError = (state: RootState) => state.browseEventsPage.error;
+
+export const deleteParticipanttIsSuccess = (state: RootState) => state.browseEventsPage.isDeleteSuccess;

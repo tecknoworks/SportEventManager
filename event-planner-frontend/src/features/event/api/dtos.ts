@@ -1,3 +1,4 @@
+import { ParticipantStatus } from 'features/event-users/api/dtos';
 import { SkillLevel } from './models';
 
 export interface GetSportTypesDto {
@@ -43,8 +44,7 @@ export interface ParticipantDto {
   userName: string;
   eventPositionId?: string;
   positionName: string;
-  statusId: string;
-  statusName: string;
+  status: ParticipantStatus;
 }
 
 export interface GetEventDto {
