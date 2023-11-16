@@ -41,11 +41,6 @@ namespace BusinessLayer.Services
             return _mapper.Map<MessageDto>(messageToReturn);
         }
 
-        public async Task<IEnumerable<ChatMessage>> GetMessageHistoryAsync(string eventId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<bool> CanUserJoinChatAsync(string userId, Guid chatId)
         {
             return await _chatRepository.CanUserJoinChatAsync(userId, chatId);  
