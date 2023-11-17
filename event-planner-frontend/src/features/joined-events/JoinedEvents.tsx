@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Heading, Text } from '@chakra-ui/react';
+import { Box, Button, Flex, Grid, Heading, Text } from '@chakra-ui/react';
 import EventCard from './components/EventCard';
 import { useEffect } from 'react';
 import { getJoinedEventsThunk } from './store/thunks/getJoinedEventsThunk';
@@ -26,24 +26,26 @@ const JoinedEvents: React.FC = () => {
   }, [user?.userId]);
 
   return (
-    <Box width="100%" p={5}>
-      {events.length > 0 ? (
-        <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(2, 1fr)' }} gap={6}>
-          {events.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
-        </Grid>
-      ) : (
-        <Box>
-          <Heading color={'white'} p={9}>
-            You didn't join an event yet?{' '}
-          </Heading>
-          <Button fontSize="xl" ml={9} onClick={() => navigate('/browseevents')} >
-            Join one now!
-          </Button>
-        </Box>
-      )}
-    </Box>
+    <Flex align="center" justify="center">
+      <Box width="90%" p={5} >
+        {events.length > 0 ? (
+          <Grid templateColumns={{ base: 'repeat(1, 1fr)' }} gap={6}>
+            {events.map((event) => (
+              <EventCard key={event.id} event={event} />
+            ))}
+          </Grid>
+        ) : (
+          <Box>
+            <Heading color={'white'} p={9}>
+              You didn't join an event yet?{' '}
+            </Heading>
+            <Button fontSize="xl" ml={9} onClick={() => navigate('/browseevents')} >
+              Join one now!
+            </Button>
+          </Box>
+        )}
+      </Box>
+    </Flex>
   );
 };
 
