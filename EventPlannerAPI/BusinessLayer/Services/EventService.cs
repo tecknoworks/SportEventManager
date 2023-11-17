@@ -161,10 +161,13 @@ namespace BusinessLayer.Services
                     eventEntity.IsClosed = true;
                     foreach (var participant in eventEntity.Participants)
                     {
-                        var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
-                        var reviewLink = baseUrl + "/review-event?user=" + participant.User.Id + "&event=" + eventEntity.Id;
-                        var mail = MailRequest.CloseEventNotification(participant.User.Email, participant.User.UserName, eventEntity.Name, reviewLink);
-                        await _mailService.SendEmailAsync(mail);
+                        if(participant.Status == ParticipantStatus.Accepted)
+                        {
+                            var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
+                            var reviewLink = baseUrl + "/review-event?user=" + participant.User.Id + "&event=" + eventEntity.Id;
+                            var mail = MailRequest.CloseEventNotification(participant.User.Email, participant.User.UserName, eventEntity.Name, reviewLink);
+                            await _mailService.SendEmailAsync(mail);
+                        }
                     }
                 }
 
@@ -361,12 +364,16 @@ namespace BusinessLayer.Services
                     AuthorUserId = postReview.AuthorUserId,
                     UserId = postReview.UserId,
                     Rating = postReview.Rating,
-                    Comment = new Comment
+                };
+
+                if (!string.IsNullOrEmpty(postReview.Comment))
+                {
+                    review.Comment = new Comment
                     {
                         Id = Guid.NewGuid(),
                         Message = postReview.Comment
-                    }
-                };
+                    };
+                }
 
                 var result = await _eventRepository.PostReviewAsync(review);
                 return result;

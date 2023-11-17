@@ -2,6 +2,7 @@ import { FilterParams, JoinEventDto } from 'features/browse-events/api/dtos';
 import CommonService from './commonService';
 import { CloseEventDto, CreateEventDto, UpdateEventDto } from 'features/event/api/dtos';
 import { ChangeStatusDto, DeleteParticipantDto } from 'features/event-users/api/dtos';
+import { SendReviewData } from 'features/review-event/api/dto';
 
 export default class EventService extends CommonService {
   createEvent(data: CreateEventDto) {
@@ -42,5 +43,9 @@ export default class EventService extends CommonService {
 
   deleteParticipant(data: DeleteParticipantDto) {
     return this.delete('/Event/DeleteParticipant', data);
+  }
+
+  sendReview(data: SendReviewData) {
+    return this.post('/Event/PostReview', data);
   }
 }

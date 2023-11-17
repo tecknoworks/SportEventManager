@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import RatingComponent from './views/RatingComponent';
 import { AppDispatch } from 'redux/store';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
-import { selectCurrentEvent } from 'features/event/store/selectors/eventSelectors';
+import { selectCurrentEvent, selectSendReviewSuccess } from 'features/event/store/selectors/eventSelectors';
 import { Box, Divider, Flex, Input, Text } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
+import { sendReviewThunk } from './thunks/sendReviewThunk';
+import { SendReviewData } from './api/dto';
 
 const useURLParams = () => {
   const location = useLocation();
@@ -32,8 +34,10 @@ const ReviewEventPage = () => {
   const { user, event } = useURLParams();
   const userId: string = user;
   const eventId: string = event;
+  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   const currentEvent = useSelector(selectCurrentEvent);
+  const sendSuccess = useSelector(selectSendReviewSuccess);
   const [participantData, setParticipantData] = useState<{ [key: string]: { rating: number; comment: string } }>({});
 
   useEffect(() => {
@@ -60,10 +64,52 @@ const ReviewEventPage = () => {
     }));
   };
 
-  const filteredParticipants = currentEvent?.participants?.filter((participant) => participant.status === 1) || [];
+  const filteredParticipants =
+    currentEvent?.participants?.filter((participant) => participant.status === 1 && participant.userId !== userId) ||
+    [];
 
-  const handleSubmitReviews = () => {
-    console.log(participantData);
+  const handleSubmitReviews = async () => {
+    const reviewPromises = filteredParticipants.map(async (participant) => {
+      const participantReview = participantData[participant.userId];
+
+      if (participantReview) {
+        const { rating, comment } = participantReview;
+
+        if (rating !== 0 && comment.trim() !== '') {
+          const reviewDto: SendReviewData = {
+            authorUserId: userId,
+            userId: participant.userId,
+            rating: rating,
+            comment: comment,
+          };
+
+          const result = await dispatch(sendReviewThunk(reviewDto));
+
+          if (sendReviewThunk.fulfilled.match(result)) {
+            return 'success';
+          }
+          return 'error';
+        } else {
+          return 'error';
+        }
+      }
+
+      return 'no-review';
+    });
+
+    const reviewResults = await Promise.all(reviewPromises);
+    const hasError = reviewResults.some((result) => result === 'error');
+    const hasSuccess = reviewResults.some((result) => result === 'success');
+
+    if (hasSuccess && sendSuccess === true) {
+      setTimeout(() => {
+        navigate('/browseevents');
+      }, 2000);
+    } else {
+      if (!hasError) {
+        navigate('/browseevents');
+      }
+    }
   };
 
   return (
@@ -101,6 +147,9 @@ const ReviewEventPage = () => {
           </React.Fragment>
         ))}
         <PrimaryButton marginTop="30px" text="Submit reviews" onClick={handleSubmitReviews} />
+        <Text marginTop="5px" color="blackAlpha.700">
+          If don't want to send any reviews, just press the submit button
+        </Text>
       </Flex>
     </AccessToReviewPage>
   );
