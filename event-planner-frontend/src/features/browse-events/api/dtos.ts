@@ -14,6 +14,7 @@ type EventDto = {
   authorUserId: string;
   authorUserName: string;
   eventPositions: EventExtendedPosition[];
+  imageUrl: string;
 };
 
 export type EventExtendedPosition = {

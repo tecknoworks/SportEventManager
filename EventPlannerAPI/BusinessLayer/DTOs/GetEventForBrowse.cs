@@ -19,6 +19,7 @@ namespace BusinessLayer.DTOs
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int MaximumParticipants { get; set; }
+        public string ImageUrl { get; set; }
         public int SkillLevel { get; set; }
         public bool IsClosed { get; set; }
         public string AuthorUserId { get; set; }
