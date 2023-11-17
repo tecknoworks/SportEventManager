@@ -215,7 +215,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost("PostReview")]
 
         public async Task<ActionResult> PostReview([FromBody] PostReviewDto postReview)
