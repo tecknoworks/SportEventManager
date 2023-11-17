@@ -10,7 +10,7 @@ export const sendReviewThunk = createAsyncThunk(
   async (data: SendReviewData, { rejectWithValue }) => {
     try {
       const response = await eventService.sendReview(data);
-      handleGenericSuccess('Event created successfully!');
+      handleGenericSuccess('Review posted successfully!');
       return response.data;
     } catch (error: any) {
       handleApiError(error);
