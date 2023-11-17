@@ -1,4 +1,14 @@
-import { Card, CardBody, Text, CardFooter, StackDivider, Stack, useMediaQuery, useDisclosure } from '@chakra-ui/react';
+import {
+  Card,
+  CardBody,
+  Image,
+  Text,
+  CardFooter,
+  StackDivider,
+  Stack,
+  useMediaQuery,
+  useDisclosure,
+} from '@chakra-ui/react';
 import SecondaryButton from '../buttons/SecondaryButton';
 import { EventDto } from 'features/browse-events/api/dtos';
 import { format } from 'date-fns';
@@ -6,7 +16,6 @@ import { LatLng } from '../Map/models';
 import Map from '../Map/Map';
 import JoinButton from '../buttons/JoinButton';
 import JoinModal from '../../../features/browse-events/components/events-page/events-card-list/join-modal/JoinModal';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserDetails } from 'services/auth/context/AuthContext';
 
@@ -18,17 +27,9 @@ interface Props {
 const EventCard = ({ event, currentUser }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
-  const [reloadEvent, setReloadEvent] = useState<boolean>(false);
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const [isMobile] = useMediaQuery('(max-width: 768px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
-  const [latString, lngString] = event.location.split(',');
-  const lat = parseFloat(latString);
-  const lng = parseFloat(lngString);
-  const center: LatLng = {
-    lat: lat,
-    lng: lng,
-  };
 
   const handleEventUserClick = () => {
     navigate(`/event-users/${event.id}`);
@@ -49,10 +50,11 @@ const EventCard = ({ event, currentUser }: Props) => {
             <Text whiteSpace="nowrap" overflow="hidden" textOverflow="ellipsis" maxWidth={!isMobile ? '200px' : '100%'}>
               {event.description}
             </Text>
-            {event.location}
+            <Text>{event.locationName}</Text>
           </Stack>
-
-          <Map isResizable={isResizable} center={center} />
+          <Stack>
+            <Image src={event.imageUrl} maxH={!isResizable ? '10rem' : '5rem'} />
+          </Stack>
         </CardBody>
         <CardFooter
           display="flex"
