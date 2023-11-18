@@ -137,7 +137,7 @@ namespace EventPlannerAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Problem("An error occurred while retrieving events.");
             }

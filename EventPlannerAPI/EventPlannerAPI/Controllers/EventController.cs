@@ -201,12 +201,10 @@ namespace EventPlannerAPI.Controllers
             }
             catch (EventPlannerException ex)
             {
-                // Log the error message here if you have a logger
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // Log the error message here if you have a logger
                 return Problem("Something went wrong.");
             }
         }

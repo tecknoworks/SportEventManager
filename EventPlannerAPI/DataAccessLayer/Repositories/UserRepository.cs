@@ -226,6 +226,13 @@ namespace DataAccessLayer.Repositories
 
         public async Task<IEnumerable<Event>> GetJoinedEventsAsync(string userId)
         {
+            var userExists = await UserExistsAsync(userId);
+            if (!userExists)
+            {
+                _logger.Error($"User with id {userId} does not exist.");
+                throw new EventPlannerException($"User with id {userId} does not exist.");
+            }
+
             var events = await _eventPlannerContext.Participants
                         .Where(p => p.UserId == userId)
                         .Include(p => p.Event)
