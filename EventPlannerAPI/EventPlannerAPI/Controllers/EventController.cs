@@ -190,5 +190,26 @@ namespace EventPlannerAPI.Controllers
                 return Problem("An unexpected error occurred.");
             }
         }
+
+        [HttpGet("GetAverageRating/{userId}")]
+        public async Task<ActionResult<double>> GetAverageRatingForUser(string userId)
+        {
+            try
+            {
+                double averageRating = await _eventService.GetAverageRatingForUserAsync(userId);
+                return Ok(averageRating);
+            }
+            catch (EventPlannerException ex)
+            {
+                // Log the error message here if you have a logger
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                // Log the error message here if you have a logger
+                return Problem("Something went wrong.");
+            }
+        }
+
     }
 }
