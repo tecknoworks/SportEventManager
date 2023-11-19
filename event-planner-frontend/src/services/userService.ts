@@ -56,6 +56,10 @@ export default class UserService extends CommonService {
   }
 
   getAllJoinedEventsOfaUser(userId: string) {
-    return this.get("User/GetEventsByUserId/" + userId)
+    return this.get("/User/GetEventsByUserId/" + userId)
+  }
+
+  getUserRating(userId: string){
+    return this.get("/User/GetAverageRating/"+userId)
   }
 }

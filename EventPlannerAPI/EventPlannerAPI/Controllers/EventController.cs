@@ -191,23 +191,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        [HttpGet("GetAverageRating/{userId}")]
-        public async Task<ActionResult<double>> GetAverageRatingForUser(string userId)
-        {
-            try
-            {
-                double averageRating = await _eventService.GetAverageRatingForUserAsync(userId);
-                return Ok(averageRating);
-            }
-            catch (EventPlannerException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception)
-            {
-                return Problem("Something went wrong.");
-            }
-        }
+    
 
     }
 }

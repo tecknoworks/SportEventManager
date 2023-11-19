@@ -246,5 +246,21 @@ namespace DataAccessLayer.Repositories
             return events;
         }
 
+        public async Task<double> GetAverageRatingForUser(string userId)
+        {
+            var reviews = await _eventPlannerContext.Reviews
+                            .Where(r => r.UserId == userId)
+                            .ToListAsync();
+
+            if (!reviews.Any())
+            {
+                throw new EventPlannerException($"No reviews found for user with id {userId}.");
+            }
+
+            double averageRating = reviews.Average(r => r.Rating);
+
+            return averageRating;
+        }
+
     }
 }

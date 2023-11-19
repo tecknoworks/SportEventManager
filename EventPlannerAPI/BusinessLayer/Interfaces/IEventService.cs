@@ -16,6 +16,5 @@ namespace BusinessLayer.Interfaces
         Task<string> JoinEvent(JoinEventDto joinEventDto);
         Task<string> ChangeUserStatusAsync(UpdatedParticipant updatedParticipant);
         Task<string> DeleteParticipantAsync(string userId, Guid eventId);
-        Task<double> GetAverageRatingForUserAsync(string userId);
     }
 }

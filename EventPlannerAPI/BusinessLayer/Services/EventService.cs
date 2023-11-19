@@ -306,18 +306,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        public async Task<double> GetAverageRatingForUserAsync(string userId)
-        {
-            try
-            {
-                return await _eventRepository.GetAverageRatingForUser(userId);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, $"An unexpected error occurred while getting the average rating for user with id {userId}.");
-                throw;
-            }
-        }
+       
 
     }
 }

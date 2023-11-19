@@ -14,8 +14,9 @@ import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfileThunk } from '../store/thunks/getProfileThunk';
 import { useEffect } from 'react';
-import { selectProfile } from '../store/selectors/profileSelector';
+import { selectProfile, selectUserRating } from '../store/selectors/profileSelector';
 import { formatDate } from 'common/helpers/dateFormatter';
+import { getAverageRatingThunk } from '../store/thunks/getAverageRatingThunk';
 
 type Props = {
   userId?: string;
@@ -24,10 +25,12 @@ type Props = {
 const SeeProfile = ({ userId }: Props) => {
   const dispatch: AppDispatch = useDispatch();
   const profile = useSelector(selectProfile);
+  const rating = useSelector(selectUserRating);
   const [isMobile] = useMediaQuery('(max-width: 1037px)');
 
   useEffect(() => {
     dispatch(getProfileThunk(userId || ''));
+    dispatch(getAverageRatingThunk(userId || ''));
   }, []);
 
   return (
@@ -96,6 +99,10 @@ const SeeProfile = ({ userId }: Props) => {
             <FormControl id="City">
               <FormLabel>City</FormLabel>
               <Text>{profile?.city}</Text>
+            </FormControl>
+            <FormControl>
+              <FormLabel>{profile?.firstName} Rating</FormLabel>
+              <Text> {rating === 0 ? 'No rating yet' : Number(rating).toFixed(1)}</Text>
             </FormControl>
           </Stack>
         </Stack>
