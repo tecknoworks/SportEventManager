@@ -46,7 +46,7 @@ namespace BusinessLayer.Services
 
             var securityToken = new JwtSecurityToken(
             claims: claims,
-                expires: DateTime.Now.AddMinutes(60),
+                expires: DateTime.Now.AddMinutes(1),
                 issuer: _configuration.GetSection("Jwt:Issuer").Value,
                 audience: _configuration.GetSection("Jwt:Audience").Value,
                 signingCredentials: signingCred);
