@@ -82,5 +82,23 @@ namespace DataAccessLayer.Helpers
 
             return new MailRequest(toEmail, "Event Closed", mailBody.ToString());
         }
+
+        public static MailRequest AcceptedToEventNotification(string toEmail, string userName, string newUserUserName, string eventName,string profileImageUrl, string profileLink)
+        {
+            var mailBody = new StringBuilder();
+            mailBody.AppendLine("<h1>New user accepted to Event</h1>");
+            mailBody.AppendLine($"<p>Dear {userName},</p>");
+            mailBody.AppendLine($"<p>{newUserUserName} has been accepted to the {eventName} event you're attending.</p>");
+
+            if (!string.IsNullOrEmpty(profileImageUrl))
+            {
+                mailBody.AppendLine($"<img src='{profileImageUrl}' alt='Profile Picture' />");
+            }
+            mailBody.AppendLine($"<p>You can view their profile here: <a href='{profileLink}'>{newUserUserName}'s Profile</a></p>");
+            mailBody.AppendLine("<p>Thanks,</p>");
+            mailBody.AppendLine("<p>Your Team</p>");
+
+            return new MailRequest(toEmail, "New Participant accepted to the event you're attending", mailBody.ToString(), profileImageUrl);
+        }
     }
 }
