@@ -1,16 +1,11 @@
-import { GlobalCreateMessageGlobalActionContext } from "gadget-server";
 const OpenAI = require("openai");
 
-/**
- * @param { GlobalCreateThreadGlobalActionContext } context
- */
-export async function run({ params, logger, api, connections, scope }) {
+export async function run(params) {
   const secretKey = process.env.OPENAI_API_KEY;
   const openai = new OpenAI({
     apiKey: secretKey,
   });
 
-  // Capture the paramaters send by the frontend
   const userQuestion = params.userQuestion;
   const inputThreadId = params.threadId;
   const inputUserId = params.userId;
@@ -40,20 +35,16 @@ export async function run({ params, logger, api, connections, scope }) {
     content: userQuestion,
   });
 
-  // Create a run
   const run = await openai.beta.threads.runs.create(threadId, {
     assistant_id: assistantOpenAiId,
   });
 
-  // Retrieve the run status, which will not have completed at this point
   let runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
 
-  // Initialize a counter and max attempts for the polling logic, and how long to wait each try
   let attempts = 0;
   const maxAttempts = 20;
   const timoutWaitTimeMs = 2000;
 
-  // Loop while the run hasn't completed, or until you have reached the max attempts
   while (runStatus.status !== "completed" && attempts < maxAttempts) {
     await new Promise((resolve) => setTimeout(resolve, timoutWaitTimeMs));
     runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
@@ -62,12 +53,16 @@ export async function run({ params, logger, api, connections, scope }) {
 
   // Get the last assistant and user messages from the messages array that contain all past messages
   const messages = await openai.beta.threads.messages.list(threadId);
-  logger.info(messages);
+  console.info(messages);
   const lastAssistantMessageForRun = messages.data
-    .filter((message) => message.run_id === run.id && message.role === "assistant")
+    .filter(
+      (message) => message.run_id === run.id && message.role === "assistant"
+    )
     .pop();
 
-  const userMessages = messages.body.data.filter((message) => message.role === "user");
+  const userMessages = messages.body.data.filter(
+    (message) => message.role === "user"
+  );
   const lastUserMessage = userMessages[0];
 
   try {
