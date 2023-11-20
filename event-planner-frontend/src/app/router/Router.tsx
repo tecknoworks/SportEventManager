@@ -21,6 +21,7 @@ import BrowseEvents from 'features/browse-events/BrowseEvents';
 import MyEvents from 'features/my-events/MyEvents';
 import ChatPage from 'features/chat/views/ChatPage';
 import EventUsers from 'features/event-users/EventUsers';
+import ReviewEventPage from 'features/review-event/ReviewEventPage';
 
 const RouterComponent: FC = () => {
   const toast = useToast();
@@ -50,7 +51,7 @@ const RouterComponent: FC = () => {
               </LoggedInRoute>
             }
           />
-          <Route path="event/getEvent/:eventId" element={<DetailsPage />} />
+          <Route path="event-details/:eventId" element={<DetailsPage />} />
           <Route
             path="confirm-account"
             element={
@@ -136,6 +137,14 @@ const RouterComponent: FC = () => {
             element={
               <PrivateRoute>
                 <ChatPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="review-event"
+            element={
+              <PrivateRoute>
+                <ReviewEventPage />
               </PrivateRoute>
             }
           />

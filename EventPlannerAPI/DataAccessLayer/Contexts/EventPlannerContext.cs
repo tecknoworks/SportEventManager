@@ -19,6 +19,7 @@ namespace DataAccessLayer.Contexts
         public DbSet<ChatMessage> ChatMessages { get; set; }
         public DbSet<ChatEvent> ChatEvents { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -121,6 +122,13 @@ namespace DataAccessLayer.Contexts
                 .HasOne(review => review.User)
                 .WithMany(user => user.RecievedReviews)
                 .HasForeignKey(review => review.UserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(review => review.Comment)
+                .WithOne(comment => comment.Review)
+                .HasForeignKey<Comment>(comment => comment.ReviewId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 

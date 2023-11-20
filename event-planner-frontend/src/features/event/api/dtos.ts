@@ -80,3 +80,7 @@ export interface UpdateEventDto {
   eventPositions?: UpsertEventPositionDto[];
   participants?: ParticipantDto[];
 }
+
+export interface CloseEventDto {
+  eventId: string;
+}
