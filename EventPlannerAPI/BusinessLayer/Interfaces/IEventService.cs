@@ -13,8 +13,10 @@ namespace BusinessLayer.Interfaces
         Task<IList<PositionDto>> GetPositionsForSportTypeAsync(Guid sportTypeId);
         Task<PaginatedResult<GetEventForBrowse>> GetEventsAsync(PaginationFilter filters);
         Task<string> UpdateEventAsync(Guid eventId, UpdateEventDto updateEventDto);
+        Task<string> CloseEventAsync(Guid eventId);
         Task<string> JoinEvent(JoinEventDto joinEventDto);
         Task<string> ChangeUserStatusAsync(UpdatedParticipant updatedParticipant);
         Task<string> DeleteParticipantAsync(string userId, Guid eventId);
+        Task<string> PostReviewAsync(PostReviewDto postReview);
     }
 }

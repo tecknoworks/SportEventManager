@@ -19,5 +19,6 @@ namespace DataAccessLayer.Interfaces
         Task<SportType?> GetEventSportTypeAsync(Guid eventId);
         Task<Participant> GetParticipant(Guid eventId, string userId);
         Task<string> DeleteParticipantAsync(string userId, Guid eventId);
+        Task <string> PostReviewAsync(Review review);
     }
 }

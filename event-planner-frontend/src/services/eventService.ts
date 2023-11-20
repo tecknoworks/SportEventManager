@@ -1,7 +1,8 @@
 import { FilterParams, JoinEventDto } from 'features/browse-events/api/dtos';
 import CommonService from './commonService';
-import { CreateEventDto, UpdateEventDto } from 'features/event/api/dtos';
+import { CloseEventDto, CreateEventDto, UpdateEventDto } from 'features/event/api/dtos';
 import { ChangeStatusDto, DeleteParticipantDto } from 'features/event-users/api/dtos';
+import { SendReviewData } from 'features/review-event/api/dto';
 
 export default class EventService extends CommonService {
   createEvent(data: CreateEventDto) {
@@ -10,6 +11,10 @@ export default class EventService extends CommonService {
 
   updateEvent(eventId: string, data: UpdateEventDto) {
     return this.put('/Event/UpdateEvent/' + eventId, data);
+  }
+
+  closeEvent(data: CloseEventDto) {
+    return this.post('/Event/CloseEvent', data);
   }
 
   getSportTypes() {
@@ -38,5 +43,9 @@ export default class EventService extends CommonService {
 
   deleteParticipant(data: DeleteParticipantDto) {
     return this.delete('/Event/DeleteParticipant', data);
+  }
+
+  sendReview(data: SendReviewData) {
+    return this.post('/Event/PostReview', data);
   }
 }

@@ -66,5 +66,21 @@ namespace DataAccessLayer.Helpers
 
             return new MailRequest(toEmail, "New Participant for Your Event", mailBody.ToString(), profileImageUrl);
         }
+
+        public static MailRequest CloseEventNotification(string toEmail, string userName, string eventName, string reviewLink)
+        {
+            var mailBody = new StringBuilder();
+            mailBody.AppendLine("<h1>Closed Event</h1>");
+            mailBody.AppendLine($"<p>Dear {userName},</p>");
+            mailBody.AppendLine($"<p>The event {eventName} has finished or has been closed.</p>");
+            mailBody.AppendLine($"<p>Leave a review for the rest of the participants</p>");
+            mailBody.AppendLine("<a href='" + reviewLink + "'>Click here to write your review</a>");
+            mailBody.AppendLine("<p>If you can't click the above link, copy and paste the following URL into your browser:</p>");
+            mailBody.AppendLine("<p>" + reviewLink + "</p>");
+            mailBody.AppendLine("<p>Thanks,</p>");
+            mailBody.AppendLine("<p>Your Team</p>");
+
+            return new MailRequest(toEmail, "Event Closed", mailBody.ToString());
+        }
     }
 }
