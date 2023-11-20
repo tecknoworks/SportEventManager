@@ -13,7 +13,7 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    /*[Authorize]*/
+    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
@@ -90,7 +90,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-     /*   [Authorize]*/
+  
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
         {
@@ -108,7 +108,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-      /*  [Authorize]*/
+
         [HttpPut("UpdateEvent/{eventId}")]
         public async Task<ActionResult> UpdateEvent(Guid eventId, [FromBody] UpdateEventDto updateEventDto)
         {
@@ -134,7 +134,33 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-   /*     [Authorize]*/
+        [Authorize]
+        [HttpPost("CloseEvent")]
+        public async Task<ActionResult> CloseEvent([FromBody] CloseEventDto closeEventDto)
+        {
+            try
+            {
+                var currentUserId = HttpContext.User.FindFirstValue(SolutionConfigurationConstants.JwtIdClaim);
+                var eventToUpdate = await _eventService.GetEventByIdAsync(closeEventDto.EventId);
+
+                if (eventToUpdate.AuthorUserId != currentUserId)
+                {
+                    return StatusCode(StatusCodes.Status403Forbidden, "Only the creator can update the event.");
+                }
+
+                return Ok(await _eventService.CloseEventAsync(closeEventDto.EventId));
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
+            }
+        }
+
+        [Authorize]
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
         {
@@ -153,7 +179,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-       /* [Authorize]*/
+
         [HttpPost("ChangeUserStatus")]
         public async Task<ActionResult> ChangeUserStatus([FromBody] UpdatedParticipant updatedParticipant)
         {
@@ -172,7 +198,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        /*[Authorize]*/
+
         [HttpDelete("DeleteParticipant")]
         public async Task<ActionResult> DeleteParticipant(string userId, Guid eventId)
         {
@@ -191,7 +217,24 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-    
+        [Authorize]
+        [HttpPost("PostReview")]
 
+        public async Task<ActionResult> PostReview([FromBody] PostReviewDto postReview)
+        {
+            try
+            {
+                var response = await _eventService.PostReviewAsync(postReview);
+                return Ok(response);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("An unexpected error occurred.");
+            }
+        }
     }
 }

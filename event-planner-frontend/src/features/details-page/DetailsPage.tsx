@@ -163,11 +163,11 @@ const DetailsPage = () => {
                   participant.status === 1 && (
                     <HStack key={index} justifyContent="space-between">
                       {!hasPositions ? (
-                        <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
+                        <Text fontSize="md" onClick={() => { navigate(`/profile/${participant.userId}`) }} cursor="pointer">{participant.userName || 'Anonymous'}</Text>
                       ) : (
                         <>
                           <Text fontSize="md">{participant.positionName}:</Text>
-                          <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
+                          <Text fontSize="md" onClick={() => { navigate(`/profile/${participant.userId}`) }} cursor="pointer"> {participant.userName || 'Anonymous'}</Text>
                         </>
                       )}
                     </HStack>

@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import { selectProfile, selectUserRating } from '../store/selectors/profileSelector';
 import { formatDate } from 'common/helpers/dateFormatter';
 import { getAverageRatingThunk } from '../store/thunks/getAverageRatingThunk';
+import { EmptyStar, FullStar } from 'features/review-event/views/RatingComponent';
 
 type Props = {
   userId?: string;
@@ -102,7 +103,10 @@ const SeeProfile = ({ userId }: Props) => {
             </FormControl>
             <FormControl>
               <FormLabel>{profile?.firstName} Rating</FormLabel>
-              <Text> {rating === 0 ? 'No rating yet' : Number(rating).toFixed(1)}</Text>
+              <Box display="flex" alignItems="center">
+                <Text> {rating === 0 ? `No rating yet` : Number(rating).toFixed(1)} </Text>
+                {rating === 0 ? <EmptyStar /> : <FullStar color="#ffd700" />}
+              </Box>
             </FormControl>
           </Stack>
         </Stack>

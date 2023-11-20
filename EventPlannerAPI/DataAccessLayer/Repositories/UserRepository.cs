@@ -234,15 +234,18 @@ namespace DataAccessLayer.Repositories
             }
 
             var events = await _eventPlannerContext.Participants
-                        .Where(p => p.UserId == userId)
-                        .Include(p => p.Event)
-                            .ThenInclude(e => e.Author)
-                        .Include(p => p.Event)
-                            .ThenInclude(e => e.Participants)
-                                .ThenInclude(p => p.EventPosition)
-                                    .ThenInclude(p => p.Position)
-                        .Select(p => p.Event)
-                        .ToListAsync();
+                 .Where(p => p.UserId == userId)
+                 .Include(p => p.Event)
+                     .ThenInclude(e => e.Author)
+                 .Include(p => p.Event)
+                     .ThenInclude(e => e.Participants)
+                         .ThenInclude(part => part.User)
+                            .ThenInclude(user => user.Profile) 
+                 .Include(p => p.Event)
+                     .ThenInclude(e => e.EventPositions)
+                         .ThenInclude(ep => ep.Position)
+                 .Select(p => p.Event)
+                 .ToListAsync();
             return events;
         }
 

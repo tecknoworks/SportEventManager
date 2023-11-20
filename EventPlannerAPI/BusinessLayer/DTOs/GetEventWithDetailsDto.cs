@@ -17,6 +17,7 @@
         public bool IsClosed { get; set; }
         public string AuthorUserId { get; set; }
         public string AuthorUserName { get; set; }  
+        public string ImageUrl { get; set; }    
         public List<GetEventPositionDto> EventPositions {  get; set; }  
         public List<ParticipantDto> Participants { get; set; }
     }

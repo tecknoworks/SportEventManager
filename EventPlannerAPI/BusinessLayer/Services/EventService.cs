@@ -50,14 +50,15 @@ namespace BusinessLayer.Services
                         newEvent.MaximumParticipants += eventPosition.AvailablePositions;
                     }
                 }
-               
+
 
                 var eventEntity = _mapper.Map<Event>(newEvent);
                 var result = await _eventRepository.CreateEventAsync(eventEntity);
                 await LinkEventToChat(eventEntity);
                 return result;
             }
-            catch (Exception ex) 
+
+            catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while creating the event {newEvent.Name}");
                 throw;
@@ -84,7 +85,8 @@ namespace BusinessLayer.Services
                 var eventEntity = await _eventRepository.GetEventByIdAsync(eventId);
                 return _mapper.Map<GetEventWithDetailsDto>(eventEntity);
             }
-            catch (Exception ex) 
+
+            catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while getting the event with id {eventId}");
                 throw;
@@ -107,12 +109,14 @@ namespace BusinessLayer.Services
 
         public async Task<IList<PositionDto>> GetPositionsForSportTypeAsync(Guid sportTypeId)
         {
-            try 
+
+            try
             {
                 var positionEntities = await _eventRepository.GetPositionsForSportTypeAsync(sportTypeId);
                 return _mapper.Map<IList<PositionDto>>(positionEntities);
             }
-            catch (Exception ex) 
+ 
+            catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while getting the available position for sport type with id {sportTypeId}");
                 throw;
@@ -124,7 +128,8 @@ namespace BusinessLayer.Services
             try
             {
                 var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserName, filters.SkillLevel, filters.AuthorId);
-                return _mapper.Map<PaginatedResult<GetEventForBrowse>> (eventEntities);
+
+                return _mapper.Map<PaginatedResult<GetEventForBrowse>>(eventEntities);
             }
             catch (Exception ex)
             {
@@ -150,6 +155,37 @@ namespace BusinessLayer.Services
             }
         }
 
+        public async Task<string> CloseEventAsync(Guid eventId)
+        {
+            try
+            {
+                var eventEntity = await _eventRepository.GetEventByIdAsync(eventId);
+
+                if (eventEntity != null)
+                {
+                    eventEntity.IsClosed = true;
+                    foreach (var participant in eventEntity.Participants)
+                    {
+                        if(participant.Status == ParticipantStatus.Accepted)
+                        {
+                            var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
+                            var reviewLink = baseUrl + "/review-event?user=" + participant.User.Id + "&event=" + eventEntity.Id;
+                            var mail = MailRequest.CloseEventNotification(participant.User.Email, participant.User.UserName, eventEntity.Name, reviewLink);
+                            await _mailService.SendEmailAsync(mail);
+                        }
+                    }
+                }
+
+                var saveChanges = await _eventRepository.SaveChangesAsync();
+                return saveChanges;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An error occurred while closing the event with id {eventId}");
+                throw ex;
+            }
+        }
+
         private async Task<string> ValidateEventPositionsAsync(Guid sportTypeId, IEnumerable<UpsertEventPositionDto> eventPositions)
         {
             foreach (var position in eventPositions)
@@ -158,7 +194,7 @@ namespace BusinessLayer.Services
                 {
                     return $"Position with ID {position.PositionId} does not exist.";
                 }
-                
+
                 if (!await _eventRepository.PositionBelongsToSportTypeAsync(position.PositionId, sportTypeId))
                 {
                     return $"Position with ID {position.PositionId} does not belong to the sport type with ID {sportTypeId}.";
@@ -180,10 +216,26 @@ namespace BusinessLayer.Services
                 return $"SportType with ID {dto.SportTypeId} does not exist.";
             }
 
-            if (!dto.EventPositions.IsNullOrEmpty()) 
-            { 
+
+            if (!dto.EventPositions.IsNullOrEmpty())
+            {
                 return await ValidateEventPositionsAsync(dto.SportTypeId, dto.EventPositions);
             }
+            return string.Empty;
+        }
+
+        public async Task<string> ValidateReview(PostReviewDto postReview)
+        {
+            if (!await _userRepository.UserExistsAsync(postReview.AuthorUserId))
+            {
+                return $"Author with ID {postReview.AuthorUserId} does not exist.";
+            }
+
+            if (!await _userRepository.UserExistsAsync(postReview.UserId))
+            {
+                return $"SportType with ID {postReview.UserId} does not exist.";
+            }
+
             return string.Empty;
         }
 
@@ -198,7 +250,7 @@ namespace BusinessLayer.Services
                     return positionValidationResult;
                 }
             }
-            
+
             foreach (var participant in dto.Participants)
             {
                 if (!await _userRepository.UserExistsAsync(participant.UserId))
@@ -247,7 +299,7 @@ namespace BusinessLayer.Services
                     _logger.Error($"User details for user id {userId} not found.");
                     throw new KeyNotFoundException("User details not found");
                 }
-                 
+
                 var profileLink = $"{baseUrl}/profile/{userId}";
 
                 var joinResult = await _eventRepository.JoinEventAsync(userId, eventId, eventPositionId);
@@ -267,7 +319,8 @@ namespace BusinessLayer.Services
         {
             try
             {
-                var evnt  = await _eventRepository.GetEventByIdAsync(updatedParticipant.EventId);
+
+                var evnt = await _eventRepository.GetEventByIdAsync(updatedParticipant.EventId);
                 if (evnt == null)
                 {
                     _logger.Error($"Event with id {updatedParticipant.EventId} not found.");
@@ -306,7 +359,37 @@ namespace BusinessLayer.Services
             }
         }
 
-       
+        public async Task<string> PostReviewAsync(PostReviewDto postReview)
+        {
+            try
+            {
+                var errorMessage = await ValidateReview(postReview);
+                if (!errorMessage.IsNullOrEmpty()) throw new EventPlannerException(errorMessage);
+                var review = new Review
+                {
+                    Id = Guid.NewGuid(),
+                    AuthorUserId = postReview.AuthorUserId,
+                    UserId = postReview.UserId,
+                    Rating = postReview.Rating,
+                };
 
+                if (!string.IsNullOrEmpty(postReview.Comment))
+                {
+                    review.Comment = new Comment
+                    {
+                        Id = Guid.NewGuid(),
+                        Message = postReview.Comment
+                    };
+                }
+
+                var result = await _eventRepository.PostReviewAsync(review);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An error occurred while deleting the participant");
+                throw;
+            }
+        }
     }
 }

@@ -15,8 +15,6 @@ type Participant = {
 
 const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
   const navigate = useNavigate();
-  console.log(event);
-
 
   const parsedDateStart = event.startDate ? parseISO(event.startDate) : null;
   const formattedDateStart = parsedDateStart ? format(parsedDateStart, 'HH:mm dd-MM-yyyy') : '';
@@ -34,7 +32,7 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
       transition="all 0.2s"
       _hover={{ transform: 'scale(1.03)' }}
     >
-      <Text fontSize="xl" as="b" onClick={() => navigate(`/Event/GetEvent/${event.id}`)} cursor="pointer">
+      <Text fontSize="xl" as="b" onClick={() => navigate(`/event-details/${event.id}`)} cursor="pointer">
         {event.name}{' '}
       </Text>
       <Badge borderRadius="full" px="2" colorScheme={event.isClosed ? 'red' : 'green'}>
@@ -62,14 +60,16 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
         <Icon as={MdPeopleOutline} mr={2} />
         Participants: {
           event.participants && event.participants.length > 0 ? (
-            event.participants.map((participant: Participant, index: any) => (
-              <span key={participant.userId}>
-                <Text as="span" onClick={() => navigate(`/profile/${participant.userId}`)} cursor="pointer">
-                  <span> &nbsp; </span> {participant.userName || 'Anonymous'}
-                </Text>
-                {index < event.participants.length - 1 && <span>, &nbsp; </span>}
-              </span>
-            ))
+            event.participants
+              .filter((participant: Participant) => participant.status !== 0)
+              .map((participant: Participant, index: any) => (
+                <span key={participant.userId}>
+                  <Text as="span" onClick={() => navigate(`/profile/${participant.userId}`)} cursor="pointer">
+                    {participant.userName || 'Anonymous'}
+                  </Text>
+                  {index < event.participants.length - 1 && <span>, &nbsp; </span>}
+                </span>
+              ))
           ) : (
             <Text>No participants</Text>
           )
