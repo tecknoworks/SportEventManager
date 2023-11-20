@@ -13,7 +13,6 @@ namespace EventPlannerAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class EventController : ControllerBase
     {
         private readonly IEventService _eventService;
