@@ -95,7 +95,7 @@ namespace DataAccessLayer.Repositories
             if (userByEmailOrUsername == null)
             {
                 _logger.Error("An error occurred while validating credentials");
-                throw new BadHttpRequestException("Unable to find the user.");
+                return false;
             }
 
             if (!userByEmailOrUsername.EmailConfirmed) 
