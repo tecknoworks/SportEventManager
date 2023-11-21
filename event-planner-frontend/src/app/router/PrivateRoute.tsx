@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,13 +6,11 @@ import { getUserFromToken } from 'services/auth/context/AuthContext';
 import { jwtDecode } from "jwt-decode";
 import { logout } from 'features/login/store/slices/logInSlice';
 
-
 interface PrivateRouteProps {
   children: ReactNode;
 }
 
-
-interface DecodedToken {
+type DecodedToken = {
   exp: number;
 };
 
@@ -21,7 +19,7 @@ const isTokenExpired = (token: string | null): boolean => {
     return true;
   }
   try {
-    const decoded = jwtDecode(token) as unknown as DecodedToken;
+    const decoded = jwtDecode(token) as DecodedToken;
     const currentTime = Date.now() / 1000;
     return decoded.exp < currentTime;
   } catch (error) {
@@ -29,8 +27,6 @@ const isTokenExpired = (token: string | null): boolean => {
     return false;
   }
 };
-
-
 
 export function PrivateRoute({ children }: PrivateRouteProps) {
   const dispatch = useDispatch()
@@ -40,9 +36,8 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
   const expired = isTokenExpired(token);
   if (expired) {
     dispatch(logout())
-  } else {
-    console.log("Token is valid");
   }
+
   return <>{isAuthenticated ? children : <Navigate to="/login" replace />}</>;
 }
 
