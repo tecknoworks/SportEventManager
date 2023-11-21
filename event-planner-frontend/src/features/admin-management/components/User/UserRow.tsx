@@ -6,13 +6,6 @@ import {
   Input,
   FormControl,
   FormErrorMessage,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
 } from '@chakra-ui/react';
 
 import { CheckIcon, DeleteIcon, EditIcon, EmailIcon } from '@chakra-ui/icons';
@@ -27,6 +20,7 @@ type User = {
   email: string;
   phoneNumber: string;
 };
+
 interface UserRowProps {
   user: User;
   deleteUser: (userId: number) => void;
@@ -46,8 +40,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<'delete' | 'sendEmail' | null>(null);
 
-  const handleDeleteUser = () => deleteUser(user.userId);
-  const handleSendRecoveryEmail = () => sendRecoveryEmail(user.email);
 
   const [editUser, setEditUser] = useState<Account>({
     userName: user.userName,
@@ -139,9 +131,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
           </Button>
         </Tooltip>
         <Tooltip label="Send Recovery Email">
-          {/* <Button mr="3" bg={'green.300'} onClick={() => sendRecoveryEmail(user.email)}>
-            <EmailIcon />
-          </Button> */}
           <Button
             mr="3"
             bg={'green.300'}
@@ -154,9 +143,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
           </Button>
         </Tooltip>
         <Tooltip label="Delete user">
-          {/* <Button bg={'red.300'} onClick={() => deleteUser(user.userId)}>
-            <DeleteIcon />
-          </Button> */}
           <Button
             bg={'red.300'}
             onClick={() => {

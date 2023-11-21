@@ -72,7 +72,7 @@ const DetailsPage = () => {
 
   const parsedDateEnd = endDate ? parseISO(endDate) : null;
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
-  { }
+
 
   return (
     <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'}>
@@ -94,12 +94,10 @@ const DetailsPage = () => {
           </Heading>
           <Text fontSize="md">{description}</Text>
           <Text fontSize="md">{sportTypeName}</Text>
-
           <Text display="flex" alignItems="center">
             <Icon as={MdLocationOn} mr={2} />
             <Text fontSize="md">Location: {locationName}</Text>
           </Text>
-
           <Stack align="baseline" mt={2}>
             <HStack>
               <Icon as={MdEvent} mr={2} />
