@@ -52,19 +52,19 @@ const NavigationMenu = () => {
     {
       key: 3,
       title: 'Create event',
-      availableForUser: true,
+      availableForUser: false,
       linkTo: '/create-event',
     },
     {
       key: 4,
       title: 'Chat',
-      availableForUser: true,
+      availableForUser: false,
       linkTo: '/chat',
     },
     {
       key: 5,
       title: 'My Events',
-      availableForUser: true,
+      availableForUser: false,
       linkTo: '/my-events',
     },
     {
