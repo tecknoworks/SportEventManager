@@ -19,6 +19,8 @@ export const logInSlice = createSlice({
   reducers: {
     logout: (state) => {
       localStorage.removeItem('token');
+      localStorage.removeItem('threadId');
+      localStorage.removeItem('assistantId');
       state.loading = false;
       state.error = null;
       state.token = null;

@@ -11,7 +11,6 @@ import {
   Stack,
   Text,
   FormErrorMessage,
-  useToast,
   Link,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,11 +19,13 @@ import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
+import { CreateAssistant } from 'features/chat/api/dtos/dtos';
+import { createAssistantThunk } from 'features/chat/store/thunks/createAssistantThunk';
+import { createThreadThunk } from 'features/chat/store/thunks/createThreadThunk';
 
 const LogInForm = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const toast = useToast();
 
   const loading = useSelector(selectLogInStateLoading);
 
@@ -55,6 +56,30 @@ const LogInForm = () => {
 
   const handleClickShowPw = () => setShowPw(!showPw);
 
+  const setupAssistantAndThread = async () => {
+    const assistantDto: CreateAssistant = {
+      assistantName: 'Event Planner Assistant',
+      assistantInstructions:
+        process.env.REACT_APP_OPENAI_ASSISTANT_INSTRUCTIONS ||
+        'You are a guide to an event planner web platform for sports',
+    };
+
+    if (localStorage.getItem('threadId') && localStorage.getItem('assistantId')) return;
+
+    const assistantResponse = await dispatch(createAssistantThunk(assistantDto));
+    const threadResponse = await dispatch(createThreadThunk());
+
+    const assistantId = assistantResponse.payload?.id;
+    const threadId = threadResponse.payload?.id;
+
+    if (assistantId && threadId) {
+      localStorage.setItem('threadId', threadId);
+      localStorage.setItem('assistantId', assistantId);
+    } else {
+      console.log('Thread/Assistant ID not found in response');
+    }
+  };
+
   const handelLogInEvent = (e: FormEvent) => {
     e.preventDefault();
     let userCredentials: LogInDto = {
@@ -63,6 +88,7 @@ const LogInForm = () => {
     };
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
+        setupAssistantAndThread();
         <Navigate to="/" replace />;
       }
     });

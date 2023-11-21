@@ -42,7 +42,7 @@ namespace BusinessLayer.Services
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
 
-            var signingCred = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512Signature);
+            var signingCred = new SigningCredentials(securityKey, SolutionConfigurationConstants.JwtAlgorithm);
 
             var securityToken = new JwtSecurityToken(
             claims: claims,

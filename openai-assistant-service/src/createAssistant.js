@@ -4,7 +4,6 @@ function getAssistantParamsTemplate() {
   return {
     assistantName: "",
     assistantInstructions: "",
-    userId: "",
   };
 }
 
@@ -19,8 +18,6 @@ async function createAssistant(params) {
     apiKey: secretKey,
   });
 
-  const inputUserId = params.userId;
-
   try {
     const assistantResponse = await openai.beta.assistants.create({
       name: params.assistantName,
@@ -28,8 +25,6 @@ async function createAssistant(params) {
       tools: [],
       model: "gpt-3.5-turbo-1106",
     });
-
-    //TODO: if it will be needed, store this to a db and make the relation between a user an his assistant
 
     return assistantResponse;
   } catch (error) {

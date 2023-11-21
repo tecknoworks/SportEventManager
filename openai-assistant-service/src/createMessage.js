@@ -4,7 +4,6 @@ function getMessageParamsTemplate() {
   return {
     threadId: "",
     userQuestion: "",
-    userId: "",
     assistantId: "",
   };
 }
@@ -17,7 +16,6 @@ async function createMessage(params) {
 
   const userQuestion = params.userQuestion;
   const inputThreadId = params.threadId;
-  const inputUserId = params.userId;
   const inputAssistantId = params.assistantId;
 
   await openai.beta.threads.messages.create(inputThreadId, {
@@ -41,17 +39,7 @@ async function createMessage(params) {
     attempts++;
   }
 
-  const messages = await openai.beta.threads.messages.list(inputThreadId);
-  console.info(messages);
-  const lastAssistantMessageForRun = messages.data
-    .filter((message) => message.run_id === run.id && message.role === "assistant")
-    .pop();
-
-  const userMessages = messages.body.data.filter((message) => message.role === "user");
-  const lastUserMessage = userMessages[0];
-
-  //TODO: store message record to db
-  return messages;
+  return await openai.beta.threads.messages.list(inputThreadId);
 }
 
 module.exports = { createMessage, getMessageParamsTemplate };
