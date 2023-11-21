@@ -89,7 +89,6 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-
         [Authorize]
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
@@ -107,7 +106,6 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
-
 
         [Authorize]
         [HttpPut("UpdateEvent/{eventId}")]
@@ -161,7 +159,6 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-
         [Authorize]
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
@@ -180,7 +177,6 @@ namespace EventPlannerAPI.Controllers
                 return Problem("An unexpected error occurred.");
             }
         }
-
 
         [Authorize]
         [HttpPost("ChangeUserStatus")]
@@ -201,7 +197,6 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-
         [Authorize]
         [HttpDelete("DeleteParticipant")]
         public async Task<ActionResult> DeleteParticipant(string userId, Guid eventId)
@@ -220,7 +215,6 @@ namespace EventPlannerAPI.Controllers
                 return Problem("An unexpected error occurred.");
             }
         }
-
 
         [Authorize]
         [HttpPost("PostReview")]
