@@ -89,8 +89,8 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-       
-       /* [Authorize]*/
+
+        [Authorize]
         [HttpPost("CreateEvent")]
         public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
         {
@@ -108,8 +108,8 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-     
-       /* [Authorize]*/
+
+        [Authorize]
         [HttpPut("UpdateEvent/{eventId}")]
         public async Task<ActionResult> UpdateEvent(Guid eventId, [FromBody] UpdateEventDto updateEventDto)
         {
@@ -135,7 +135,7 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-        /*[Authorize]*/
+        [Authorize]
         [HttpPost("CloseEvent")]
         public async Task<ActionResult> CloseEvent([FromBody] CloseEventDto closeEventDto)
         {
@@ -161,8 +161,8 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-       
-        /*[Authorize]*/
+
+        [Authorize]
         [HttpPost("JoinEvent")]
         public async Task<ActionResult> JoinEvent([FromBody] JoinEventDto joinEventDto)
         {
@@ -181,8 +181,8 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-       
-       /* [Authorize]*/
+
+        [Authorize]
         [HttpPost("ChangeUserStatus")]
         public async Task<ActionResult> ChangeUserStatus([FromBody] UpdatedParticipant updatedParticipant)
         {
@@ -201,8 +201,8 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-       
-       /* [Authorize]*/
+
+        [Authorize]
         [HttpDelete("DeleteParticipant")]
         public async Task<ActionResult> DeleteParticipant(string userId, Guid eventId)
         {
@@ -221,8 +221,8 @@ namespace EventPlannerAPI.Controllers
             }
         }
 
-      
-       /* [Authorize]*/
+
+        [Authorize]
         [HttpPost("PostReview")]
         public async Task<ActionResult> PostReview([FromBody] PostReviewDto postReview)
         {
