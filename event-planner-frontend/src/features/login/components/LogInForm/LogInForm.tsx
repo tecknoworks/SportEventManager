@@ -19,7 +19,6 @@ import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
-import { CreateAssistant } from 'features/chat/api/dtos/dtos';
 import { createAssistantThunk } from 'features/chat/store/thunks/createAssistantThunk';
 import { createThreadThunk } from 'features/chat/store/thunks/createThreadThunk';
 
@@ -57,16 +56,9 @@ const LogInForm = () => {
   const handleClickShowPw = () => setShowPw(!showPw);
 
   const setupAssistantAndThread = async () => {
-    const assistantDto: CreateAssistant = {
-      assistantName: 'Event Planner Assistant',
-      assistantInstructions:
-        process.env.REACT_APP_OPENAI_ASSISTANT_INSTRUCTIONS ||
-        'You are a guide to an event planner web platform for sports',
-    };
-
     if (localStorage.getItem('threadId') && localStorage.getItem('assistantId')) return;
 
-    const assistantResponse = await dispatch(createAssistantThunk(assistantDto));
+    const assistantResponse = await dispatch(createAssistantThunk());
     const threadResponse = await dispatch(createThreadThunk());
 
     const assistantId = assistantResponse.payload?.id;

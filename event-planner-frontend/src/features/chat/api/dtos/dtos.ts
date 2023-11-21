@@ -20,11 +20,6 @@ export interface GetMessagesResponse {
   totalCount: number;
 }
 
-export interface CreateAssistant {
-  assistantName: string;
-  assistantInstructions: string;
-}
-
 export interface CreateMessage {
   assistantId: string;
   threadId: string;

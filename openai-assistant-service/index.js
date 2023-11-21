@@ -1,4 +1,4 @@
-const { createAssistant, getAssistantParamsTemplate } = require("./src/createAssistant");
+const { createAssistant } = require("./src/createAssistant");
 const { createThread } = require("./src/createThread");
 const { createMessage, getMessageParamsTemplate } = require("./src/createMessage");
 const { getThreadMessages, getThreadMessagesParamsTemplate } = require("./src/getThreadMessages");
@@ -17,13 +17,9 @@ app.get("/test", async (_, res) => {
   res.json({ status: "up" });
 });
 
-app.post("/assistants", authenticateToken, async (req, res) => {
+app.post("/assistants", authenticateToken, async (_, res) => {
   try {
-    let params = getAssistantParamsTemplate();
-
-    Object.assign(params, req.body);
-
-    const assistantDetails = await createAssistant(params);
+    const assistantDetails = await createAssistant();
     res.json(assistantDetails);
   } catch (error) {
     res.status(500).json({ error: error.message });

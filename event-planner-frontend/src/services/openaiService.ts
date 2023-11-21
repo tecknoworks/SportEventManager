@@ -1,13 +1,13 @@
 import { openaiAxiosInstance } from 'common/api/setAxiosInstance';
-import { CreateAssistant, CreateMessage } from 'features/chat/api/dtos/dtos';
+import { CreateMessage } from 'features/chat/api/dtos/dtos';
 
 export default class OpenAIService {
   test() {
     return openaiAxiosInstance.get('/test');
   }
 
-  createAssistant(data: CreateAssistant) {
-    return openaiAxiosInstance.post('/assistants', data);
+  createAssistant() {
+    return openaiAxiosInstance.post('/assistants');
   }
 
   createThread() {
