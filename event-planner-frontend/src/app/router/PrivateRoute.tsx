@@ -18,11 +18,11 @@ interface DecodedToken {
 
 const isTokenExpired = (token: string | null): boolean => {
   if (!token) {
-    return true; 
+    return true;
   }
   try {
     const decoded = jwtDecode(token) as unknown as DecodedToken;
-    const currentTime = Date.now() / 1000; 
+    const currentTime = Date.now() / 1000;
     return decoded.exp < currentTime;
   } catch (error) {
     console.error("Token decoding failed:", error);
@@ -36,6 +36,7 @@ export function PrivateRoute({ children }: PrivateRouteProps) {
   const dispatch = useDispatch()
   const token = useSelector(selectToken);
   const isAuthenticated = !!token && !isTokenExpired(token);
+
   const expired = isTokenExpired(token);
   if (expired) {
     dispatch(logout())
