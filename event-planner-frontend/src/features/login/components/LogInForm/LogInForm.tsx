@@ -63,7 +63,7 @@ const LogInForm = () => {
     };
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
-        <Navigate to="/" replace />;
+        navigate('/')
       }
     });
   };
