@@ -226,17 +226,43 @@ namespace DataAccessLayer.Repositories
 
         public async Task<IEnumerable<Event>> GetJoinedEventsAsync(string userId)
         {
+            var userExists = await UserExistsAsync(userId);
+            if (!userExists)
+            {
+                _logger.Error($"User with id {userId} does not exist.");
+                throw new EventPlannerException($"User with id {userId} does not exist.");
+            }
+
             var events = await _eventPlannerContext.Participants
-                        .Where(p => p.UserId == userId)
-                        .Include(p => p.Event)
-                            .ThenInclude(e => e.Author)
-                        .Include(p => p.Event)
-                            .ThenInclude(e => e.Participants)
-                                .ThenInclude(p => p.EventPosition)
-                                    .ThenInclude(p => p.Position)
-                        .Select(p => p.Event)
-                        .ToListAsync();
+                 .Where(p => p.UserId == userId)
+                 .Include(p => p.Event)
+                     .ThenInclude(e => e.Author)
+                 .Include(p => p.Event)
+                     .ThenInclude(e => e.Participants)
+                         .ThenInclude(part => part.User)
+                            .ThenInclude(user => user.Profile) 
+                 .Include(p => p.Event)
+                     .ThenInclude(e => e.EventPositions)
+                         .ThenInclude(ep => ep.Position)
+                 .Select(p => p.Event)
+                 .ToListAsync();
             return events;
+        }
+
+        public async Task<double> GetAverageRatingForUser(string userId)
+        {
+            var reviews = await _eventPlannerContext.Reviews
+                            .Where(r => r.UserId == userId)
+                            .ToListAsync();
+
+            if (!reviews.Any())
+            {
+                throw new EventPlannerException($"No reviews found for user with id {userId}.");
+            }
+
+            double averageRating = reviews.Average(r => r.Rating);
+
+            return averageRating;
         }
 
     }

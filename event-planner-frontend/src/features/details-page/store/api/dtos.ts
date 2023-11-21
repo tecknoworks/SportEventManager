@@ -8,7 +8,7 @@ export type EventPosition = {
 export type Participant = {
     eventPositionId?: string | null;
     positionName?: string | null;
-    statusId?: string | null;
+    status?: number | null;
     statusName?: string | null;
     userId?: string | null;
     userName?: string | null;

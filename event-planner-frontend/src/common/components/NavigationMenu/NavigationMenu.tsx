@@ -139,6 +139,13 @@ const NavigationMenu = () => {
                   >
                     Profile Page
                   </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      navigate('/joined-events');
+                    }}
+                  >
+                    All events you joined
+                  </MenuItem>
                   <MenuDivider />
                   <MenuItem
                     onClick={() => {

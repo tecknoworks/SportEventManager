@@ -21,5 +21,6 @@ namespace DataAccessLayer.Interfaces
         Task<EventPlannerUser> GetUserByIdentifier(string userIdentifier);
         Task<bool> UserExistsAsync(string userId);
         Task<IEnumerable<Event>> GetJoinedEventsAsync(string userId);
+        Task<double> GetAverageRatingForUser(string userId);
     }
 }
