@@ -14,8 +14,10 @@ import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProfileThunk } from '../store/thunks/getProfileThunk';
 import { useEffect } from 'react';
-import { selectProfile } from '../store/selectors/profileSelector';
+import { selectProfile, selectUserRating } from '../store/selectors/profileSelector';
 import { formatDate } from 'common/helpers/dateFormatter';
+import { getAverageRatingThunk } from '../store/thunks/getAverageRatingThunk';
+import { EmptyStar, FullStar } from 'features/review-event/views/RatingComponent';
 
 type Props = {
   userId?: string;
@@ -24,10 +26,12 @@ type Props = {
 const SeeProfile = ({ userId }: Props) => {
   const dispatch: AppDispatch = useDispatch();
   const profile = useSelector(selectProfile);
+  const rating = useSelector(selectUserRating);
   const [isMobile] = useMediaQuery('(max-width: 1037px)');
 
   useEffect(() => {
     dispatch(getProfileThunk(userId || ''));
+    dispatch(getAverageRatingThunk(userId || ''));
   }, []);
 
   return (
@@ -96,6 +100,13 @@ const SeeProfile = ({ userId }: Props) => {
             <FormControl id="City">
               <FormLabel>City</FormLabel>
               <Text>{profile?.city}</Text>
+            </FormControl>
+            <FormControl>
+              <FormLabel>{profile?.firstName} Rating</FormLabel>
+              <Box display="flex" alignItems="center">
+                <Text> {rating === 0 ? `No rating yet` : Number(rating).toFixed(1)} </Text>
+                {rating === 0 ? <EmptyStar /> : <FullStar color="#ffd700" />}
+              </Box>
             </FormControl>
           </Stack>
         </Stack>

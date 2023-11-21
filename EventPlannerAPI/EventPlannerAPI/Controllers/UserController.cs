@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.DTOs;
 using BusinessLayer.Interfaces;
+using BusinessLayer.Services;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -137,9 +138,27 @@ namespace EventPlannerAPI.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Problem("An error occurred while retrieving events.");
+            }
+        }
+
+        [HttpGet("GetAverageRating/{userId}")]
+        public async Task<ActionResult<double>> GetAverageRatingForUser(string userId)
+        {
+            try
+            {
+                double averageRating = await _userService.GetAverageRatingForUserAsync(userId);
+                return Ok(averageRating);
+            }
+            catch (EventPlannerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return Problem("Something went wrong.");
             }
         }
     }
