@@ -23,4 +23,12 @@ export default class OpenAIService {
       userQuestion: data.userQuestion,
     });
   }
+
+  deleteThread(threadId: string) {
+    return openaiAxiosInstance.delete(`/threads/${threadId}`);
+  }
+
+  deleteAssistant(assistantId: string) {
+    return openaiAxiosInstance.delete(`/assistants/${assistantId}`);
+  }
 }
