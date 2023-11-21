@@ -16,5 +16,6 @@ namespace BusinessLayer.Interfaces
         Task<IList<string>> GetRolesAsync(EventPlannerUser user);
         Task<GetUserProfileDetailsDto> UpdateUserProfileDetailsAsync(string userId, UpsertUserProfileDetailsDto newUserDetails);
         Task<IEnumerable<GetEventWithDetailsDto>> GetJoinedEventsAsync(string userId);
+        Task<double> GetAverageRatingForUserAsync(string userId);
     }
 }

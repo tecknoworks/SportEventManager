@@ -11,6 +11,7 @@ import adminReducer from 'features/admin-management/store/slices/adminSlice';
 import eventsReducer from 'features/browse-events/store/slices/eventsPageSlice';
 import chatReducer from 'features/chat/store/slices/chatSlice';
 import detailsReducer from 'features/details-page/store/slices/detailsSlice';
+import joinedEventsReducer from 'features/joined-events/store/slices/joinedEventsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
     detailsPage: detailsReducer,
     browseEventsPage: eventsReducer,
     chatPage: chatReducer,
+    joinedEventsPage: joinedEventsReducer
   },
   devTools: true,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),

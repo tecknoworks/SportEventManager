@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { getProfileThunk } from '../thunks/getProfileThunk';
 import { GetUserProfileDto } from 'features/profile/api/dtos';
 import { updateProfileThunk } from '../thunks/updateProfileThunk';
+import { getAverageRatingThunk } from '../thunks/getAverageRatingThunk';
 
 type State = {
   isLoading: boolean;
@@ -9,6 +10,7 @@ type State = {
   isDone: boolean;
   error: string;
   profile?: GetUserProfileDto;
+  averageRating?: number;
 };
 
 const initialState: State = {
@@ -17,6 +19,7 @@ const initialState: State = {
   isDone: false,
   error: '',
   profile: undefined,
+  averageRating: undefined,
 };
 
 const profileSlice = createSlice({
@@ -53,6 +56,20 @@ const profileSlice = createSlice({
       state.isSuccess = false;
       state.isDone = true;
       state.error = action.payload as string;
+    });
+    builder.addCase(getAverageRatingThunk.pending, (state) => {
+      state.isLoading = true;
+    });
+
+    builder.addCase(getAverageRatingThunk.fulfilled, (state, action) => {
+      state.isLoading = false;
+      state.averageRating = action.payload;
+    });
+
+    builder.addCase(getAverageRatingThunk.rejected, (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload as string;
+      state.averageRating=0
     });
   },
 });

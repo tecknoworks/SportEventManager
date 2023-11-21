@@ -21,7 +21,7 @@ interface IconProps {
   color?: string;
 }
 
-const FullStar = ({ size = 24, color = '#000000' }: IconProps) => {
+export const FullStar = ({ size = 24, color = '#000000' }: IconProps) => {
   return (
     <div style={{ color: color }}>
       <svg height={size} viewBox="0 0 24 24">
@@ -35,7 +35,7 @@ const FullStar = ({ size = 24, color = '#000000' }: IconProps) => {
   );
 };
 
-const EmptyStar = ({ size = 24, color = '#000000' }: IconProps) => {
+export const EmptyStar = ({ size = 24, color = '#000000' }: IconProps) => {
   return (
     <div style={{ color: color }}>
       <svg height={size} viewBox="0 0 24 24">

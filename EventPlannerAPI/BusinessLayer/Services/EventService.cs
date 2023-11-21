@@ -57,6 +57,7 @@ namespace BusinessLayer.Services
                 await LinkEventToChat(eventEntity);
                 return result;
             }
+
             catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while creating the event {newEvent.Name}");
@@ -84,6 +85,7 @@ namespace BusinessLayer.Services
                 var eventEntity = await _eventRepository.GetEventByIdAsync(eventId);
                 return _mapper.Map<GetEventWithDetailsDto>(eventEntity);
             }
+
             catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while getting the event with id {eventId}");
@@ -107,11 +109,13 @@ namespace BusinessLayer.Services
 
         public async Task<IList<PositionDto>> GetPositionsForSportTypeAsync(Guid sportTypeId)
         {
+
             try
             {
                 var positionEntities = await _eventRepository.GetPositionsForSportTypeAsync(sportTypeId);
                 return _mapper.Map<IList<PositionDto>>(positionEntities);
             }
+ 
             catch (Exception ex)
             {
                 _logger.Error(ex, $"An error occurred while getting the available position for sport type with id {sportTypeId}");
@@ -124,6 +128,7 @@ namespace BusinessLayer.Services
             try
             {
                 var eventEntities = await _eventRepository.GetEventsAsync(filters.PageNumber, filters.PageSize, filters.SearchData, filters.SportTypeId, filters.StartDate, filters.MaximumDuration, filters.Location, filters.AuthorUserName, filters.SkillLevel, filters.AuthorId);
+
                 return _mapper.Map<PaginatedResult<GetEventForBrowse>>(eventEntities);
             }
             catch (Exception ex)
@@ -210,6 +215,7 @@ namespace BusinessLayer.Services
             {
                 return $"SportType with ID {dto.SportTypeId} does not exist.";
             }
+
 
             if (!dto.EventPositions.IsNullOrEmpty())
             {
@@ -313,6 +319,7 @@ namespace BusinessLayer.Services
         {
             try
             {
+
                 var evnt = await _eventRepository.GetEventByIdAsync(updatedParticipant.EventId);
                 if (evnt == null)
                 {
