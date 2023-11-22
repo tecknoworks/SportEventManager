@@ -9,5 +9,6 @@ namespace DataAccessLayer.Models
         public ICollection<Participant> Participants { get; set; }
         public ICollection<Review> GivenReviews { get; set; }
         public ICollection<Review> RecievedReviews { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }
