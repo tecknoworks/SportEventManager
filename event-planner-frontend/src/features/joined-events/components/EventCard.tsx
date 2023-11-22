@@ -32,12 +32,14 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
       transition="all 0.2s"
       _hover={{ transform: 'scale(1.03)' }}
     >
-      <Text fontSize="xl" as="b" onClick={() => navigate(`/event-details/${event.id}`)} cursor="pointer">
-        {event.name}{' '}
-      </Text>
-      <Badge borderRadius="full" px="2" colorScheme={event.isClosed ? 'red' : 'green'}>
-        {event.isClosed ? 'Closed' : 'Open'}
-      </Badge>
+      <Box display="flex" alignItems="center" gap="0.5rem">
+        <Text fontSize="xl" as="b" onClick={() => navigate(`/event-details/${event.id}`)} cursor="pointer">
+          {event.name}{' '}
+        </Text>
+        <Badge borderRadius="full" px="2" colorScheme={event.isClosed ? 'red' : 'green'}>
+          {event.isClosed ? 'Closed' : 'Open'}
+        </Badge>
+      </Box>
       <Text mt={2}>{event.description}</Text>
       <Divider my={2} />
       <Text display="flex" alignItems="center">
