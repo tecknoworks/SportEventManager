@@ -1,4 +1,17 @@
-import { Box, Flex, Heading, Text, VStack, HStack, Tag, Button, Container, Divider, Icon, Stack } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Tag,
+  Button,
+  Container,
+  Divider,
+  Icon,
+  Stack,
+} from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,8 +27,8 @@ import { JoinEventDto } from 'features/browse-events/api/dtos';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
-import { MdEvent, MdEventAvailable, MdLocationOn } from 'react-icons/md';
-
+import { MdEvent, MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
+import { FaRunning } from 'react-icons/fa';
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -65,14 +78,13 @@ const DetailsPage = () => {
     lat: lat,
     lng: lng,
   };
-  const allParticipantsZero = participants && participants.every(participant => participant.status === 0);
+  const allParticipantsZero = participants && participants.every((participant) => participant.status === 0);
 
   const parsedDateStart = startDate ? parseISO(startDate) : null;
   const formattedDateStart = parsedDateStart ? format(parsedDateStart, 'HH:mm dd-MM-yyyy') : '';
 
   const parsedDateEnd = endDate ? parseISO(endDate) : null;
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
-
 
   return (
     <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'}>
@@ -92,8 +104,14 @@ const DetailsPage = () => {
           >
             Organizer : {authorUserName}
           </Heading>
-          <Text fontSize="md">{description}</Text>
-          <Text fontSize="md">{sportTypeName}</Text>
+          <Box display="flex" alignItems="center">
+            <Icon as={MdOutlineDescription} mr={2} />
+            <Text fontSize="md">{description}</Text>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <Icon as={FaRunning} mr={2} />
+            <Text fontSize="md">{sportTypeName}</Text>
+          </Box>
           <Text display="flex" alignItems="center">
             <Icon as={MdLocationOn} mr={2} />
             <Text fontSize="md">Location: {locationName}</Text>
@@ -153,24 +171,40 @@ const DetailsPage = () => {
             </Heading>
             <Box>
               {allParticipantsZero && <Text fontSize="md">No user joined yet. Be the first one!</Text>}
-              {participants && participants.length === 0 && (
-                <Text fontSize="md">0 participant now</Text>
-              )}
+              {participants && participants.length === 0 && <Text fontSize="md">0 participant now</Text>}
               {participants &&
-                participants.map((participant, index) => (
-                  participant.status === 1 && (
-                    <HStack key={index} justifyContent="space-between">
-                      {!hasPositions ? (
-                        <Text fontSize="md" onClick={() => { navigate(`/profile/${participant.userId}`) }} cursor="pointer">{participant.userName || 'Anonymous'}</Text>
-                      ) : (
-                        <>
-                          <Text fontSize="md">{participant.positionName}:</Text>
-                          <Text fontSize="md" onClick={() => { navigate(`/profile/${participant.userId}`) }} cursor="pointer"> {participant.userName || 'Anonymous'}</Text>
-                        </>
-                      )}
-                    </HStack>
-                  )
-                ))}
+                participants.map(
+                  (participant, index) =>
+                    participant.status === 1 && (
+                      <HStack key={index} justifyContent="space-between">
+                        {!hasPositions ? (
+                          <Text
+                            fontSize="md"
+                            onClick={() => {
+                              navigate(`/profile/${participant.userId}`);
+                            }}
+                            cursor="pointer"
+                          >
+                            {participant.userName || 'Anonymous'}
+                          </Text>
+                        ) : (
+                          <>
+                            <Text fontSize="md">{participant.positionName}:</Text>
+                            <Text
+                              fontSize="md"
+                              onClick={() => {
+                                navigate(`/profile/${participant.userId}`);
+                              }}
+                              cursor="pointer"
+                            >
+                              {' '}
+                              {participant.userName || 'Anonymous'}
+                            </Text>
+                          </>
+                        )}
+                      </HStack>
+                    )
+                )}
             </Box>
           </VStack>
         </VStack>

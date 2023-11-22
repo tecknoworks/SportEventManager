@@ -24,6 +24,8 @@ import { logout } from 'features/login/store/slices/logInSlice';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
+import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
+import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
 
 type LinkType = {
   key: number;
@@ -148,8 +150,12 @@ const NavigationMenu = () => {
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem
-                    onClick={() => {
+                    onClick={async () => {
+                      await dispatch(deleteAssitantThunk(localStorage.getItem('assistantId') || ''));
+                      await dispatch(deleteThreadThunk(localStorage.getItem('threadId') || ''));
                       dispatch(logout());
+                      localStorage.removeItem('threadId');
+                      localStorage.removeItem('assistantId');
                       navigate('/');
                     }}
                   >

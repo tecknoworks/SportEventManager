@@ -11,7 +11,6 @@ import {
   Stack,
   Text,
   FormErrorMessage,
-  useToast,
   Link,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,11 +19,12 @@ import { AppDispatch } from 'redux/store';
 import { LogInDto } from 'features/login/api/dtos';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { selectLogInStateLoading } from 'features/login/store/selectors/logInSelectors';
+import { createAssistantThunk } from 'features/chat/store/thunks/createAssistantThunk';
+import { createThreadThunk } from 'features/chat/store/thunks/createThreadThunk';
 
 const LogInForm = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const toast = useToast();
 
   const loading = useSelector(selectLogInStateLoading);
 
@@ -55,6 +55,21 @@ const LogInForm = () => {
 
   const handleClickShowPw = () => setShowPw(!showPw);
 
+  const setupAssistantAndThread = async () => {
+    if (localStorage.getItem('threadId') && localStorage.getItem('assistantId')) return;
+
+    const assistantResponse = await dispatch(createAssistantThunk());
+    const threadResponse = await dispatch(createThreadThunk());
+
+    const assistantId = assistantResponse.payload?.id;
+    const threadId = threadResponse.payload?.id;
+
+    if (assistantId && threadId) {
+      localStorage.setItem('threadId', threadId);
+      localStorage.setItem('assistantId', assistantId);
+    }
+  };
+
   const handelLogInEvent = (e: FormEvent) => {
     e.preventDefault();
     let userCredentials: LogInDto = {
@@ -63,7 +78,8 @@ const LogInForm = () => {
     };
     dispatch(logInThunk(userCredentials)).then((response) => {
       if (response.payload) {
-        navigate('/')
+        setupAssistantAndThread();
+        <Navigate to="/" replace />;
       }
     });
   };
