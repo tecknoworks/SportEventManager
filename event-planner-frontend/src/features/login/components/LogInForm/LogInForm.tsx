@@ -67,8 +67,6 @@ const LogInForm = () => {
     if (assistantId && threadId) {
       localStorage.setItem('threadId', threadId);
       localStorage.setItem('assistantId', assistantId);
-    } else {
-      console.log('Thread/Assistant ID not found in response');
     }
   };
 
