@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -14,7 +14,7 @@ import {
   Stack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { BellIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import NavLink from './components/NavLink';
 import { useNavigate } from 'react-router-dom';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
@@ -24,6 +24,15 @@ import { logout } from 'features/login/store/slices/logInSlice';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
+import Notifications from 'features/notifications/Notifications';
+import {
+  connectNotification,
+  disconnectNotification,
+  registerNotificationReceived,
+  unregisterNotificationReceived,
+} from 'services/notificationService';
+import { addNotificationMessage } from './store/notificationSlice';
+import { handleGenericSuccess } from 'services/notificationHandlingService';
 
 type LinkType = {
   key: number;
@@ -34,6 +43,8 @@ type LinkType = {
 
 const NavigationMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const notificationsDisclosure = useDisclosure();
+
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const Links: LinkType[] = [
@@ -93,6 +104,22 @@ const NavigationMenu = () => {
     }
   }, [token]);
 
+  useEffect(() => {
+    connectNotification();
+    registerNotificationReceived((message: string) => {
+      dispatch(addNotificationMessage(message));
+      console.log('da: ', message);
+      handleGenericSuccess('You have new notifications');
+    });
+
+    return () => {
+      unregisterNotificationReceived((message: string) => {
+        console.log('Unregistered callback:', message);
+      });
+      disconnectNotification();
+    };
+  }, []);
+
   return (
     <Box height="64px" width="100%" top="0" bg={'whiteAlpha.800'} px={4}>
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
@@ -139,6 +166,8 @@ const NavigationMenu = () => {
                   >
                     Profile Page
                   </MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={notificationsDisclosure.onOpen}>Notifications</MenuItem>
                   <MenuDivider />
                   <MenuItem
                     onClick={() => {
@@ -197,6 +226,9 @@ const NavigationMenu = () => {
           </Stack>
         </Box>
       ) : null}
+      {notificationsDisclosure.isOpen && (
+        <Notifications isOpen={notificationsDisclosure.isOpen} onClose={notificationsDisclosure.onClose} />
+      )}
     </Box>
   );
 };

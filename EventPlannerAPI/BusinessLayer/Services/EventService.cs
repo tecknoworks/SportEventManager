@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs;
+using BusinessLayer.Hubs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Mvc;
+using DataAccessLayer.Repositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLayer.Services
@@ -22,8 +23,9 @@ namespace BusinessLayer.Services
         private readonly Serilog.ILogger _logger;
         private readonly IMailService _mailService;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IChatRepository chatRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService, IConfiguration configuration)
+        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IChatRepository chatRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService, IConfiguration configuration, IHubContext<NotificationHub> hubContext)
         {
             _eventRepository = eventRepository;
             _userRepository = userRepository;
@@ -32,6 +34,7 @@ namespace BusinessLayer.Services
             _logger = logger;
             _mailService = mailService;
             _configuration = configuration;
+            _hubContext = hubContext;
         }
 
         public async Task<string> CreateEventAsync(CreateEventDto newEvent)
@@ -344,7 +347,7 @@ namespace BusinessLayer.Services
 
                 if(updatedParticipant.Status == ParticipantStatus.Accepted)
                 {
-                    foreach(var participant in participants)
+                    foreach (var participant in participants)
                     {
                         var participantData = await _userRepository.GetUserByIdAsync(participant.UserId);
                         if (participantData == null)
@@ -352,9 +355,12 @@ namespace BusinessLayer.Services
                             _logger.Error($"User with id {participantData.Id} not found.");
                             throw new KeyNotFoundException("User not found");
                         }
-                        var mail = MailRequest.AcceptedToEventNotification(participantData.Email, participantData.UserName, user.UserName, evnt.Name,userDetails.ProfilePhoto, profileLink);
+
+                        var mail = MailRequest.AcceptedToEventNotification(participantData.Email, participantData.UserName, user.UserName, evnt.Name, userDetails.ProfilePhoto, profileLink);
                         await _mailService.SendEmailAsync(mail);
 
+                        _logger.Information("Sending notification to participant: {UserId}", participantData.Id);
+                        await _hubContext.Clients.User(participant.UserId).SendAsync("ReceiveNotification", $"User {user.UserName} has joined the event {evnt.Name}!");
                     }
                 }
 
