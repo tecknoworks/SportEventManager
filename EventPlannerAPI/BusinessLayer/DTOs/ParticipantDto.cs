@@ -15,7 +15,5 @@ namespace BusinessLayer.DTOs
         public string PositionName { get; set; }
         [Required]
         public ParticipantStatus Status { get; set; }
-        [Required]
-        public string StatusName { get; set; }
     }
 }

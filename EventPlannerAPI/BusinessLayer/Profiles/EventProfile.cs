@@ -29,7 +29,7 @@ namespace BusinessLayer.Profiles
                 .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.SportType.ImageUrl));
 
             CreateMap<EventPosition, GetEventPositionDto>()
-                .ForMember(dest => dest.PositionId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.PositionId, opt => opt.MapFrom(src => src.PositionId))
                 .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name));
 
             CreateMap<Participant, ParticipantDto>()
