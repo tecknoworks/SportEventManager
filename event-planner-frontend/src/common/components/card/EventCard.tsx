@@ -8,6 +8,8 @@ import {
   Stack,
   useMediaQuery,
   useDisclosure,
+  Icon,
+  Box,
 } from '@chakra-ui/react';
 import SecondaryButton from '../buttons/SecondaryButton';
 import { EventDto } from 'features/browse-events/api/dtos';
@@ -25,6 +27,7 @@ import { CloseEventDto } from 'features/event/api/dtos';
 import { useEffect, useState } from 'react';
 import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
 import { UserDetails } from 'services/auth/context/AuthContext';
+import { MdEvent, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 
 interface Props {
   event: EventDto;
@@ -71,16 +74,25 @@ const EventCard = ({ event, currentUser }: Props) => {
         >
           <Stack width={!isResizable ? '40%' : '100%'} divider={<StackDivider />}>
             <Text as="b">{event.name}</Text>
-            <Text>{formattedStartDate}</Text>
-            <Text
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-              maxWidth={!isResizable ? '200px' : '100%'}
-            >
-              {event.description}
-            </Text>
-            <Text>{event.locationName}</Text>
+            <Box display="flex" alignItems="center">
+              <Icon as={MdEvent} mr={2} />
+              <Text>{formattedStartDate}</Text>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <Icon as={MdOutlineDescription} mr={2} />
+              <Text
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
+                maxWidth={!isResizable ? '200px' : '100%'}
+              >
+                {event.description}
+              </Text>
+            </Box>
+            <Box display="flex" alignItems="center">
+              <Icon as={MdLocationOn} mr={2} />
+              <Text> {event.locationName}</Text>
+            </Box>
           </Stack>
           <Stack>
             <Image src={event.imageUrl} maxH={!isResizable ? '10rem' : '5rem'} />
