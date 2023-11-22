@@ -76,5 +76,33 @@ namespace EventPlannerAPI.Controllers
             if (!errorMessage.IsNullOrEmpty()) return BadRequest(errorMessage);
             return Ok("If there's an account associated with this email address, we've sent instructions for resetting the password.");
         }
+
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpPatch("BlockUser")]
+        public async Task<IActionResult> BlockUser([FromBody] BlockUserDto blockUserDto)
+        {
+            if (blockUserDto == null || string.IsNullOrEmpty(blockUserDto.UserId))
+            {
+                return BadRequest("Invalid user data.");
+            }
+
+            try
+            {
+                var result = await _adminService.BlockUserAsync(blockUserDto);
+                if (!result.Succeeded)
+                {
+                    return BadRequest(result.Errors);
+                }
+
+                return Ok($"User {(blockUserDto.IsBlocked ? "blocked" : "unblocked")} successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
+        }
+
     }
 }
