@@ -9,12 +9,14 @@ import { selectAdminStateError, selectAllUsers } from 'features/admin-management
 import { deleteUserThunk } from 'features/admin-management/store/thunks/deleteUserThunk';
 import { sendRecoverPasswordEmailThunk } from 'features/admin-management/store/thunks/sendRecoverPasswordEmailthunk';
 import { editUserOrAdminThunk } from 'features/admin-management/store/thunks/editUserOrAdminThunk';
+import { blockUserThunk } from 'features/admin-management/store/thunks/blockUserThunk';
 
 type User = {
   userId: number;
   userName: string;
   email: string;
   phoneNumber: string;
+  isBlocked: boolean;
 };
 
 const TableManagement: React.FC = () => {
@@ -65,6 +67,10 @@ const TableManagement: React.FC = () => {
     await dispatch(getAllUsersThunk());
   };
 
+  const blockUser = (userId: number, isBlocked: boolean) => {
+    dispatch(blockUserThunk({ userId, isBlocked }));
+  };
+
   const deleteUser = (userId: any) => {
     dispatch(deleteUserThunk(userId));
     const updatedUsers = users.filter((user) => user.userId !== userId);
@@ -107,6 +113,7 @@ const TableManagement: React.FC = () => {
                   deleteUser={deleteUser}
                   sendRecoveryEmail={sendRecoveryEmail}
                   editUserOrAdmin={editUserOrAdmin}
+                  blockUser={blockUser}
                 />
               ))}
             </Tbody>

@@ -37,7 +37,8 @@ namespace BusinessLayer.Services
                     UserId = u.Id,
                     UserName = u.UserName,
                     Email = u.Email,
-                    PhoneNumber = u.PhoneNumber
+                    PhoneNumber = u.PhoneNumber,
+                    IsBlocked=u.IsBlocked
                 }).ToList();
 
                 return usersDto;
