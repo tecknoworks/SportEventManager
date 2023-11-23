@@ -235,5 +235,13 @@ namespace DataAccessLayer.Repositories
                         .Select(evnt => evnt.SportType)
                         .FirstOrDefaultAsync();
         }
+
+        public async Task<Guid> GetEventPositionIdForEvent(Guid eventId, Guid? positionId)
+        {
+            return await _eventPlannerContext.EventPositions
+                    .Where(ep => ep.EventId == eventId && ep.PositionId == positionId)
+                    .Select(ep => ep.Id)
+                    .FirstOrDefaultAsync();
+        }
     }
 }

@@ -269,7 +269,7 @@ namespace BusinessLayer.Services
             {
                 string userId = joinEventDto.UserId;
                 Guid eventId = joinEventDto.EventId;
-                Guid? eventPositionId = joinEventDto.EventPositionId;
+                Guid? eventPositionId = await _eventRepository.GetEventPositionIdForEvent(joinEventDto.EventId, joinEventDto.EventPositionId);
 
                 var fullEvent = await _eventRepository.GetEventByIdAsync(eventId);
                 if (fullEvent == null)
