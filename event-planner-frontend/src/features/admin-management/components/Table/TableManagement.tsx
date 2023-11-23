@@ -68,7 +68,15 @@ const TableManagement: React.FC = () => {
   };
 
   const blockUser = (userId: number, isBlocked: boolean) => {
-    dispatch(blockUserThunk({ userId, isBlocked }));
+    dispatch(blockUserThunk({ userId, isBlocked }))
+      .then(() => {
+        toast({
+          title: `User has been ${isBlocked ? 'blocked' : 'unblocked'} successfully.`,
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
+      });
   };
 
   const deleteUser = (userId: any) => {
