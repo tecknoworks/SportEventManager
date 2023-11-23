@@ -42,22 +42,21 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
       </Box>
       <Text mt={2}>{event.description}</Text>
       <Divider my={2} />
-      <Text display="flex" alignItems="center">
+      <Box display="flex" alignItems="center" padding="0.5rem">
         <Icon as={MdLocationOn} mr={2} />
-        Location: {event.locationName}
-      </Text>
-
-      <Stack direction="row" align="baseline" mt={2}>
-        <Box display="flex" alignItems="center">
-          <Icon as={MdEvent} mr={2} />
-          <Text fontSize="sm">Starts: {formattedDateStart}</Text>
-        </Box>
-        <Box display="flex" alignItems="center">
-          <Icon as={MdEventAvailable} mr={2} ml={4} />
-          <Text fontSize="sm">Ends: {formattedDateEnd}</Text>
-        </Box>
-      </Stack>
-
+        <Text display="flex" alignItems="center">
+          Location: {event.locationName}
+        </Text>
+      </Box>
+      <Box display="flex" alignItems="center" padding="0.5rem">
+        <Icon as={MdEvent} mr={2} />
+        <Text>Starts: {formattedDateStart}</Text>
+      </Box>
+      <Box display="flex" alignItems="center" padding="0.5rem">
+        <Icon as={MdEventAvailable} mr={2} />
+        <Text>Ends: {formattedDateEnd}</Text>
+      </Box>
+      <Divider my={2} />
       <Text
         mt={4}
         display="flex"
