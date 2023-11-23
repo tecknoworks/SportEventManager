@@ -153,6 +153,14 @@ namespace DataAccessLayer.Repositories
 
         public async Task<string> JoinEventAsync(string userId, Guid eventId, Guid? eventPositionId)
         {
+            var existingParticipant = await _eventPlannerContext.Participants
+                .AnyAsync(p => p.UserId == userId && p.EventId == eventId);
+
+            if (existingParticipant)
+            {
+                throw new EventPlannerException($"You already joined this event.");
+            }
+
             var participant = new Participant()
             {
                 EventId = eventId,

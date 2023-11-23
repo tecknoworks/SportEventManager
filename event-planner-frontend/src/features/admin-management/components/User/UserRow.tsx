@@ -8,8 +8,8 @@ import {
   FormErrorMessage,
 } from '@chakra-ui/react';
 
-import { CheckIcon, DeleteIcon, EditIcon, EmailIcon } from '@chakra-ui/icons';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { CheckIcon, DeleteIcon, EditIcon, EmailIcon, NotAllowedIcon } from '@chakra-ui/icons';
+import React, { useEffect, useState } from 'react';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import ConfirmationModal from '../Moldal/ConfirmationModal';
@@ -19,6 +19,7 @@ type User = {
   userName: string;
   email: string;
   phoneNumber: string;
+  isBlocked: boolean;
 };
 
 interface UserRowProps {
@@ -26,6 +27,7 @@ interface UserRowProps {
   deleteUser: (userId: number) => void;
   sendRecoveryEmail: (email: string) => void;
   editUserOrAdmin: (editedUser: Account, userId: number) => void;
+  blockUser: (userId: number, blockStatus: boolean) => void;
 }
 
 interface Account {
@@ -34,7 +36,7 @@ interface Account {
   phoneNumber: string;
 }
 
-const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, editUserOrAdmin }) => {
+const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, editUserOrAdmin, blockUser }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,6 +87,7 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
     setErrorBe([]);
   }, []);
 
+
   return (
     <Tr>
       <Td>
@@ -130,6 +133,19 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
             {isEditing ? <CheckIcon /> : <EditIcon />}
           </Button>
         </Tooltip>
+        <Tooltip label={user.isBlocked ? 'Unblock user' : 'Block user'}>
+          <Button
+            mr="3"
+            bg={user.isBlocked ? 'purple.300' : 'orange.300'} // Green if blocked (to indicate unblock action), orange if not blocked
+            onClick={() => {
+              blockUser(user.userId, !user.isBlocked); // Pass the opposite of the current status
+            }}
+          >
+            {user.isBlocked ? <CheckIcon /> : <NotAllowedIcon />}
+          </Button>
+        </Tooltip>
+
+
         <Tooltip label="Send Recovery Email">
           <Button
             mr="3"
@@ -142,6 +158,7 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
             <EmailIcon />
           </Button>
         </Tooltip>
+
         <Tooltip label="Delete user">
           <Button
             bg={'red.300'}

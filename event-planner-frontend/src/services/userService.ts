@@ -4,7 +4,7 @@ import { UserDto } from 'features/registration/api/Dtos';
 import { UpdateUserProfileDto } from 'features/profile/api/dtos';
 import { ConfirmEmailDto } from 'features/account-confirmation/api/dtos';
 import { LogInDto } from 'features/login/api/dtos';
-import { EditUserOrAdminDto, UserOrAdminDto } from 'features/admin-management/api/dtos';
+import { BlockUserDto, EditUserOrAdminDto, UserOrAdminDto } from 'features/admin-management/api/dtos';
 
 export default class UserService extends CommonService {
   createUser(data: UserDto) {
@@ -59,7 +59,11 @@ export default class UserService extends CommonService {
     return this.get("/User/GetEventsByUserId/" + userId)
   }
 
-  getUserRating(userId: string){
-    return this.get("/User/GetAverageRating/"+userId)
+  getUserRating(userId: string) {
+    return this.get("/User/GetAverageRating/" + userId)
+  }
+
+  blockUser(data: BlockUserDto) {
+    return this.patch("/Admin/BlockUser", data)
   }
 }

@@ -88,7 +88,7 @@ const NavigationMenu = () => {
     if (token) {
       const user = getUserFromToken(token);
       dispatch(getProfileThunk(user?.userId || ''));
-      setIsAdmin(user?.role === 'User' ? false : true);
+      setIsAdmin(user?.role === 'Admin'); // Check if user is an admin
       setIsLoggedIn(!!token);
     } else {
       setIsLoggedIn(false);
@@ -113,14 +113,15 @@ const NavigationMenu = () => {
           </Box>
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
             {Links.map(
-              (link, index) =>
-                (link.availableForUser || (!link.availableForUser && isLoggedIn && isAdmin)) && (
-                  <NavLink key={index} linkTo={link.linkTo}>
+              (link) =>
+                (link.availableForUser || (isLoggedIn && (!link.availableForUser && (isAdmin || link.title !== 'Admin User Management')))) && (
+                  <NavLink key={link.key} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>
                 )
             )}
           </HStack>
+
         </HStack>
         <Flex alignItems={'center'}>
           <Menu>
@@ -202,7 +203,7 @@ const NavigationMenu = () => {
           <Stack as={'nav'} spacing={4}>
             {Links.map(
               (link) =>
-                (link.availableForUser || (!link.availableForUser && isLoggedIn && isAdmin)) && (
+                (link.availableForUser || (isLoggedIn && (!link.availableForUser && (isAdmin || link.title !== 'Admin User Management')))) && (
                   <NavLink key={link.key} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>

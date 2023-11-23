@@ -4,6 +4,7 @@ import { deleteUserThunk } from '../thunks/deleteUserThunk';
 import { sendRecoverPasswordEmailThunk } from '../thunks/sendRecoverPasswordEmailthunk';
 import { editUserOrAdminThunk } from '../thunks/editUserOrAdminThunk';
 import { createUserOrAdminThunk } from '../thunks/createUserOrAdminThunk';
+import { blockUserThunk } from '../thunks/blockUserThunk';
 
 const initialState = {
   users: [] as any[],
@@ -13,6 +14,7 @@ const initialState = {
     deleteUser: false,
     sendRecoveryEmail: false,
     getAllUsers: false,
+    blockUser: false,
   },
   error: {
     addUser: null as string | null,
@@ -20,6 +22,7 @@ const initialState = {
     deleteUser: null as string | null,
     sendRecoveryEmail: null as string | null,
     getAllUsers: null as string | null,
+    blockUser: null as string | null,
   },
 };
 
@@ -100,6 +103,24 @@ export const adminSlice = createSlice({
       }
       state.error.addUser = errorMessage;
       state.loading.addUser = false;
+    });
+
+    builder.addCase(blockUserThunk.pending, (state) => {
+      state.loading.blockUser = true;
+      state.error.blockUser = null;
+    });
+    builder.addCase(blockUserThunk.fulfilled, (state, action) => {
+      // Since the API response is just a message, use the requestData from the action.meta.arg
+      const { userId, isBlocked } = action.meta.arg;
+      const index = state.users.findIndex(user => user.userId === userId);
+      if (index !== -1) {
+        state.users[index].isBlocked = isBlocked;
+      }
+      state.loading.blockUser = false;
+    });
+    builder.addCase(blockUserThunk.rejected, (state, action) => {
+      state.error.blockUser = action.error.message || 'Failed to block/unblock user';
+      state.loading.blockUser = false;
     });
   },
 });

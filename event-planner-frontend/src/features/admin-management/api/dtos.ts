@@ -12,3 +12,8 @@ export interface UserOrAdminDto {
   password: string;
   role: number | ""
 }
+
+export interface BlockUserDto {
+  userId: number;
+  isBlocked: boolean;
+}

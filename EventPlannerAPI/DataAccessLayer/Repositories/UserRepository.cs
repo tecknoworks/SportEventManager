@@ -97,6 +97,13 @@ namespace DataAccessLayer.Repositories
                 _logger.Error("An error occurred while validating credentials");
                 return false;
             }
+           
+            if (userByEmailOrUsername.IsBlocked)
+            {
+                _logger.Error($"User with identifier {userIdentifier} is blocked.");
+                throw new EventPlannerException($"Access denied. User with identifier {userIdentifier} is blocked.");
+            }
+
 
             if (!userByEmailOrUsername.EmailConfirmed) 
             {

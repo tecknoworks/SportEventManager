@@ -16,4 +16,8 @@ export default class CommonService {
   delete(url: string, querryParams?: object) {
     return axiosInstance.delete(url, { params: querryParams });
   }
+
+  patch(url: string, data: object) {
+    return axiosInstance.patch(url, data)
+  }
 }
