@@ -26,9 +26,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CloseEventDto } from 'features/event/api/dtos';
 import { useEffect, useState } from 'react';
 import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
-import { UserDetails } from 'services/auth/context/AuthContext';
+import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
 import { MdEvent, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
+import { selectEventDetails } from 'features/details-page/store/selectors/detailsSelector';
 
 interface Props {
   event: EventDto;
@@ -44,6 +45,10 @@ const EventCard = ({ event, currentUser }: Props) => {
   const [reloadOnce, setReloadOnce] = useState(false);
   const isCloseSuccess = useSelector(selectCloseSuccess);
   const token = useSelector(selectToken);
+  const user = getUserFromToken(token || '');
+  const details = useSelector(selectEventDetails);
+
+  const isUserParticipant = details.participants?.find(participant => participant.userId === user?.userId);
 
   const handleEventUserClick = () => {
     navigate(`/event-users/${event.id}`);
@@ -113,7 +118,7 @@ const EventCard = ({ event, currentUser }: Props) => {
           />
           {token && <JoinButton
             text="Join Event"
-            isDisabled={event.isClosed || event.maximumParticipants === 0 ? true : false}
+            isDisabled={event.isClosed || event.maximumParticipants === 0 || isUserParticipant ? true : false}
             w={!isResizable ? '' : '100%'}
             marginTop={!isResizable ? '' : '10px'}
             marginLeft={!isResizable ? '30px' : ''}

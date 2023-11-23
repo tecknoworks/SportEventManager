@@ -76,6 +76,8 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
+  const isUserParticipant = participants?.find(participant => participant.userId === user?.userId);
+
   const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
       userId: user?.userId,
@@ -151,7 +153,7 @@ const DetailsPage = () => {
           <Divider />
           {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
             token && (
-              <PrimaryButton text="Join Event" onClick={() => handleJoinEvent(null)} />
+              <PrimaryButton text="Join Event"  isDisabled={!!isUserParticipant}  onClick={() => handleJoinEvent(null)} />
             )
           ) : (
             <VStack spacing={2} align="stretch">
@@ -168,9 +170,10 @@ const DetailsPage = () => {
                         {position.positionName} : {position.availablePositions}
                       </Text>
                       {(position.availablePositions ?? 0) > 0 && (
-                        token && (
+                        token  && (
                           <PrimaryButton
-                            text="Join Event on this position"
+                            text="Join Event on this position" 
+                            isDisabled={!!isUserParticipant}
                             onClick={() => handleJoinEvent(position.positionId)}
                           />)
                       )}
