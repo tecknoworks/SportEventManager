@@ -134,7 +134,9 @@ const DetailsPage = () => {
 
           <Divider />
           {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
-            <PrimaryButton text="Join Event" onClick={() => handleJoinEvent(null)} />
+            token && (
+              <PrimaryButton text="Join Event" onClick={() => handleJoinEvent(null)} />
+            )
           ) : (
             <VStack spacing={2} align="stretch">
               {hasPositions === true && (
@@ -150,10 +152,11 @@ const DetailsPage = () => {
                         {position.positionName} : {position.availablePositions}
                       </Text>
                       {(position.availablePositions ?? 0) > 0 && (
-                        <PrimaryButton
-                          text="Join Event on this position"
-                          onClick={() => handleJoinEvent(position.positionId)}
-                        />
+                        token && (
+                          <PrimaryButton
+                            text="Join Event on this position"
+                            onClick={() => handleJoinEvent(position.positionId)}
+                          />)
                       )}
                     </HStack>
                   ))}
