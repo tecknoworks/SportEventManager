@@ -21,5 +21,6 @@ namespace DataAccessLayer.Interfaces
         Task<string> DeleteParticipantAsync(string userId, Guid eventId);
         Task <string> PostReviewAsync(Review review);
         Task<IList<Guid>> GetUserCreatedOrJoinedEvents(string userId);
+        Task<Guid> GetEventPositionIdForEvent(Guid eventId, Guid? positionId);
     }
 }

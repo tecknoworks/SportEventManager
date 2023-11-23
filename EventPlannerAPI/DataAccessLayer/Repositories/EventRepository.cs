@@ -155,6 +155,14 @@ namespace DataAccessLayer.Repositories
 
         public async Task<string> JoinEventAsync(string userId, Guid eventId, Guid? eventPositionId)
         {
+            var existingParticipant = await _eventPlannerContext.Participants
+                .AnyAsync(p => p.UserId == userId && p.EventId == eventId);
+
+            if (existingParticipant)
+            {
+                throw new EventPlannerException($"You already joined this event.");
+            }
+
             var participant = new Participant()
             {
                 EventId = eventId,
@@ -238,6 +246,13 @@ namespace DataAccessLayer.Repositories
                         .FirstOrDefaultAsync();
         }
 
+        public async Task<Guid> GetEventPositionIdForEvent(Guid eventId, Guid? positionId)
+        {
+            return await _eventPlannerContext.EventPositions
+                    .Where(ep => ep.EventId == eventId && ep.PositionId == positionId)
+                    .Select(ep => ep.Id)
+                    .FirstOrDefaultAsync();
+        }
         public async Task<IList<Guid>> GetUserCreatedOrJoinedEvents(string userId)
         {
             var joined = await _eventPlannerContext.Participants
@@ -252,6 +267,5 @@ namespace DataAccessLayer.Repositories
 
             var result = joined.Union(createdEventIds).ToList();
             return result;
-        } 
-    }
+        }     }
 }

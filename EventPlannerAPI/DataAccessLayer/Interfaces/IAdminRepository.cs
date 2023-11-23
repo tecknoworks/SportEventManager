@@ -16,6 +16,7 @@ namespace DataAccessLayer.Interfaces
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
         Task<bool> UserHasProfileAsync(string userId);
         Task<UserProfileDetails> CreateUserProfileDetailsAsync(string userId, UserProfileDetails userDetails);
+        Task<IdentityResult> SetUserBlockStatusAsync(string userId, bool isBlocked);
 
     }
 }

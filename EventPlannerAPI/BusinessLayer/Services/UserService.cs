@@ -4,6 +4,7 @@ using BusinessLayer.Interfaces;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
+using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -196,6 +197,19 @@ namespace BusinessLayer.Services
             }catch(Exception ex)
             {
                 _logger.Error(ex, $"Something went wrong while retrieving events for user with ID {userId}");
+                throw;
+            }
+        }
+
+        public async Task<double> GetAverageRatingForUserAsync(string userId)
+        {
+            try
+            {
+                return await _userRepository.GetAverageRatingForUser(userId);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"An unexpected error occurred while getting the average rating for user with id {userId}.");
                 throw;
             }
         }

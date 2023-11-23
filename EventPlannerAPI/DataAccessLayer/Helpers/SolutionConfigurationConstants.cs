@@ -4,5 +4,6 @@
     {
         public static string FrontendBaseUrl = "FrontendBaseUrl";
         public static string JwtIdClaim = "UserId";
+        public static string JwtAlgorithm = "HS512";
     }
 }

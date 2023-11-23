@@ -1,6 +1,5 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { ChatDetails } from 'features/chat/api/dtos/dtos';
-import { Message } from 'features/chat/api/dtos/dtos';
 import ChatCard from '../ChatCard/ChatCard';
 import AssistantChatCard from '../AssistantCard/AssistantChatCard';
 
@@ -10,14 +9,15 @@ type Props = {
   selectedChatDetails?: ChatDetails;
 };
 
+const assistantChat: ChatDetails = {
+  id: 'GPT',
+  name: 'Your assistant',
+  imageUrl:
+    'https://png.pngtree.com/png-vector/20230521/ourmid/pngtree-artificial-intelligence-chat-gpt-chatting-web-speech-vector-png-image_52368004.jpg',
+  participantsCount: 0,
+};
+
 const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props) => {
-  const assistantChat: ChatDetails = {
-    id: 'GPT',
-    name: 'Your assistant',
-    imageUrl:
-      'https://png.pngtree.com/png-vector/20230521/ourmid/pngtree-artificial-intelligence-chat-gpt-chatting-web-speech-vector-png-image_52368004.jpg',
-    participantsCount: 0,
-  };
   return (
     <VStack
       width="100%"

@@ -37,7 +37,8 @@ namespace BusinessLayer.Services
                     UserId = u.Id,
                     UserName = u.UserName,
                     Email = u.Email,
-                    PhoneNumber = u.PhoneNumber
+                    PhoneNumber = u.PhoneNumber,
+                    IsBlocked=u.IsBlocked
                 }).ToList();
 
                 return usersDto;
@@ -163,5 +164,26 @@ namespace BusinessLayer.Services
                 return "Something went wrong when trying to send the reset link";
             }
         }
+
+        public async Task<IdentityResult> BlockUserAsync(BlockUserDto blockUserDto)
+        {
+            try
+            {
+                var result = await _adminRepository.SetUserBlockStatusAsync(blockUserDto.UserId, blockUserDto.IsBlocked);
+
+                if (!result.Succeeded)
+                {
+                    _logger.Error($"Failed to update block status for user with ID {blockUserDto.UserId}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error occurred while updating block status for user with ID {blockUserDto.UserId}");
+                return IdentityResult.Failed(new IdentityError { Description = $"An error occurred while updating block status for user with ID {blockUserDto.UserId}" });
+            }
+        }
+
     }
 }

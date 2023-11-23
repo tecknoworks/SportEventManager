@@ -9,6 +9,7 @@ import { AppDispatch } from 'redux/store';
 import { getChatsDetailsThunk } from '../store/thunks/getChatsDetailsThunk';
 import { selectChatsDetails } from '../store/selectors/chatSelector';
 import { connect, disconnect } from 'services/signalService';
+import AssistantChat from '../components/AssistantChat/AssistantChat';
 
 const ChatPage = () => {
   const chats = useSelector(selectChatsDetails);
@@ -38,7 +39,8 @@ const ChatPage = () => {
           setSelectedChatDetails={setSelectedChatDetails}
         />
       </Box>
-      <IndividualChat chatDetails={selectedChatDetails} />
+      {selectedChatDetails?.id !== 'GPT' && <IndividualChat chatDetails={selectedChatDetails} />}
+      {selectedChatDetails?.id === 'GPT' && <AssistantChat chatDetails={selectedChatDetails} />}
     </Box>
   );
 };

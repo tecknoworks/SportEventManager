@@ -1,4 +1,17 @@
-import { Box, Flex, Heading, Text, VStack, HStack, Tag, Button, Container, Divider } from '@chakra-ui/react';
+import {
+  Box,
+  Flex,
+  Heading,
+  Text,
+  VStack,
+  HStack,
+  Tag,
+  Button,
+  Container,
+  Divider,
+  Icon,
+  Stack,
+} from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +27,8 @@ import { JoinEventDto } from 'features/browse-events/api/dtos';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
-
+import { MdEvent, MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
+import { FaRunning } from 'react-icons/fa';
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -64,6 +78,7 @@ const DetailsPage = () => {
     lat: lat,
     lng: lng,
   };
+  const allParticipantsZero = participants && participants.every((participant) => participant.status === 0);
 
   const parsedDateStart = startDate ? parseISO(startDate) : null;
   const formattedDateStart = parsedDateStart ? format(parsedDateStart, 'HH:mm dd-MM-yyyy') : '';
@@ -72,7 +87,7 @@ const DetailsPage = () => {
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
 
   return (
-    <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'}>
+    <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'} padding="2rem">
       <Flex direction={{ base: 'column', md: 'row' }} wrap="wrap" justifyContent="space-between">
         <VStack spacing={4} align="stretch" flex="1" minW={{ base: '100%', md: '65%' }}>
           <Heading as="h1" size="xl" color="purple.700">
@@ -89,20 +104,33 @@ const DetailsPage = () => {
           >
             Organizer : {authorUserName}
           </Heading>
-          <Text fontSize="md">{description}</Text>
-          <Text fontSize="md">{sportTypeName}</Text>
-          <Text fontSize="md">Location: {locationName}</Text>
-          <Text fontSize="md">Start Date: {formattedDateStart} </Text>
-          <Text fontSize="md">End Date: {formattedDateEnd}</Text>
+          <Box display="flex" alignItems="center">
+            <Icon as={MdOutlineDescription} mr={2} />
+            <Text fontSize="md">{description}</Text>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <Icon as={FaRunning} mr={2} />
+            <Text fontSize="md">{sportTypeName}</Text>
+          </Box>
+          <Text display="flex" alignItems="center">
+            <Icon as={MdLocationOn} mr={2} />
+            <Text fontSize="md">Location: {locationName}</Text>
+          </Text>
+          <Box display="flex" alignItems="center">
+            <Icon as={MdEventAvailable} mr={2} />
+            <Text fontSize="md">Starts: {formattedDateStart}</Text>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <Icon as={MdEventAvailable} mr={2} />
+            <Text fontSize="md">Ends: {formattedDateEnd}</Text>
+          </Box>
           <HStack>
             <Text fontSize="md">Skill Level:</Text>
             <Tag size="sm" variant="solid" colorScheme={getColorScheme(skillLevel)}>
               {getSkillLevelText(skillLevel)}
             </Tag>
           </HStack>
-          <Box mx={'3'}>
-            <Map isResizable={true} center={center} />
-          </Box>
+          <Map isResizable={true} center={center} />
 
           <Divider />
           {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
@@ -138,19 +166,42 @@ const DetailsPage = () => {
               Participants
             </Heading>
             <Box>
+              {allParticipantsZero && <Text fontSize="md">No user joined yet. Be the first one!</Text>}
+              {participants && participants.length === 0 && <Text fontSize="md">No participants for now.</Text>}
               {participants &&
-                participants.map((participant, index) => (
-                  <HStack key={index} justifyContent="space-between">
-                    {!hasPositions ? (
-                      <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
-                    ) : (
-                      <>
-                        <Text fontSize="md">{participant.positionName}:</Text>
-                        <Text fontSize="md">{participant.userName || 'Anonymous'}</Text>
-                      </>
-                    )}
-                  </HStack>
-                ))}
+                participants.map(
+                  (participant, index) =>
+                    participant.status === 1 && (
+                      <HStack key={index} justifyContent="space-between">
+                        {!hasPositions ? (
+                          <Text
+                            fontSize="md"
+                            onClick={() => {
+                              navigate(`/profile/${participant.userId}`);
+                            }}
+                            cursor="pointer"
+                          >
+                            {participant.userName || 'Anonymous'}
+                          </Text>
+                        ) : (
+                          <>
+                            <Text fontSize="md">{participant.positionName}:</Text>
+                            <Text
+                              fontSize="md"
+                              onClick={() => {
+                                navigate(`/profile/${participant.userId}`);
+                              }}
+                              cursor="pointer"
+                              fontWeight="bold"
+                            >
+                              {' '}
+                              {participant.userName || 'Anonymous'}
+                            </Text>
+                          </>
+                        )}
+                      </HStack>
+                    )
+                )}
             </Box>
           </VStack>
         </VStack>

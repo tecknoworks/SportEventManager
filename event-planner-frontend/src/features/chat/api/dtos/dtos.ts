@@ -19,3 +19,30 @@ export interface GetMessagesResponse {
   chatId: string;
   totalCount: number;
 }
+
+export interface CreateMessage {
+  assistantId: string;
+  threadId: string;
+  userQuestion: string;
+}
+
+export interface OpenAIMessage {
+  id: string;
+  object: string;
+  created_at: number;
+  thread_id: string;
+  role: string;
+  content: [
+    {
+      type: string;
+      text: {
+        value: string;
+        annotations: [];
+      };
+    },
+  ];
+  file_ids: [];
+  assistant_id: string;
+  run_id: string;
+  metadata: {};
+}

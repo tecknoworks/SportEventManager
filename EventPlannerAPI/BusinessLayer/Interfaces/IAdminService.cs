@@ -16,5 +16,6 @@ namespace BusinessLayer.Interfaces
         Task<IdentityResult> EditUserAsyncLogic(EditedUserWithIdDto newUserEdited);
         Task<IdentityResult> DeleteUserAsyncLogic(string userId);
         Task<string> SendRecoverPasswordEmailAsyncLogic(ForgotPasswordDto forgotPasswordDto);
+        Task<IdentityResult> BlockUserAsync(BlockUserDto blockUserDto);
     }
 }

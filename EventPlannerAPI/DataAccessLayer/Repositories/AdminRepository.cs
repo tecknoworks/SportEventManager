@@ -2,6 +2,7 @@
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
+using DataAccessLayer.Migrations;
 using DataAccessLayer.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -167,5 +168,29 @@ namespace DataAccessLayer.Repositories
             await _eventPlannerContext.SaveChangesAsync();
             return userDetails;
         }
+
+        public async Task<IdentityResult> SetUserBlockStatusAsync(string userId, bool isBlocked)
+        {
+            try
+            {
+                var user = await GetUserByIdAsync(userId);
+
+                user.IsBlocked = isBlocked;
+                var result = await _userManager.UpdateAsync(user);
+
+                if (!result.Succeeded)
+                {
+                    _logger.Error($"Error updating block status for user with id {userId}");
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error setting block status for user with id {userId}");
+                return IdentityResult.Failed(new IdentityError { Description = $"Error setting block status for user with id {userId}" });
+            }
+        }
+
     }
 }

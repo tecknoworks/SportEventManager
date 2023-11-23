@@ -14,7 +14,7 @@ import {
   Stack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { BellIcon, CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
 import NavLink from './components/NavLink';
 import { useNavigate } from 'react-router-dom';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
@@ -24,6 +24,8 @@ import { logout } from 'features/login/store/slices/logInSlice';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
+import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
+import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
 import Notifications from 'features/notifications/Notifications';
 import {
   connectNotification,
@@ -63,19 +65,19 @@ const NavigationMenu = () => {
     {
       key: 3,
       title: 'Create event',
-      availableForUser: true,
+      availableForUser: false,
       linkTo: '/create-event',
     },
     {
       key: 4,
       title: 'Chat',
-      availableForUser: true,
+      availableForUser: false,
       linkTo: '/chat',
     },
     {
       key: 5,
       title: 'My Events',
-      availableForUser: true,
+      availableForUser: false,
       linkTo: '/my-events',
     },
     {
@@ -96,7 +98,7 @@ const NavigationMenu = () => {
     if (token) {
       const user = getUserFromToken(token);
       dispatch(getProfileThunk(user?.userId || ''));
-      setIsAdmin(user?.role === 'User' ? false : true);
+      setIsAdmin(user?.role === 'Admin');
       setIsLoggedIn(!!token);
     } else {
       setIsLoggedIn(false);
@@ -137,9 +139,10 @@ const NavigationMenu = () => {
           </Box>
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
             {Links.map(
-              (link, index) =>
-                (link.availableForUser || (!link.availableForUser && isLoggedIn && isAdmin)) && (
-                  <NavLink key={index} linkTo={link.linkTo}>
+              (link) =>
+                (link.availableForUser ||
+                  (isLoggedIn && !link.availableForUser && (isAdmin || link.title !== 'Admin User Management'))) && (
+                  <NavLink key={link.key} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>
                 )
@@ -164,14 +167,25 @@ const NavigationMenu = () => {
                       navigate('/edit-profile');
                     }}
                   >
-                    Profile Page
+                    Profile: {profile?.userName}
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      navigate('/joined-events');
+                    }}
+                  >
+                    All events you joined
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={notificationsDisclosure.onOpen}>Notifications</MenuItem>
                   <MenuDivider />
                   <MenuItem
-                    onClick={() => {
+                    onClick={async () => {
+                      await dispatch(deleteAssitantThunk(localStorage.getItem('assistantId') || ''));
+                      await dispatch(deleteThreadThunk(localStorage.getItem('threadId') || ''));
                       dispatch(logout());
+                      localStorage.removeItem('threadId');
+                      localStorage.removeItem('assistantId');
                       navigate('/');
                     }}
                   >
@@ -217,7 +231,8 @@ const NavigationMenu = () => {
           <Stack as={'nav'} spacing={4}>
             {Links.map(
               (link) =>
-                (link.availableForUser || (!link.availableForUser && isLoggedIn && isAdmin)) && (
+                (link.availableForUser ||
+                  (isLoggedIn && !link.availableForUser && (isAdmin || link.title !== 'Admin User Management'))) && (
                   <NavLink key={link.key} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>

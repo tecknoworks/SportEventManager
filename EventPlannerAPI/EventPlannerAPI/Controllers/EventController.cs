@@ -131,6 +131,7 @@ namespace EventPlannerAPI.Controllers
                 return Problem("Something went wrong.");
             }
         }
+
         [Authorize]
         [HttpPost("CloseEvent")]
         public async Task<ActionResult> CloseEvent([FromBody] CloseEventDto closeEventDto)
@@ -216,7 +217,6 @@ namespace EventPlannerAPI.Controllers
 
         [Authorize]
         [HttpPost("PostReview")]
-
         public async Task<ActionResult> PostReview([FromBody] PostReviewDto postReview)
         {
             try

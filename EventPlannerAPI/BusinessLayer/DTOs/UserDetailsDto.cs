@@ -14,5 +14,6 @@ namespace BusinessLayer.DTOs
         public string Email { get; set; }
         [MinLength(10, ErrorMessage = "Phone number must be at least 10 digits long.")]
         public string PhoneNumber { get; set; }
+        public bool IsBlocked { get; set; }
     }
 }
