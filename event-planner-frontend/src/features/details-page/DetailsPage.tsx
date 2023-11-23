@@ -11,12 +11,13 @@ import {
   Divider,
   Icon,
   Stack,
+  useToast,
 } from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
-import { selectEventDetails } from './store/selectors/detailsSelector';
+import { selectEventDetails, selectEventDetailsError } from './store/selectors/detailsSelector';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import Map from 'common/components/Map/Map';
@@ -29,17 +30,31 @@ import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
 import { MdEvent, MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { FaRunning } from 'react-icons/fa';
+import { joinEventError } from 'features/browse-events/store/selectors/eventsPageSelector';
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const details = useSelector(selectEventDetails);
   const { eventId } = useParams();
   const token = useSelector(selectToken);
+  let error = useSelector(joinEventError)
   const user = getUserFromToken(token || '');
+  const toast = useToast()
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));
-  }, []);
+    if (error) {
+      toast({
+        title: 'Warning',
+        description: error,
+        status: 'warning',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  }, [error]);
+
+
 
   const {
     authorUserId,
@@ -70,6 +85,7 @@ const DetailsPage = () => {
     await dispatch(joinEventThunk(data));
     await dispatch(getEventThunk(`${eventId}`));
   };
+
 
   const [latString, lngString] = location ? location.split(',') : [null, null];
   const lat = latString ? parseFloat(latString) : 0;
