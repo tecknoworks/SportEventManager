@@ -4,6 +4,7 @@ using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DataAccessLayer.Repositories
 {
@@ -39,6 +40,7 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
                 .ThenInclude(ep => ep.Position)
+                .Include(evnt => evnt.ChatEvent)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
             if (eventEntity == null)
@@ -235,5 +237,21 @@ namespace DataAccessLayer.Repositories
                         .Select(evnt => evnt.SportType)
                         .FirstOrDefaultAsync();
         }
+
+        public async Task<IList<Guid>> GetUserCreatedOrJoinedEvents(string userId)
+        {
+            var joined = await _eventPlannerContext.Participants
+                    .Where(participant => participant.UserId == userId && participant.Status == ParticipantStatus.Accepted)
+                    .Select(participant => participant.EventId)
+                    .ToListAsync();
+
+            var createdEventIds = await _eventPlannerContext.Users
+                .Where(user => user.Id == userId)
+                .SelectMany(user => user.Events.Select(eventItem => eventItem.Id))
+                .ToListAsync();
+
+            var result = joined.Union(createdEventIds).ToList();
+            return result;
+        } 
     }
 }

@@ -9,7 +9,9 @@ using DataAccessLayer.Models;
 using DataAccessLayer.Repositories;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Services
 {
@@ -358,10 +360,9 @@ namespace BusinessLayer.Services
 
                         var mail = MailRequest.AcceptedToEventNotification(participantData.Email, participantData.UserName, user.UserName, evnt.Name, userDetails.ProfilePhoto, profileLink);
                         await _mailService.SendEmailAsync(mail);
-
-                        _logger.Information("Sending notification to participant: {UserId}", participantData.Id);
-                        await _hubContext.Clients.User(participant.UserId).SendAsync("ReceiveNotification", $"User {user.UserName} has joined the event {evnt.Name}!");
                     }
+
+                    await _hubContext.Clients.Group(evnt.Id.ToString().ToUpper()).SendAsync("ReceiveNotification", $"User {user.UserName} has joined the event {evnt.Name}!");
                 }
 
                 return await _eventRepository.SaveChangesAsync();
