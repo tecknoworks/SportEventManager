@@ -66,7 +66,13 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.SportType)
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
-                .ThenInclude(ep => ep.Position);
+                    .ThenInclude(ep => ep.Position)
+                .Include(evnt => evnt.Participants)
+                         .ThenInclude(part => part.User)
+                            .ThenInclude(user => user.Profile);
+
+
+
 
             if (!string.IsNullOrEmpty(searchData))
             {

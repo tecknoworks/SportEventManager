@@ -77,6 +77,7 @@ namespace EventPlannerAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost("SetNewPassword")]
+
         public async Task<IActionResult> SetNewPassword([FromBody] SetNewPasswordDto setNewPasswordDto)
         {
             var result = await _userService.SetNewPasswordAsync(setNewPasswordDto);
