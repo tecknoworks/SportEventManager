@@ -26,6 +26,7 @@ import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
 import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
 import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
+import { userInfo } from 'os';
 
 type LinkType = {
   key: number;
@@ -139,7 +140,7 @@ const NavigationMenu = () => {
                       navigate('/edit-profile');
                     }}
                   >
-                    Profile Page
+                    Profile: {profile?.userName}
                   </MenuItem>
                   <MenuItem
                     onClick={() => {

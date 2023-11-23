@@ -87,7 +87,7 @@ const DetailsPage = () => {
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
 
   return (
-    <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'}>
+    <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'} padding="2rem">
       <Flex direction={{ base: 'column', md: 'row' }} wrap="wrap" justifyContent="space-between">
         <VStack spacing={4} align="stretch" flex="1" minW={{ base: '100%', md: '65%' }}>
           <Heading as="h1" size="xl" color="purple.700">
@@ -116,25 +116,21 @@ const DetailsPage = () => {
             <Icon as={MdLocationOn} mr={2} />
             <Text fontSize="md">Location: {locationName}</Text>
           </Text>
-          <Stack align="baseline" mt={2}>
-            <HStack>
-              <Icon as={MdEvent} mr={2} />
-              <Text fontSize="md">Starts: {formattedDateStart}</Text>
-            </HStack>
-            <HStack>
-              <Icon as={MdEventAvailable} mr={2} />
-              <Text fontSize="md">Ends: {formattedDateEnd}</Text>
-            </HStack>
-          </Stack>
+          <Box display="flex" alignItems="center">
+            <Icon as={MdEventAvailable} mr={2} />
+            <Text fontSize="md">Starts: {formattedDateStart}</Text>
+          </Box>
+          <Box display="flex" alignItems="center">
+            <Icon as={MdEventAvailable} mr={2} />
+            <Text fontSize="md">Ends: {formattedDateEnd}</Text>
+          </Box>
           <HStack>
             <Text fontSize="md">Skill Level:</Text>
             <Tag size="sm" variant="solid" colorScheme={getColorScheme(skillLevel)}>
               {getSkillLevelText(skillLevel)}
             </Tag>
           </HStack>
-          <Box mx={'3'}>
-            <Map isResizable={true} center={center} />
-          </Box>
+          <Map isResizable={true} center={center} />
 
           <Divider />
           {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
@@ -171,7 +167,7 @@ const DetailsPage = () => {
             </Heading>
             <Box>
               {allParticipantsZero && <Text fontSize="md">No user joined yet. Be the first one!</Text>}
-              {participants && participants.length === 0 && <Text fontSize="md">0 participant now</Text>}
+              {participants && participants.length === 0 && <Text fontSize="md">No participants for now.</Text>}
               {participants &&
                 participants.map(
                   (participant, index) =>
@@ -196,6 +192,7 @@ const DetailsPage = () => {
                                 navigate(`/profile/${participant.userId}`);
                               }}
                               cursor="pointer"
+                              fontWeight="bold"
                             >
                               {' '}
                               {participant.userName || 'Anonymous'}

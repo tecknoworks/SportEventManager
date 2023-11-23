@@ -29,7 +29,7 @@ const EventsCardList = ({ events, showPagination, page, count, pageSize, onPageC
       overflowY="hidden"
       justifyContent="space-between"
     >
-      <Stack w="100%" h="100%" padding="10px" overflowY="auto">
+      <Stack w="100%" h="100%" overflowY="auto">
         {eventCards}
       </Stack>
       {!showPagination && (
