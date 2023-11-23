@@ -136,9 +136,9 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
         <Tooltip label={user.isBlocked ? 'Unblock user' : 'Block user'}>
           <Button
             mr="3"
-            bg={user.isBlocked ? 'purple.300' : 'orange.300'} // Green if blocked (to indicate unblock action), orange if not blocked
+            bg={user.isBlocked ? 'purple.300' : 'orange.300'}
             onClick={() => {
-              blockUser(user.userId, !user.isBlocked); // Pass the opposite of the current status
+              blockUser(user.userId, !user.isBlocked);
             }}
           >
             {user.isBlocked ? <CheckIcon /> : <NotAllowedIcon />}
