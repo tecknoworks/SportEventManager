@@ -110,7 +110,6 @@ const NavigationMenu = () => {
     connectNotification();
     registerNotificationReceived((message: string) => {
       dispatch(addNotificationMessage(message));
-      console.log('da: ', message);
       handleGenericSuccess('You have new notifications');
     });
 

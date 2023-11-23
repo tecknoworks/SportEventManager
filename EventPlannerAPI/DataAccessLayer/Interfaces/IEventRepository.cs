@@ -1,6 +1,4 @@
-﻿using DataAccessLayer.Helpers;
-using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using DataAccessLayer.Models;
 
 namespace DataAccessLayer.Interfaces
 {
