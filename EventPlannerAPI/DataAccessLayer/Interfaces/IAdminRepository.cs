@@ -12,6 +12,7 @@ namespace DataAccessLayer.Interfaces
         Task<EventPlannerUser> GetUserByIdAsync(string userId);
         Task<IdentityResult> EditUserAsync(EventPlannerUser user);
         Task<IdentityResult> DeleteUserAsync(EventPlannerUser user);
+        Task<string> DeleteUserReviews(string userId);
         Task<EventPlannerUser> FindByEmailAsync(string email);
         Task<string> GeneratePasswordResetTokenAsync(EventPlannerUser user);
         Task<bool> UserHasProfileAsync(string userId);

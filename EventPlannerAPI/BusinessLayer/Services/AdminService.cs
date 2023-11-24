@@ -126,6 +126,7 @@ namespace BusinessLayer.Services
                     return IdentityResult.Failed(error);
                 }
 
+                await _adminRepository.DeleteUserReviews(userId);
                 var result = await _adminRepository.DeleteUserAsync(user);
                 return result;
             }

@@ -127,6 +127,25 @@ namespace DataAccessLayer.Repositories
             }
         }
 
+        public async Task <string> DeleteUserReviews(string userId)
+        {
+            try
+            {
+                var reviews = _eventPlannerContext.Reviews.Where(r => r.UserId == userId).ToList();
+                var commentsToDelete = _eventPlannerContext.Comments.Where(c => reviews.Any(r => r.Id == c.ReviewId)).ToList();
+                _eventPlannerContext.Reviews.RemoveRange(reviews);
+                _eventPlannerContext.Comments.RemoveRange(commentsToDelete);
+                await _eventPlannerContext.SaveChangesAsync();
+
+                return "Reviews deleted successfully";
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Error at delete user reviews.");
+                return string.Empty;
+            }
+        }
+
         public async Task<EventPlannerUser> FindByEmailAsync(string email)
         {
             try
