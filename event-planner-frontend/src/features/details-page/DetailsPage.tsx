@@ -6,17 +6,16 @@ import {
   VStack,
   HStack,
   Tag,
-  Button,
   Container,
   Divider,
   Icon,
-  Stack,
+  useToast,
 } from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
-import { selectEventDetails } from './store/selectors/detailsSelector';
+import { selectEventDetails, selectEventDetailsError } from './store/selectors/detailsSelector';
 import { useNavigate, useParams } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import Map from 'common/components/Map/Map';
@@ -27,8 +26,10 @@ import { JoinEventDto } from 'features/browse-events/api/dtos';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
-import { MdEvent, MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
+import { MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { FaRunning } from 'react-icons/fa';
+
+
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const DetailsPage = () => {
   const { eventId } = useParams();
   const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');
+
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));
@@ -61,6 +63,8 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
+  const isUserParticipant = participants?.find(participant => participant.userId === user?.userId);
+
   const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
       userId: user?.userId,
@@ -78,6 +82,7 @@ const DetailsPage = () => {
     lat: lat,
     lng: lng,
   };
+
   const allParticipantsZero = participants && participants.every((participant) => participant.status === 0);
 
   const parsedDateStart = startDate ? parseISO(startDate) : null;
@@ -134,7 +139,9 @@ const DetailsPage = () => {
 
           <Divider />
           {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
-            <PrimaryButton text="Join Event" onClick={() => handleJoinEvent(null)} />
+            token && (
+              <PrimaryButton text="Join Event" isDisabled={!!isUserParticipant} onClick={() => handleJoinEvent(null)} />
+            )
           ) : (
             <VStack spacing={2} align="stretch">
               {hasPositions === true && (
@@ -150,16 +157,19 @@ const DetailsPage = () => {
                         {position.positionName} : {position.availablePositions}
                       </Text>
                       {(position.availablePositions ?? 0) > 0 && (
-                        <PrimaryButton
-                          text="Join Event on this position"
-                          onClick={() => handleJoinEvent(position.positionId)}
-                        />
+                        token && (
+                          <PrimaryButton
+                            text="Join Event on this position"
+                            isDisabled={!!isUserParticipant}
+                            onClick={() => handleJoinEvent(position.positionId)}
+                          />)
                       )}
                     </HStack>
                   ))}
               </Box>
             </VStack>
           )}
+
           <Divider />
           <VStack spacing={2} align="stretch">
             <Heading as="h3" size="md" color="purple.500">

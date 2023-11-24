@@ -25,5 +25,6 @@ namespace BusinessLayer.DTOs
         public string AuthorUserId { get; set; }
         public string AuthorUserName { get; set; }
         public List<GetEventPositionDto> EventPositions { get; set; }
+        public List<ParticipantDto> Participants { get; set; }
     }
 }
