@@ -6,11 +6,9 @@ import {
   VStack,
   HStack,
   Tag,
-  Button,
   Container,
   Divider,
   Icon,
-  Stack,
   useToast,
 } from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
@@ -28,9 +26,10 @@ import { JoinEventDto } from 'features/browse-events/api/dtos';
 import { joinEventThunk } from 'features/browse-events/thunks/joinEventsThunk';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
-import { MdEvent, MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
+import { MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { FaRunning } from 'react-icons/fa';
 import { joinEventError } from 'features/browse-events/store/selectors/eventsPageSelector';
+
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -53,8 +52,6 @@ const DetailsPage = () => {
       });
     }
   }, [error]);
-
-
 
   const {
     authorUserId,
@@ -88,7 +85,6 @@ const DetailsPage = () => {
     await dispatch(getEventThunk(`${eventId}`));
   };
 
-
   const [latString, lngString] = location ? location.split(',') : [null, null];
   const lat = latString ? parseFloat(latString) : 0;
   const lng = lngString ? parseFloat(lngString) : 0;
@@ -96,6 +92,7 @@ const DetailsPage = () => {
     lat: lat,
     lng: lng,
   };
+
   const allParticipantsZero = participants && participants.every((participant) => participant.status === 0);
 
   const parsedDateStart = startDate ? parseISO(startDate) : null;
@@ -153,7 +150,7 @@ const DetailsPage = () => {
           <Divider />
           {hasPositions === false && (maximumParticipants ?? 0) > 0 ? (
             token && (
-              <PrimaryButton text="Join Event"  isDisabled={!!isUserParticipant}  onClick={() => handleJoinEvent(null)} />
+              <PrimaryButton text="Join Event" isDisabled={!!isUserParticipant} onClick={() => handleJoinEvent(null)} />
             )
           ) : (
             <VStack spacing={2} align="stretch">
@@ -170,9 +167,9 @@ const DetailsPage = () => {
                         {position.positionName} : {position.availablePositions}
                       </Text>
                       {(position.availablePositions ?? 0) > 0 && (
-                        token  && (
+                        token && (
                           <PrimaryButton
-                            text="Join Event on this position" 
+                            text="Join Event on this position"
                             isDisabled={!!isUserParticipant}
                             onClick={() => handleJoinEvent(position.positionId)}
                           />)
