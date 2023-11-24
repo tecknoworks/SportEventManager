@@ -11,10 +11,13 @@ export const createEventThunk = createAsyncThunk(
     try {
       const response = await eventService.createEvent(data);
       handleGenericSuccess('Event created successfully!');
-      return response.data;
+      return { response: response.data, formData: data };
     } catch (error: any) {
       handleApiError(error);
       return rejectWithValue(error.response?.data || 'An error occured while creating the event.');
     }
   }
 );
+
+
+

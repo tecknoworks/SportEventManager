@@ -13,6 +13,7 @@ export const joinEventThunk = createAsyncThunk(
       handleGenericSuccess('You have successfully joined the event!');
       return res.data;
     } catch (error: any) {
+      handleApiError(error);
       return rejectWithValue(error.response?.data || 'Error occured');
     }
   }

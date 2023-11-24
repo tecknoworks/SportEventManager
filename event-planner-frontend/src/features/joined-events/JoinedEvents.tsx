@@ -14,7 +14,6 @@ const JoinedEvents: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const events = useSelector(selectJoinedEvents)
   const navigate = useNavigate();
-  //   let events: any[] = [];
 
   const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');

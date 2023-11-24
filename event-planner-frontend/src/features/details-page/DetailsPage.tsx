@@ -42,16 +42,7 @@ const DetailsPage = () => {
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));
-    if (error) {
-      toast({
-        title: 'Warning',
-        description: error,
-        status: 'warning',
-        duration: 2000,
-        isClosable: true,
-      });
-    }
-  }, [error]);
+  }, []);
 
   const {
     authorUserId,
