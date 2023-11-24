@@ -41,6 +41,7 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
         </Badge>
       </Box>
       <Text mt={2}>{event.description}</Text>
+
       <Divider my={2} />
       <Box display="flex" alignItems="center" padding="0.5rem">
         <Icon as={MdLocationOn} mr={2} />
@@ -56,6 +57,7 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
         <Icon as={MdEventAvailable} mr={2} />
         <Text>Ends: {formattedDateEnd}</Text>
       </Box>
+
       <Divider my={2} />
       <Text
         mt={4}
