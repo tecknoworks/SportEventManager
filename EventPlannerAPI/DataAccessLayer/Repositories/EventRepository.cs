@@ -39,7 +39,6 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.Author)
                 .Include(evnt => evnt.EventPositions)
                 .ThenInclude(ep => ep.Position)
-                .Include(evnt => evnt.ChatEvent)
                 .FirstOrDefaultAsync(evnt => evnt.Id == eventId);
 
             if (eventEntity == null)
