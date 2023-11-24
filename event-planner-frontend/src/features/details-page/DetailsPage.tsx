@@ -179,6 +179,7 @@ const DetailsPage = () => {
               </Box>
             </VStack>
           )}
+
           <Divider />
           <VStack spacing={2} align="stretch">
             <Heading as="h3" size="md" color="purple.500">
