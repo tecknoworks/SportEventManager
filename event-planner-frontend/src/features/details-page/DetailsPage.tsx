@@ -28,7 +28,7 @@ import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelpers';
 import { MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { FaRunning } from 'react-icons/fa';
-import { joinEventError } from 'features/browse-events/store/selectors/eventsPageSelector';
+
 
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -36,9 +36,8 @@ const DetailsPage = () => {
   const details = useSelector(selectEventDetails);
   const { eventId } = useParams();
   const token = useSelector(selectToken);
-  let error = useSelector(joinEventError)
   const user = getUserFromToken(token || '');
-  const toast = useToast()
+
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));

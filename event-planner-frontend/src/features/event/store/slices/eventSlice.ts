@@ -5,7 +5,6 @@ import { getPositionsForSportTypeThunk } from '../thunks/getPositionsForSportTyp
 import { getEventThunk } from '../thunks/getEventThunk';
 import { closeEventThunk } from '../thunks/closeEventThunk';
 import { sendReviewThunk } from 'features/review-event/thunks/sendReviewThunk';
-import { createEventThunk } from '../thunks/createEventThunk';
 
 type State = {
   sportTypes: GetSportTypesDto[] | undefined;
@@ -13,7 +12,6 @@ type State = {
   currentEvent: GetEventDto | undefined;
   closeSuccess: boolean;
   sendSuccess: boolean;
-  createdEvents: GetEventDto[];
 };
 
 const initialState: State = {
@@ -22,7 +20,6 @@ const initialState: State = {
   currentEvent: undefined,
   closeSuccess: false,
   sendSuccess: false,
-  createdEvents: [],
 };
 
 const eventSlice = createSlice({
@@ -49,12 +46,6 @@ const eventSlice = createSlice({
     builder.addCase(sendReviewThunk.fulfilled, (state) => {
       state.sendSuccess = true;
     });
-
-    builder.addCase(createEventThunk.fulfilled, (state, action) => {
-      const eventData = action.payload.response.event || action.payload.formData;
-      state.createdEvents.push(eventData);
-    });
-
   },
 });
 
