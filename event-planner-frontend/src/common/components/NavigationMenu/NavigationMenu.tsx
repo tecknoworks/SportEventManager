@@ -88,7 +88,7 @@ const NavigationMenu = () => {
     if (token) {
       const user = getUserFromToken(token);
       dispatch(getProfileThunk(user?.userId || ''));
-      setIsAdmin(user?.role === 'Admin'); // Check if user is an admin
+      setIsAdmin(user?.role === 'Admin'); 
       setIsLoggedIn(!!token);
     } else {
       setIsLoggedIn(false);
