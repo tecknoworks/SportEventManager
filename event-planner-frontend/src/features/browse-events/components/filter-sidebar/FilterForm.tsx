@@ -1,4 +1,4 @@
-import { Box, BoxProps, Text, Flex, FormControl, FormLabel, Input, Stack, CloseButton, Select } from '@chakra-ui/react';
+import { Box, BoxProps, Text, Flex, FormControl, FormLabel, Input, Stack, CloseButton, Select, useColorMode } from '@chakra-ui/react';
 import LocationSearch from 'common/components/LocationSearch/LocationSearch';
 import { LatLng } from 'common/components/Map/models';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
@@ -50,8 +50,11 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
     dispatch(getPositionsForSportTypeThunk(sportId));
   };
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+
   return (
-    <Box overflow="auto" bg={'white'} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
+    <Box overflow="auto"  bg={bgColor} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
       <Flex h="20" alignItems="center">
         <Text color="gray.500" as="b" fontSize="3xl">
           Filters

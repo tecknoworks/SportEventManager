@@ -10,17 +10,29 @@ const colors = {
     dark: '#da0c81',
     light: '#e95793',
   },
+  
+    light: {
+      background: 'linear-gradient(to right, #610C9F , #E95793);',
+      text: '#000000',
+    },
+    dark: {
+      background: '#2d3748',
+      text: '#ffffff',
+    },
+  
 };
 
 const overrides = extendTheme({
   colors,
   styles: {
-    global: {
+    global:(props:any) => ( {
       body: {
         fontFamily: '"Poppins", sans-serif',
         bg: 'linear-gradient(to right, #610C9F , #E95793);',
+        // bg: props.colorMode === 'dark' ? colors.dark.background : colors.light.background,
+        color: props.colorMode === 'dark' ? colors.dark.text : colors.light.text,
       },
-    },
+    }),
   },
   components: {
     Heading: {
@@ -39,3 +51,4 @@ const overrides = extendTheme({
 const customTheme = extendTheme(overrides);
 
 export default customTheme;
+
