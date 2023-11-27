@@ -1,3 +1,5 @@
+import { Participant } from "features/details-page/store/api/dtos";
+
 type EventDto = {
   id: string;
   name: string;
@@ -15,6 +17,7 @@ type EventDto = {
   authorUserName: string;
   eventPositions: EventExtendedPosition[];
   imageUrl: string;
+  participants: Participant[]  ;
 };
 
 export type EventExtendedPosition = {

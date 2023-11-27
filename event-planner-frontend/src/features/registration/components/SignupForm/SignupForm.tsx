@@ -117,7 +117,6 @@ const SignupForm = () => {
     };
 
     dispatch(createUser(data)).then((response: any) => {
-      console.log(response);
       if (response.meta.requestStatus === 'fulfilled') {
         navigate('/');
       }

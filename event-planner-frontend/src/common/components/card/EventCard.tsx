@@ -14,8 +14,6 @@ import {
 import SecondaryButton from '../buttons/SecondaryButton';
 import { EventDto } from 'features/browse-events/api/dtos';
 import { format } from 'date-fns';
-import { LatLng } from '../Map/models';
-import Map from '../Map/Map';
 import JoinButton from '../buttons/JoinButton';
 import JoinModal from '../../../features/browse-events/components/events-page/events-card-list/join-modal/JoinModal';
 import { useNavigate } from 'react-router-dom';
@@ -26,8 +24,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CloseEventDto } from 'features/event/api/dtos';
 import { useEffect, useState } from 'react';
 import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
-import { UserDetails } from 'services/auth/context/AuthContext';
+import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
 import { MdEvent, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
+
 
 interface Props {
   event: EventDto;
@@ -42,6 +42,11 @@ const EventCard = ({ event, currentUser }: Props) => {
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
   const [reloadOnce, setReloadOnce] = useState(false);
   const isCloseSuccess = useSelector(selectCloseSuccess);
+
+  const token = useSelector(selectToken);
+  const user = getUserFromToken(token || '');
+
+  const isUserParticipant = event.participants?.find(participant => participant.userId === user?.userId);
 
   const handleEventUserClick = () => {
     navigate(`/event-users/${event.id}`);
@@ -109,14 +114,14 @@ const EventCard = ({ event, currentUser }: Props) => {
             w={!isResizable ? '' : '100%'}
             onClick={() => navigate(`/event-details/${event.id}`)}
           />
-          <JoinButton
+          {token && <JoinButton
             text="Join Event"
-            isDisabled={event.isClosed || event.maximumParticipants === 0 ? true : false}
+            isDisabled={event.isClosed || event.maximumParticipants === 0 || !!isUserParticipant ? true : false}
             w={!isResizable ? '' : '100%'}
             marginTop={!isResizable ? '' : '10px'}
             marginLeft={!isResizable ? '30px' : ''}
             onClick={onOpen}
-          />
+          />}
           {event.authorUserId === currentUser?.userId && event.isClosed === false && (
             <>
               <SecondaryButton

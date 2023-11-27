@@ -23,7 +23,7 @@ const displayToast = ({ title, description, status, duration = 9000, isClosable 
 };
 
 export function handleApiError(error: any) {
-  let message = error.response?.data?.message || 'Something went wrong with the API call. Please try again later.';
+  let message = error.response?.data?.message || error.response?.data || 'Something went wrong with the API call. Please try again later.';
   displayToast({
     title: 'API Error',
     description: message,
