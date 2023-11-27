@@ -13,7 +13,6 @@ type State = {
   currentEvent: GetEventDto | undefined;
   closeSuccess: boolean;
   sendSuccess: boolean;
-  updateSuccess: boolean;
 };
 
 const initialState: State = {
@@ -22,7 +21,6 @@ const initialState: State = {
   currentEvent: undefined,
   closeSuccess: false,
   sendSuccess: false,
-  updateSuccess: false,
 };
 
 const eventSlice = createSlice({
@@ -48,10 +46,6 @@ const eventSlice = createSlice({
 
     builder.addCase(sendReviewThunk.fulfilled, (state) => {
       state.sendSuccess = true;
-    });
-
-    builder.addCase(updateEventThunk.fulfilled, (state) => {
-      state.updateSuccess = true;
     });
   },
 });
