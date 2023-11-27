@@ -1,16 +1,14 @@
-import { useEffect } from 'react';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 import { Input, List, ListItem } from '@chakra-ui/react';
-import { geocode, RequestType, setKey } from 'react-geocode';
+import { setKey } from 'react-geocode';
 
 type Props = {
   onCoordinatesChange: (param: any) => any;
   onAddressChange: (param: any) => any;
   address: string;
-  initialAddress: string;
 };
 
-function LocationSearch({ onCoordinatesChange, onAddressChange, initialAddress, address }: Props) {
+function LocationSearch({ onCoordinatesChange, onAddressChange, address }: Props) {
   const handleSelect = async (value: string) => {
     const results = await geocodeByAddress(value);
     const latLng = await getLatLng(results[0]);
@@ -19,21 +17,6 @@ function LocationSearch({ onCoordinatesChange, onAddressChange, initialAddress, 
   };
 
   setKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '');
-
-  useEffect(() => {
-    if (initialAddress) {
-      getAddressFromCoordinates(initialAddress);
-    }
-  }, [initialAddress]);
-
-  const getAddressFromCoordinates = (location: string) => {
-    geocode(RequestType.LATLNG, location)
-      .then(({ results }) => {
-        const address = results[0].formatted_address;
-        onAddressChange(address);
-      })
-      .catch(console.error);
-  };
 
   return (
     <>

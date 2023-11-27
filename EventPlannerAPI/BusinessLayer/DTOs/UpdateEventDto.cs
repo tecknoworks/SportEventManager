@@ -24,6 +24,5 @@ namespace BusinessLayer.DTOs
         [Required]
         public bool IsClosed { get; set; }
         public ICollection<UpsertEventPositionDto> EventPositions { get; set; }
-        public ICollection<ParticipantDto> Participants { get; set; }
     }
 }

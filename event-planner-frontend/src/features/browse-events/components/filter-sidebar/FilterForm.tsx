@@ -111,7 +111,6 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
           <FormLabel>Location</FormLabel>
           <LocationSearch
             onCoordinatesChange={setCoordinates}
-            initialAddress=""
             onAddressChange={setLocationName}
             address={locationName}
           />
