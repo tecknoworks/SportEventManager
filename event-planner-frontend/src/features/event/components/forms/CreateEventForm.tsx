@@ -103,7 +103,9 @@ function CreateEventForm() {
     };
 
     dispatch(createEventThunk(createEventDto)).then((response) => {
-      navigate(`/event-details/${response.payload}`);
+      if (response) {
+        navigate(`/event-details/${response.payload}`);
+      }
     });
   };
 
