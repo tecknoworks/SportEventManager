@@ -72,7 +72,7 @@ const IndividualChat = ({ chatDetails }: Props) => {
   };
 
   const handleSendMessage = () => {
-    if (!chatDetails) return;
+    if (!chatDetails || newMessage.length === 0) return;
     sendMessage(newMessage, chatDetails.id);
     setNewMessage('');
   };
