@@ -16,11 +16,11 @@ namespace DataAccessLayer.Repositories
             _eventPlannerContext = eventPlannerContext;
         }
 
-        public async Task<string> CreateEventAsync(Event newEvent)
+        public async Task<Guid> CreateEventAsync(Event newEvent)
         {
             _eventPlannerContext.Events.Add(newEvent);
             await _eventPlannerContext.SaveChangesAsync();
-            return "Event was created successfuly.";
+            return newEvent.Id;
         }
 
         public async Task<string> PostReviewAsync(Review review)
@@ -172,17 +172,16 @@ namespace DataAccessLayer.Repositories
                 EventId = eventId,
                 UserId = userId,
                 Status = ParticipantStatus.Pending,
-                EventPositionId = eventPositionId
+                EventPositionId = eventPositionId == Guid.Empty ? null : eventPositionId
             };
 
             try
             {
                 participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
-                if (eventPositionId !=null)
+                if (eventPositionId.HasValue && eventPositionId.Value != Guid.Empty)
                 {
-                    participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
+                    participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value);
                 }
-                participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
                 participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
 
                 var eventPosition = eventPositionId.HasValue

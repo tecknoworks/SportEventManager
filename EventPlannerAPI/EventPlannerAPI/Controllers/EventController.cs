@@ -90,7 +90,7 @@ namespace EventPlannerAPI.Controllers
 
         [Authorize]
         [HttpPost("CreateEvent")]
-        public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
+        public async Task<ActionResult<Guid>> CreateEvent([FromBody] CreateEventDto newEventDto)
         {
             try
             {

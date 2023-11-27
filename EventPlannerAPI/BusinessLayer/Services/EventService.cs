@@ -36,7 +36,7 @@ namespace BusinessLayer.Services
             _hubContext = hubContext;
         }
 
-        public async Task<string> CreateEventAsync(CreateEventDto newEvent)
+        public async Task<Guid> CreateEventAsync(CreateEventDto newEvent)
         {
             try
             {

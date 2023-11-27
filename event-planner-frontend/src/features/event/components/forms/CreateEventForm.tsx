@@ -102,8 +102,11 @@ function CreateEventForm() {
       eventPositions: eventPositions,
     };
 
-    dispatch(createEventThunk(createEventDto));
-    navigate('/my-events');
+    dispatch(createEventThunk(createEventDto)).then((response) => {
+      if (response) {
+        navigate(`/event-details/${response.payload}`);
+      }
+    });
   };
 
   return (
