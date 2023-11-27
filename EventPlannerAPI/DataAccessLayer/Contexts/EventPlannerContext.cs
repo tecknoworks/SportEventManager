@@ -37,7 +37,7 @@ namespace DataAccessLayer.Contexts
                 .WithMany(user => user.Events)
                 .HasForeignKey(evnt => evnt.AuthorUserId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Event>()
                 .HasOne(evnt => evnt.SportType)
@@ -51,7 +51,7 @@ namespace DataAccessLayer.Contexts
                 .WithOne(position => position.SportType)
                 .HasForeignKey(position => position.SportTypeId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<EventPosition>()
                 .HasOne(eventPosition => eventPosition.Event)
@@ -63,7 +63,7 @@ namespace DataAccessLayer.Contexts
                 .HasOne(eventPosition => eventPosition.Position)
                 .WithMany()
                 .HasForeignKey(eventPosition => eventPosition.PositionId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Participant>()
                 .HasIndex(p => new { p.EventId, p.UserId })
@@ -95,7 +95,7 @@ namespace DataAccessLayer.Contexts
                 .WithOne(evnt => evnt.ChatEvent)
                 .HasForeignKey<ChatEvent>(chatEvent => chatEvent.EventID)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<ChatEvent>()
                 .HasMany(chatEvent => chatEvent.ChatMessages)
@@ -109,14 +109,14 @@ namespace DataAccessLayer.Contexts
                 .WithOne(message => message.ChatMessage)
                 .HasForeignKey<ChatMessage>(chatMessage => chatMessage.MessageId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Review>()
                 .HasOne(review => review.Author)
                 .WithMany(author => author.GivenReviews)
                 .HasForeignKey(review => review.AuthorUserId)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Review>()
                 .HasOne(review => review.User)
