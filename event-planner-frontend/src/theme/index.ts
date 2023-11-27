@@ -14,10 +14,12 @@ const colors = {
     light: {
       background: 'linear-gradient(to right, #610C9F , #E95793);',
       text: '#000000',
+      navbar:'rgb(255,255,255, 0.8)'
     },
     dark: {
       background: '#2d3748',
       text: '#ffffff',
+      navbar:'#2d3748'
     },
   
 };

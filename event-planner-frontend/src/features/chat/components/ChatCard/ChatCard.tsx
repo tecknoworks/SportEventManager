@@ -15,7 +15,7 @@ const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails }: Props) 
       p={5}
       spacing={4}
       _hover={{
-        bg: chat.id === selectedChatDetails?.id ? undefined : 'gray.100',
+        bg: chat.id === selectedChatDetails?.id ? undefined : 'gray.200',
         cursor: 'pointer',
       }}
       bg={chat.id === selectedChatDetails?.id ? 'gray.300' : 'transparent'}

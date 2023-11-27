@@ -1,5 +1,5 @@
 import React, { ReactElement, ReactNode, useState } from 'react';
-import { Button, Input, InputGroup, InputLeftElement, InputRightAddon } from '@chakra-ui/react';
+import { Button, Input, InputGroup, InputLeftElement, InputRightAddon, useColorMode } from '@chakra-ui/react';
 import { Search2Icon } from '@chakra-ui/icons';
 import PrimaryButton from '../buttons/PrimaryButton';
 
@@ -13,9 +13,13 @@ export const SearchBar = ({ onSearch }: Props) => {
   const handleOnClick = () => {
     onSearch(input);
   };
+
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  
   return (
     <>
-      <InputGroup width="100%" bg="white" borderRadius={5} size="md">
+      <InputGroup width="100%" bg={bgColor} borderRadius={5} size="md">
         <InputLeftElement pointerEvents="none" children={<Search2Icon color="gray.600" />} />
         <Input
           type="text"

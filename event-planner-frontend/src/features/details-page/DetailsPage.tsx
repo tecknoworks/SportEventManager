@@ -10,6 +10,7 @@ import {
   Divider,
   Icon,
   useToast,
+  useColorMode,
 } from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { useEffect, useState } from 'react';
@@ -91,8 +92,11 @@ const DetailsPage = () => {
   const parsedDateEnd = endDate ? parseISO(endDate) : null;
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+
   return (
-    <Container maxW="container.md" bg="white" p={4} borderRadius="lg" boxShadow="md" mt={'9'} padding="2rem">
+    <Container maxW="container.md" bg={bgColor} p={4} borderRadius="lg" boxShadow="md" mt={'9'} padding="2rem">
       <Flex direction={{ base: 'column', md: 'row' }} wrap="wrap" justifyContent="space-between">
         <VStack spacing={4} align="stretch" flex="1" minW={{ base: '100%', md: '65%' }}>
           <Heading as="h1" size="xl" color="purple.700">

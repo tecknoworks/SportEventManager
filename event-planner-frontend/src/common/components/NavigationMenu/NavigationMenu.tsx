@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -99,8 +99,11 @@ const NavigationMenu = () => {
     }
   }, [token]);
 
+ 
+  const navbarBgColor = colorMode === 'dark' ? 'dark.navbar' : 'light.navbar';
+
   return (
-    <Box height="64px" width="100%" top="0" bg={'whiteAlpha.800'} px={4} >
+    <Box height="64px" width="100%" top="0" bg={navbarBgColor} px={4} >
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
         <IconButton
           backgroundColor="whiteAlpha.700"
@@ -111,7 +114,7 @@ const NavigationMenu = () => {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={'center'}>
-          <Box color="#610c9f" fontWeight="semibold">
+          <Box color={colorMode} fontWeight="semibold">
             EventPlanner
           </Box>
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>

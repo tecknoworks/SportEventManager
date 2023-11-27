@@ -1,5 +1,6 @@
 import { Input } from '@chakra-ui/input';
 import { Box } from '@chakra-ui/layout';
+import { useColorMode } from '@chakra-ui/react';
 import { ChatDetails } from 'features/chat/api/dtos/dtos';
 import { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
@@ -24,10 +25,13 @@ const ChatSearch = ({ setFoundChats, allChats }: Props) => {
     }
   }, [debouncedSearchValue, allChats, setFoundChats]);
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+
   return (
     <Box display="flex" gap="0.5rem" padding="0.5rem">
       <Input
-        bgColor="white"
+        bgColor={bgColor}
         placeholder="Search chats..."
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}

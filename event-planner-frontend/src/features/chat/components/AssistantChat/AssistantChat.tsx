@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from '@chakra-ui/icons';
-import { VStack, HStack, Input } from '@chakra-ui/react';
+import { VStack, HStack, Input, useColorMode } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { ChatDetails, CreateMessage, OpenAIMessage } from 'features/chat/api/dtos/dtos';
 import { useEffect, useRef, useState } from 'react';
@@ -66,8 +66,11 @@ const AssistantChat = ({ chatDetails }: Props) => {
     dispatch(getThreadMessagesThunk(localStorage.getItem('threadId') || ''));
   }, []);
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+
   return chatDetails ? (
-    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor="whiteAlpha.800">
+    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bg='whiteAlpha.800'>
       <ChatHeader title={chatDetails.name} avatarUrl={chatDetails.imageUrl} />
       <VStack
         flex="1"
@@ -89,12 +92,13 @@ const AssistantChat = ({ chatDetails }: Props) => {
         {isAssistantLoading && <Spinner speed="0.65s" />}
         <div ref={endOfMessagesRef} />
       </VStack>
-      <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="1rem">
+      <HStack p={4} w="100%" bgColor={bgColor} height="5rem" borderBottomRadius="1rem">
         <Input
           placeholder="Type a message..."
           onKeyDown={handleKeyPress}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          bg={bgColor}
         />
         <PrimaryButton text={<ArrowRightIcon />} onClick={handleSendMessage} />
       </HStack>

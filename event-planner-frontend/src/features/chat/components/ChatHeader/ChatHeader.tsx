@@ -1,6 +1,7 @@
 import { Avatar } from '@chakra-ui/avatar';
 import { HStack, VStack, Text } from '@chakra-ui/layout';
-import React from 'react';
+import { useColorMode } from '@chakra-ui/react';
+
 
 type Props = {
   title: string;
@@ -8,9 +9,14 @@ type Props = {
   participantsCount?: number;
 };
 
+
+
 const ChatHeader = ({ title, avatarUrl, participantsCount }: Props) => {
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+
   return (
-    <HStack spacing={2} p={4} height="5rem" bg="gray.100" w="100%" borderTopRadius="1rem">
+    <HStack spacing={2} p={4} height="5rem" bg={bgColor} w="100%" borderTopRadius="1rem">
       <Avatar name={title} src={avatarUrl} />
       <VStack align="start">
         <Text fontSize="xl">{title}</Text>
