@@ -41,6 +41,7 @@ const AssistantChat = ({ chatDetails }: Props) => {
   };
 
   const handleSendMessage = () => {
+    if (newMessage.length === 0) return;
     const messageDto: CreateMessage = {
       threadId: localStorage.getItem('threadId') || '',
       assistantId: localStorage.getItem('assistantId') || '',
