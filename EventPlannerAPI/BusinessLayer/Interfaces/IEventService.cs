@@ -7,7 +7,7 @@ namespace BusinessLayer.Interfaces
 {
     public interface IEventService
     {
-        Task<string> CreateEventAsync(CreateEventDto newEvent);
+        Task<Guid> CreateEventAsync(CreateEventDto newEvent);
         Task<GetEventWithDetailsDto> GetEventByIdAsync(Guid eventId);
         Task<IList<SportTypeDto>> GetAvailableSportTypesAsync();
         Task<IList<PositionDto>> GetPositionsForSportTypeAsync(Guid sportTypeId);
