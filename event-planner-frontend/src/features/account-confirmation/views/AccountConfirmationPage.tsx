@@ -45,7 +45,7 @@ const AccountConfirmationPage = () => {
   }, [isDone, isSuccess]);
 
   return (
-    <Box overflowY="hidden">
+    <Box overflowY="hidden" display="flex" alignItems="center" justifyContent="center" height="100%">
       <Box
         bgColor="white"
         display="flex"
@@ -56,8 +56,6 @@ const AccountConfirmationPage = () => {
         width="500px"
         borderWidth="1px"
         borderRadius="lg"
-        overflow="hidden"
-        height="inherit"
       >
         <Text color="black.500" as="b" fontSize="3xl">
           {isDone && isSuccess ? 'Account confirmed' : 'Something went Wrong'}

@@ -16,11 +16,11 @@ namespace DataAccessLayer.Repositories
             _eventPlannerContext = eventPlannerContext;
         }
 
-        public async Task<string> CreateEventAsync(Event newEvent)
+        public async Task<Guid> CreateEventAsync(Event newEvent)
         {
             _eventPlannerContext.Events.Add(newEvent);
             await _eventPlannerContext.SaveChangesAsync();
-            return "Event was created successfuly.";
+            return newEvent.Id;
         }
 
         public async Task<string> PostReviewAsync(Review review)

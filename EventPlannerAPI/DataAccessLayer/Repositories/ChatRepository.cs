@@ -87,7 +87,7 @@ namespace DataAccessLayer.Repositories
                             .ThenInclude(message => message.User)
                     .SelectMany(chatEvent => chatEvent.ChatMessages)
                     .Select(chatMessage => chatMessage.Message)
-                    .OrderByDescending(message => message.Date);
+                    .OrderBy(message => message.Date);
 
             var totalCount = await query.CountAsync();
             var messages = await query.Skip(skip)
