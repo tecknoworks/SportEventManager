@@ -46,17 +46,6 @@ namespace DataAccessLayer.Repositories
                 throw new EventPlannerException($"Event with id {eventId} does not exist.");
             }
 
-            foreach (var participant in eventEntity.Participants)
-            {
-                var dbParticipant = await _eventPlannerContext.Participants
-                    .FirstOrDefaultAsync(p => p.UserId == participant.UserId);
-
-                if (dbParticipant != null)
-                {
-                    participant.Status = dbParticipant.Status;
-                }
-            }
-
             return eventEntity;
         }
 
@@ -70,9 +59,6 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.Participants)
                          .ThenInclude(part => part.User)
                             .ThenInclude(user => user.Profile);
-
-
-
 
             if (!string.IsNullOrEmpty(searchData))
             {
@@ -234,6 +220,16 @@ namespace DataAccessLayer.Repositories
             {
                 throw new EventPlannerException($"Participant with user id {userId} and event id {eventId} does not exist.");
             }
+
+            var currentEvent = await GetEventByIdAsync(eventId);
+
+            if (participantEntity.Event.SportType.HasPositions)
+            {
+                var currentPositionOccupied = currentEvent.EventPositions.FirstOrDefault(position => position.Id == participantEntity.EventPositionId);
+                currentPositionOccupied.AvailablePositions += 1;
+            }
+
+            currentEvent.MaximumParticipants += 1;
 
             _eventPlannerContext.Participants.Remove(participantEntity);
             await _eventPlannerContext.SaveChangesAsync();

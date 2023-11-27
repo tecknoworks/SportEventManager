@@ -5,12 +5,13 @@ import { SettingsIcon } from '@chakra-ui/icons';
 import { FilterParams } from 'features/browse-events/api/dtos';
 import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectEvents } from 'features/browse-events/store/selectors/eventsPageSelector';
+import { joinEventIsSuccess, selectEvents } from 'features/browse-events/store/selectors/eventsPageSelector';
 import { getEventsThunk } from 'features/browse-events/thunks/browseEventsThunks';
 import FilterForm from 'features/browse-events/components/filter-sidebar/FilterForm';
 import EventsCardList from 'features/browse-events/components/events-page/events-card-list/EventsCardList';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
+import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
 
 const MyEventsPage = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -25,6 +26,15 @@ const MyEventsPage = () => {
     pageSize: pageSize,
     authorId: user?.userId,
   });
+
+  const isCloseSuccess = useSelector(selectCloseSuccess);
+  const isJoinSuccess = useSelector(joinEventIsSuccess);
+
+  useEffect(() => {
+    if (isCloseSuccess || isJoinSuccess) {
+      dispatch(getEventsThunk(filter));
+    }
+  }, [isCloseSuccess, isJoinSuccess]);
 
   useEffect(() => {
     dispatch(getEventsThunk(filter));

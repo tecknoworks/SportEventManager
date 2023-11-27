@@ -30,19 +30,15 @@ const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId }: Props) 
   const dispatch: AppDispatch = useDispatch();
   const [selectedPosition, setSelectedPosition] = useState<string>('');
   const isSuccess = useSelector(joinEventIsSuccess);
-  const [reloadOnce, setReloadOnce] = useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedPosition(event.target.value);
   };
 
   useEffect(() => {
-    if (isSuccess && !reloadOnce) {
-      setReloadOnce(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+    if (isSuccess) {
+      onClose();
     }
-  }, [isSuccess, reloadOnce]);
+  }, [isSuccess]);
 
   const handleJoinEvent = async () => {
     const data: JoinEventDto = {
@@ -62,23 +58,23 @@ const JoinModal = ({ isOpen, onClose, eventPositions, eventId, userId }: Props) 
         <ModalCloseButton />
         <ModalBody display="flex" flexDirection="column" alignItems="center">
           <Text color="purple">Are you sure you want to join the event?</Text>
-          {eventPositions.length !== 0 && (<>
-            <br></br>
-            <Select value={selectedPosition} onChange={handleChange} placeholder="Select position">
-              {eventPositions &&
-                eventPositions.map((position) => (
-                  <option
-                    key={position.positionId}
-                    value={position.positionId}
-                    disabled={position.availablePositions === 0}
-                  >
-                    {position.positionName} -- Available: {position.availablePositions}
-                  </option>
-                ))}
-            </Select>
-          </>)
-
-          }
+          {eventPositions.length !== 0 && (
+            <>
+              <br></br>
+              <Select value={selectedPosition} onChange={handleChange} placeholder="Select position">
+                {eventPositions &&
+                  eventPositions.map((position) => (
+                    <option
+                      key={position.positionId}
+                      value={position.positionId}
+                      disabled={position.availablePositions === 0}
+                    >
+                      {position.positionName} -- Available: {position.availablePositions}
+                    </option>
+                  ))}
+              </Select>
+            </>
+          )}
         </ModalBody>
         <ModalFooter>
           <Button variant="ghost" mr={3} onClick={onClose}>

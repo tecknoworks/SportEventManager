@@ -3,6 +3,7 @@ import { Card, CardBody, useMediaQuery } from '@chakra-ui/react';
 import { deleteParticipanttIsSuccess } from 'features/browse-events/store/selectors/eventsPageSelector';
 import { DeleteParticipantDto } from 'features/event-users/api/dtos';
 import { deleteParticipantThunk } from 'features/event-users/thunks/deleteParticipantThunk';
+import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
@@ -17,17 +18,15 @@ const UserCardDnd = ({ children, id, eventId }: Props) => {
   const [isDragging, setIsDragging] = useState(false);
   const [isMobile] = useMediaQuery('(max-width: 417px)');
   const isDeleteSuccess = useSelector(deleteParticipanttIsSuccess);
-  const [reloadOnce, setReloadOnce] = useState(false);
   const dispatch: AppDispatch = useDispatch();
 
   useEffect(() => {
-    if (isDeleteSuccess && !reloadOnce) {
-      setReloadOnce(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
+    if (isDeleteSuccess) {
+      if (eventId) {
+        dispatch(getEventThunk(eventId));
+      }
     }
-  }, [isDeleteSuccess, reloadOnce]);
+  }, [isDeleteSuccess]);
 
   const dragStart = (e: any) => {
     setIsDragging(true);

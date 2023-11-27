@@ -1,16 +1,4 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  VStack,
-  HStack,
-  Tag,
-  Container,
-  Divider,
-  Icon,
-  useToast,
-} from '@chakra-ui/react';
+import { Box, Flex, Heading, Text, VStack, HStack, Tag, Container, Divider, Icon, useToast } from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +17,6 @@ import { getColorScheme, getSkillLevelText } from 'common/helpers/skillLevelHelp
 import { MdEventAvailable, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { FaRunning } from 'react-icons/fa';
 
-
 const DetailsPage = () => {
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,7 +24,6 @@ const DetailsPage = () => {
   const { eventId } = useParams();
   const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');
-
 
   useEffect(() => {
     dispatch(getEventThunk(`${eventId}`));
@@ -63,7 +49,7 @@ const DetailsPage = () => {
     startDate,
   } = details;
 
-  const isUserParticipant = participants?.find(participant => participant.userId === user?.userId);
+  const isUserParticipant = participants?.find((participant) => participant.userId === user?.userId);
 
   const handleJoinEvent = async (positionId: any) => {
     const data: JoinEventDto = {
@@ -98,16 +84,11 @@ const DetailsPage = () => {
           <Heading as="h1" size="xl" color="purple.700">
             {name}
           </Heading>
-          <Heading
-            as="h3"
-            size="md"
-            color="purple.300"
-            onClick={() => {
-              navigate(`/profile/${authorUserId}`);
-            }}
-            cursor="pointer"
-          >
-            Organizer : {authorUserName}
+          <Heading as="h3" size="md" color="purple.300">
+            Organizer :{' '}
+            <span onClick={() => navigate(`/profile/${authorUserId}`)} style={{ cursor: 'pointer' }}>
+              {authorUserName}
+            </span>
           </Heading>
           <Box display="flex" alignItems="center">
             <Icon as={MdOutlineDescription} mr={2} />
@@ -156,13 +137,12 @@ const DetailsPage = () => {
                       <Text fontSize="md">
                         {position.positionName} : {position.availablePositions}
                       </Text>
-                      {(position.availablePositions ?? 0) > 0 && (
-                        token && (
-                          <PrimaryButton
-                            text="Join Event on this position"
-                            isDisabled={!!isUserParticipant}
-                            onClick={() => handleJoinEvent(position.positionId)}
-                          />)
+                      {(position.availablePositions ?? 0) > 0 && token && (
+                        <PrimaryButton
+                          text="Join Event on this position"
+                          isDisabled={!!isUserParticipant}
+                          onClick={() => handleJoinEvent(position.positionId)}
+                        />
                       )}
                     </HStack>
                   ))}
