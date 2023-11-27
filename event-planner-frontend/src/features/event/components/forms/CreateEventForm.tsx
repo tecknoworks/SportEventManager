@@ -151,12 +151,7 @@ function CreateEventForm() {
 
       <FormControl isRequired>
         <FormLabel>Location</FormLabel>
-        <LocationSearch
-          onCoordinatesChange={setCoordinates}
-          initialAddress=""
-          onAddressChange={setLocationName}
-          address={locationName}
-        />
+        <LocationSearch onCoordinatesChange={setCoordinates} onAddressChange={setLocationName} address={locationName} />
       </FormControl>
 
       <PrimaryButton text="Create event" onClick={() => handleCreateEvent()} />
