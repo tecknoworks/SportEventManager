@@ -1,6 +1,5 @@
 import {
   FormControl,
-  FormLabel,
   Heading,
   Stack,
   useColorModeValue,
@@ -35,7 +34,7 @@ const SeeProfile = ({ userId }: Props) => {
   }, []);
 
   return (
-    <Box width="100%" display="flex" justifyContent="center" pt={isMobile ? '1rem' : '0'}>
+    <Box width="100%" display="flex" justifyContent="center" pt={isMobile ? '9rem' : '0'}>
       <Stack
         spacing={6}
         p={6}
@@ -59,7 +58,7 @@ const SeeProfile = ({ userId }: Props) => {
         >
           <Stack width='100%'>
             <FormControl id="userName">
-            <Heading as='h6' size='sm' mb='0.5rem'>User Icon</Heading>
+              <Heading as='h6' size='sm' mb='0.5rem'>User Icon</Heading>
               <Stack direction={['column', 'row']} spacing={6}>
                 <Center>
                   <Avatar
@@ -73,36 +72,36 @@ const SeeProfile = ({ userId }: Props) => {
             </FormControl>
             <FormControl id="firstName">
               <Heading as='h6' size='sm'>First Name</Heading>
-              <Text>{profile?.firstName}ion</Text>
+              <Text>{profile?.firstName}</Text>
             </FormControl>
             <FormControl id="lastName">
-            <Heading as='h6' size='sm'>Last Name</Heading>
-              <Text>{profile?.lastName}ion</Text>
+              <Heading as='h6' size='sm'>Last Name</Heading>
+              <Text>{profile?.lastName}</Text>
             </FormControl>
             <FormControl id="phoneNumber">
-            <Heading as='h6' size='sm'>Phone Number</Heading>
+              <Heading as='h6' size='sm'>Phone Number</Heading>
               <Text>{profile?.phoneNumber}</Text>
             </FormControl>
           </Stack>
           <Stack width='100%' marginTop={!isMobile ? '57px' : '10px'}>
             <FormControl id="DateOfBirth">
-            <Heading as='h6' size='sm'>Date of Birth</Heading>
+              <Heading as='h6' size='sm'>Date of Birth</Heading>
               <Text>{profile?.dateOfBirth ? formatDate(profile?.dateOfBirth) : 'Date not provided'}</Text>
             </FormControl>
             <FormControl id="Country">
-            <Heading as='h6' size='sm'>Country</Heading>
-              <Text>{profile?.country}romania</Text>
+              <Heading as='h6' size='sm'>Country</Heading>
+              <Text>{profile?.country}</Text>
             </FormControl>
             <FormControl id="County">
-            <Heading as='h6' size='sm'>County</Heading>
-              <Text>{profile?.county}cluj</Text>
+              <Heading as='h6' size='sm'>County</Heading>
+              <Text>{profile?.county}</Text>
             </FormControl>
             <FormControl id="City">
-            <Heading as='h6' size='sm'>City</Heading>
-              <Text>{profile?.city}cluj-napoca</Text>
+              <Heading as='h6' size='sm'>City</Heading>
+              <Text>{profile?.city}</Text>
             </FormControl>
             <FormControl>
-            <Heading as='h6' size='sm'>{profile?.firstName} Rating</Heading>
+              <Heading as='h6' size='sm'>{profile?.firstName} Rating</Heading>
               <Box display="flex" alignItems="center">
                 <Text> {rating === 0 ? `No rating yet` : Number(rating).toFixed(1)} </Text>
                 {rating === 0 ? <EmptyStar /> : <FullStar color="#ffd700" />}

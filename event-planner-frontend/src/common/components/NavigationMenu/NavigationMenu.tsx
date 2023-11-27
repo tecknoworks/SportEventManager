@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -26,7 +26,6 @@ import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
 import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
 import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
-import { userInfo } from 'os';
 
 type LinkType = {
   key: number;
@@ -88,7 +87,7 @@ const NavigationMenu = () => {
     if (token) {
       const user = getUserFromToken(token);
       dispatch(getProfileThunk(user?.userId || ''));
-      setIsAdmin(user?.role === 'Admin'); 
+      setIsAdmin(user?.role === 'Admin');
       setIsLoggedIn(!!token);
     } else {
       setIsLoggedIn(false);
