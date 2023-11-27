@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { ChangeStatusDto, ParticipantStatus } from 'features/event-users/api/dtos';
 import { changeUserStatusThunk } from 'features/event-users/thunks/changeUserStatusThunk';
+import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 
 interface Props {
   children: React.ReactNode;
@@ -39,6 +40,9 @@ const Board = ({ children, id, boardTitle, eventId }: Props) => {
           status: ParticipantStatus.Accepted,
         };
         dispatch(changeUserStatusThunk(data));
+      }
+      if (eventId) {
+        dispatch(getEventThunk(eventId));
       }
     }
   };
