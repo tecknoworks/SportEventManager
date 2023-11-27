@@ -78,7 +78,6 @@ export interface UpdateEventDto {
   skillLevel?: number;
   isClosed?: boolean;
   eventPositions?: UpsertEventPositionDto[];
-  participants?: ParticipantDto[];
 }
 
 export interface CloseEventDto {

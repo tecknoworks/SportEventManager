@@ -252,14 +252,6 @@ namespace BusinessLayer.Services
                 }
             }
 
-            foreach (var participant in dto.Participants)
-            {
-                if (!await _userRepository.UserExistsAsync(participant.UserId))
-                {
-                    return $"Participant with ID {participant.UserId} does not exist.";
-                }
-            }
-
             return string.Empty;
         }
 

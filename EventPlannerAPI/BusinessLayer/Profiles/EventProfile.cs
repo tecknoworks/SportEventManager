@@ -63,8 +63,7 @@ namespace BusinessLayer.Profiles
                 .ForMember(dest => dest.AuthorUserId, opt => opt.Ignore())
                 .ForMember(dest => dest.Author, opt => opt.Ignore())
                 .ForMember(dest => dest.SportType, opt => opt.Ignore())
-                .ForMember(dest => dest.EventPositions, opt => opt.MapFrom(src => src.EventPositions))
-                .ForMember(dest => dest.Participants, opt => opt.MapFrom(src => src.Participants));
+                .ForMember(dest => dest.EventPositions, opt => opt.MapFrom(src => src.EventPositions));
 
             CreateMap<Event, GetEventForBrowse>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
