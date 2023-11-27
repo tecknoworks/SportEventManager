@@ -257,5 +257,19 @@ namespace DataAccessLayer.Repositories
                     .Select(ep => ep.Id)
                     .FirstOrDefaultAsync();
         }
-    }
+        public async Task<IList<Guid>> GetUserCreatedOrJoinedEvents(string userId)
+        {
+            var joined = await _eventPlannerContext.Participants
+                    .Where(participant => participant.UserId == userId && participant.Status == ParticipantStatus.Accepted)
+                    .Select(participant => participant.EventId)
+                    .ToListAsync();
+
+            var createdEventIds = await _eventPlannerContext.Users
+                .Where(user => user.Id == userId)
+                .SelectMany(user => user.Events.Select(eventItem => eventItem.Id))
+                .ToListAsync();
+
+            var result = joined.Union(createdEventIds).ToList();
+            return result;
+        }     }
 }

@@ -26,6 +26,15 @@ import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
 import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
 import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
+import Notifications from 'features/notifications/Notifications';
+import {
+  connectNotification,
+  disconnectNotification,
+  registerNotificationReceived,
+  unregisterNotificationReceived,
+} from 'services/notificationService';
+import { addNotificationMessage } from './store/notificationSlice';
+import { handleGenericSuccess } from 'services/notificationHandlingService';
 
 type LinkType = {
   key: number;
@@ -36,6 +45,8 @@ type LinkType = {
 
 const NavigationMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const notificationsDisclosure = useDisclosure();
+
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const Links: LinkType[] = [
@@ -95,6 +106,21 @@ const NavigationMenu = () => {
     }
   }, [token]);
 
+  useEffect(() => {
+    connectNotification();
+    registerNotificationReceived((message: string) => {
+      dispatch(addNotificationMessage(message));
+      handleGenericSuccess('You have new notifications');
+    });
+
+    return () => {
+      unregisterNotificationReceived((message: string) => {
+        console.log('Unregistered callback:', message);
+      });
+      disconnectNotification();
+    };
+  }, [dispatch]);
+
   return (
     <Box height="64px" width="100%" top="0" bg={'whiteAlpha.800'} px={4}>
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
@@ -113,14 +139,14 @@ const NavigationMenu = () => {
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
             {Links.map(
               (link) =>
-                (link.availableForUser || (isLoggedIn && (!link.availableForUser && (isAdmin || link.title !== 'Admin User Management')))) && (
+                (link.availableForUser ||
+                  (isLoggedIn && !link.availableForUser && (isAdmin || link.title !== 'Admin User Management'))) && (
                   <NavLink key={link.key} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>
                 )
             )}
           </HStack>
-
         </HStack>
         <Flex alignItems={'center'}>
           <Menu>
@@ -149,6 +175,8 @@ const NavigationMenu = () => {
                   >
                     All events you joined
                   </MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={notificationsDisclosure.onOpen}>Notifications</MenuItem>
                   <MenuDivider />
                   <MenuItem
                     onClick={async () => {
@@ -202,7 +230,8 @@ const NavigationMenu = () => {
           <Stack as={'nav'} spacing={4}>
             {Links.map(
               (link) =>
-                (link.availableForUser || (isLoggedIn && (!link.availableForUser && (isAdmin || link.title !== 'Admin User Management')))) && (
+                (link.availableForUser ||
+                  (isLoggedIn && !link.availableForUser && (isAdmin || link.title !== 'Admin User Management'))) && (
                   <NavLink key={link.key} linkTo={link.linkTo}>
                     {link.title}
                   </NavLink>
@@ -211,6 +240,9 @@ const NavigationMenu = () => {
           </Stack>
         </Box>
       ) : null}
+      {notificationsDisclosure.isOpen && (
+        <Notifications isOpen={notificationsDisclosure.isOpen} onClose={notificationsDisclosure.onClose} />
+      )}
     </Box>
   );
 };

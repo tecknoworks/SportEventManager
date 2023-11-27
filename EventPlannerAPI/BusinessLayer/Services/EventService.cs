@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using BusinessLayer.DTOs;
+using BusinessLayer.Hubs;
 using BusinessLayer.Interfaces;
 using DataAccessLayer.Exceptions;
 using DataAccessLayer.Helpers;
 using DataAccessLayer.Interfaces;
 using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BusinessLayer.Services
@@ -22,9 +22,9 @@ namespace BusinessLayer.Services
         private readonly Serilog.ILogger _logger;
         private readonly IMailService _mailService;
         private readonly IConfiguration _configuration;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-
-        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IChatRepository chatRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService, IConfiguration configuration)
+        public EventService(IEventRepository eventRepository, IUserRepository userRepository, IChatRepository chatRepository, IMapper mapper, Serilog.ILogger logger, IMailService mailService, IConfiguration configuration, IHubContext<NotificationHub> hubContext)
         {
             _eventRepository = eventRepository;
             _userRepository = userRepository;
@@ -33,6 +33,7 @@ namespace BusinessLayer.Services
             _logger = logger;
             _mailService = mailService;
             _configuration = configuration;
+            _hubContext = hubContext;
         }
 
         public async Task<string> CreateEventAsync(CreateEventDto newEvent)
@@ -317,6 +318,7 @@ namespace BusinessLayer.Services
 
         public async Task<string> ChangeUserStatusAsync(UpdatedParticipant updatedParticipant)
         {
+            var baseUrl = _configuration[SolutionConfigurationConstants.FrontendBaseUrl];
             try
             {
 
@@ -334,8 +336,38 @@ namespace BusinessLayer.Services
                     throw new KeyNotFoundException("User not found");
                 }
 
+                var userDetails = await _userRepository.GetUserProfileDetailsAsync(updatedParticipant.UserId);
+                if (userDetails == null)
+                {
+                    _logger.Error($"User details for user id {updatedParticipant.UserId} not found.");
+                    throw new KeyNotFoundException("User details not found");
+                }
+
+                var participants = evnt.Participants.Where(participant => participant.Status == ParticipantStatus.Accepted).ToList();
+
                 var participantEntity = await _eventRepository.GetParticipant(updatedParticipant.EventId, updatedParticipant.UserId);
                 _mapper.Map(updatedParticipant, participantEntity);
+                
+
+                var profileLink = $"{baseUrl}/profile/{user.Id}";
+
+                if(updatedParticipant.Status == ParticipantStatus.Accepted)
+                {
+                    foreach (var participant in participants)
+                    {
+                        var participantData = await _userRepository.GetUserByIdAsync(participant.UserId);
+                        if (participantData == null)
+                        {
+                            _logger.Error($"User with id {participantData.Id} not found.");
+                            throw new KeyNotFoundException("User not found");
+                        }
+
+                        var mail = MailRequest.AcceptedToEventNotification(participantData.Email, participantData.UserName, user.UserName, evnt.Name, userDetails.ProfilePhoto, profileLink);
+                        await _mailService.SendEmailAsync(mail);
+                    }
+
+                    await _hubContext.Clients.Group(evnt.Id.ToString().ToUpper()).SendAsync("ReceiveNotification", $"User {user.UserName} has joined the event {evnt.Name}!");
+                }
 
                 return await _eventRepository.SaveChangesAsync();
             }

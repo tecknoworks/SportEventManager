@@ -1,9 +1,8 @@
 import { Box, Text } from '@chakra-ui/react';
-import { ChangeStatusDto, ParticipantStatus } from 'features/event-users/api/dtos';
-import { changeUserStatusThunk } from 'features/event-users/thunks/changeUserStatusThunk';
-import React from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from 'redux/store';
+import { ChangeStatusDto, ParticipantStatus } from 'features/event-users/api/dtos';
+import { changeUserStatusThunk } from 'features/event-users/thunks/changeUserStatusThunk';
 
 interface Props {
   children: React.ReactNode;
@@ -39,7 +38,6 @@ const Board = ({ children, id, boardTitle, eventId }: Props) => {
           eventId: eventId,
           status: ParticipantStatus.Accepted,
         };
-
         dispatch(changeUserStatusThunk(data));
       }
     }

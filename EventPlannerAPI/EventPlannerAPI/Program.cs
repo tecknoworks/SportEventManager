@@ -1,3 +1,4 @@
+using BusinessLayer.Hubs;
 using BusinessLayer.Interfaces;
 using BusinessLayer.Services;
 using DataAccessLayer.Contexts;
@@ -141,5 +142,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<ChatHub>("/chatHub");
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();
