@@ -4,11 +4,7 @@ import { LatLng } from 'common/components/Map/models';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { GetPositionForSportTypeDto, UpdateEventDto, UpsertEventPositionDto } from 'features/event/api/dtos';
 import { EventPosition } from 'features/event/api/models';
-import {
-  selectCurrentEvent,
-  selectEventPositions,
-  selectUpdateSuccess,
-} from 'features/event/store/selectors/eventSelectors';
+import { selectCurrentEvent, selectEventPositions } from 'features/event/store/selectors/eventSelectors';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { getPositionsForSportTypeThunk } from 'features/event/store/thunks/getPositionsForSportTypeThunk';
 import { updateEventThunk } from 'features/event/store/thunks/updateEventThunk';
@@ -44,7 +40,6 @@ function EditEventForm({ eventId }: Props) {
     handleDeletePosition,
   } = usePositionManager(positionsForSportType);
 
-  const updateSuccess = useSelector(selectUpdateSuccess);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -111,7 +106,7 @@ function EditEventForm({ eventId }: Props) {
       currentEvent.location = coordinates?.lat + ',' + coordinates?.lng;
       currentEvent.locationName = locationName;
       dispatch(updateEventThunk({ eventId, data: currentEvent })).then((response) => {
-        if (updateSuccess) {
+        if (response) {
           navigate(`/event-details/${eventId}`);
         }
       });

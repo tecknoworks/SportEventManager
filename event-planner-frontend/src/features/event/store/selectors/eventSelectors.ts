@@ -5,4 +5,3 @@ export const selectEventPositions = (state: RootState) => state.eventPage.positi
 export const selectCurrentEvent = (state: RootState) => state.eventPage.currentEvent;
 export const selectCloseSuccess = (state: RootState) => state.eventPage.closeSuccess;
 export const selectSendReviewSuccess = (state: RootState) => state.eventPage.sendSuccess;
-export const selectUpdateSuccess = (state: RootState) => state.eventPage.updateSuccess;
