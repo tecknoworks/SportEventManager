@@ -47,7 +47,9 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
     const sportId = event.target.value;
     const sport = sportTypes.find((s) => s.id === sportId) || undefined;
     setSelectedSport(sport);
-    dispatch(getPositionsForSportTypeThunk(sportId));
+    if (sport !== undefined) {
+      dispatch(getPositionsForSportTypeThunk(sportId));
+    }
   };
 
   return (
