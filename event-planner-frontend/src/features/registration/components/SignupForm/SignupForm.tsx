@@ -11,6 +11,7 @@ import {
   Stack,
   Text,
   Link,
+  useColorMode,
 } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import PasswordInput from 'common/components/PasswordInput/PasswordInput';
@@ -123,8 +124,12 @@ const SignupForm = () => {
     });
   }
 
+
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+
   return (
-    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg={bgColor}>
       <Text color="gray.500" as="b" fontSize="3xl">
         Signup
       </Text>

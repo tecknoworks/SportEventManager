@@ -12,6 +12,7 @@ import {
   Text,
   FormErrorMessage,
   Link,
+  useColorMode,
 } from '@chakra-ui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import { logInThunk } from 'features/login/store/thunks/logInThunk';
@@ -84,8 +85,12 @@ const LogInForm = () => {
     });
   };
 
+
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+
   return (
-    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg={bgColor}>
       <Text color="gray.500" as="b" fontSize="3xl">
         Log In
       </Text>
