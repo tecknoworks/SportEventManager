@@ -20,9 +20,10 @@ import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import { UserDto } from 'features/registration/api/Dtos';
 import { createUser } from 'features/registration/thunks/signupThunks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from 'redux/store';
 import { useNavigate } from 'react-router-dom';
+import { selectSignupLoader } from 'features/registration/store/signupPageSelector';
 
 interface Account {
   userName: string;
@@ -43,7 +44,7 @@ const SignupForm = () => {
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>('');
   const [userNameErrorMessage, setUserNameErrorMessage] = useState<string>('');
-
+  const isLoading = useSelector(selectSignupLoader);
   const [account, setAccount] = useState<Account>({
     userName: '',
     email: '',
@@ -88,8 +89,10 @@ const SignupForm = () => {
     const errorPhoneNumberMessage = isValidPhoneNumber(debouncedAccount.phoneNumber) ? '' : 'Not a valid phone number!';
     setPhoneNumberErrorMessage(debouncedAccount.phoneNumber && errorPhoneNumberMessage);
 
-    const isUserNameValid = debouncedAccount.userName.length >= 2;
-    const errorUserNameMessage = isUserNameValid ? '' : 'User name not valid! (length must be greater than 2)';
+    const isUserNameValid = debouncedAccount.userName.length >= 2 && !debouncedAccount.userName.includes('@');
+    const errorUserNameMessage = isUserNameValid
+      ? ''
+      : "User name not valid! (length must be greater than 2 and not contain  '@'";
 
     setUserNameErrorMessage(debouncedAccount.userName && errorUserNameMessage);
 
@@ -118,7 +121,7 @@ const SignupForm = () => {
 
     dispatch(createUser(data)).then((response: any) => {
       if (response.meta.requestStatus === 'fulfilled') {
-        navigate('/');
+        navigate('/login');
       }
     });
   }
@@ -206,7 +209,12 @@ const SignupForm = () => {
               Go to Login
             </Link>
           </Text>
-          <PrimaryButton type="submit" isDisabled={isDisabled ? true : false} text="Create account" />
+          <PrimaryButton
+            type="submit"
+            isDisabled={isDisabled ? true : false}
+            isLoading={isLoading}
+            text="Create account"
+          />
         </Stack>
       </form>
     </Box>

@@ -1,18 +1,13 @@
-import {
-  Tr,
-  Td,
-  Button,
-  Tooltip,
-  Input,
-  FormControl,
-  FormErrorMessage,
-} from '@chakra-ui/react';
+import { Tr, Td, Button, Tooltip, Input, FormControl, FormErrorMessage } from '@chakra-ui/react';
 
 import { CheckIcon, DeleteIcon, EditIcon, EmailIcon, NotAllowedIcon } from '@chakra-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { isValidEmail } from 'common/validators/emailValidator';
 import { isValidPhoneNumber } from 'common/validators/phoneNumberValidator';
 import ConfirmationModal from '../Moldal/ConfirmationModal';
+import { useSelector } from 'react-redux';
+import { selectToken } from 'features/login/store/selectors/logInSelectors';
+import { getUserFromToken } from 'services/auth/context/AuthContext';
 
 type User = {
   userId: number;
@@ -37,12 +32,11 @@ interface Account {
 }
 
 const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, editUserOrAdmin, blockUser }) => {
+  const token = useSelector(selectToken);
+  const currentUser = getUserFromToken(token || '');
   const [isEditing, setIsEditing] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confirmAction, setConfirmAction] = useState<'delete' | 'sendEmail' | null>(null);
-
-
   const [editUser, setEditUser] = useState<Account>({
     userName: user.userName,
     email: user.email,
@@ -59,8 +53,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
   };
 
   const [isDisabled, setIsDisabled] = useState<boolean | ''>(true);
-  const [errorBe, setErrorBe] = useState<object[]>([]);
-
   const [emailErrorMessage, setEmailErrorMessage] = useState<string>('');
   const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState<string>('');
   const [userNameErrorMessage, setUserNameErrorMessage] = useState<string>('');
@@ -82,11 +74,6 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
       setIsEditing(false);
     }
   };
-
-  useEffect(() => {
-    setErrorBe([]);
-  }, []);
-
 
   return (
     <Tr>
@@ -124,52 +111,55 @@ const UserRow: React.FC<UserRowProps> = ({ user, deleteUser, sendRecoveryEmail, 
         )}
       </Td>
       <Td display="flex" justifyContent="flex-end">
-        <Tooltip label={isEditing ? 'Save changes' : 'Edit user'}>
-          <Button
-            mr="3"
-            bg={isEditing ? 'orange.300' : 'blue.300'}
-            onClick={isEditing ? handleSaveChanges : () => setIsEditing(true)}
-          >
-            {isEditing ? <CheckIcon /> : <EditIcon />}
-          </Button>
-        </Tooltip>
-        <Tooltip label={user.isBlocked ? 'Unblock user' : 'Block user'}>
-          <Button
-            mr="3"
-            bg={user.isBlocked ? 'purple.300' : 'orange.300'}
-            onClick={() => {
-              blockUser(user.userId, !user.isBlocked);
-            }}
-          >
-            {user.isBlocked ? <CheckIcon /> : <NotAllowedIcon />}
-          </Button>
-        </Tooltip>
-
-
-        <Tooltip label="Send Recovery Email">
-          <Button
-            mr="3"
-            bg={'green.300'}
-            onClick={() => {
-              setConfirmAction('sendEmail');
-              setIsModalOpen(true);
-            }}
-          >
-            <EmailIcon />
-          </Button>
-        </Tooltip>
-
-        <Tooltip label="Delete user">
-          <Button
-            bg={'red.300'}
-            onClick={() => {
-              setConfirmAction('delete');
-              setIsModalOpen(true);
-            }}
-          >
-            <DeleteIcon />
-          </Button>
-        </Tooltip>
+        {currentUser?.email !== user.email ? (
+          <>
+            <Tooltip label={isEditing ? 'Save changes' : 'Edit user'}>
+              <Button
+                mr="3"
+                bg={isEditing ? 'orange.300' : 'blue.300'}
+                onClick={isEditing ? handleSaveChanges : () => setIsEditing(true)}
+              >
+                {isEditing ? <CheckIcon /> : <EditIcon />}
+              </Button>
+            </Tooltip>
+            <Tooltip label={user.isBlocked ? 'Unblock user' : 'Block user'}>
+              <Button
+                mr="3"
+                bg={user.isBlocked ? 'purple.300' : 'orange.300'}
+                onClick={() => {
+                  blockUser(user.userId, !user.isBlocked);
+                }}
+              >
+                {user.isBlocked ? <CheckIcon /> : <NotAllowedIcon />}
+              </Button>
+            </Tooltip>
+            <Tooltip label="Send Recovery Email">
+              <Button
+                mr="3"
+                bg={'green.300'}
+                onClick={() => {
+                  setConfirmAction('sendEmail');
+                  setIsModalOpen(true);
+                }}
+              >
+                <EmailIcon />
+              </Button>
+            </Tooltip>
+            <Tooltip label="Delete user">
+              <Button
+                bg={'red.300'}
+                onClick={() => {
+                  setConfirmAction('delete');
+                  setIsModalOpen(true);
+                }}
+              >
+                <DeleteIcon />
+              </Button>
+            </Tooltip>
+          </>
+        ) : (
+          <Tooltip>Current User</Tooltip>
+        )}
       </Td>
       <ConfirmationModal
         isModalOpen={isModalOpen}

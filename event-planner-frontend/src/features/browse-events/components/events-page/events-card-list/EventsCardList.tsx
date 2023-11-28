@@ -1,4 +1,4 @@
-import { Box, Stack } from '@chakra-ui/react';
+import { Box, Stack, Text } from '@chakra-ui/react';
 import EventCard from 'common/components/card/EventCard';
 import { EventDto } from 'features/browse-events/api/dtos';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
@@ -30,7 +30,13 @@ const EventsCardList = ({ events, showPagination, page, count, pageSize, onPageC
       justifyContent="space-between"
     >
       <Stack w="100%" h="100%" overflowY="auto">
-        {eventCards}
+        {eventCards.length ? (
+          eventCards
+        ) : (
+          <Text color="white" fontSize="xl">
+            No events found.
+          </Text>
+        )}
       </Stack>
       {!showPagination && (
         <Paginate
