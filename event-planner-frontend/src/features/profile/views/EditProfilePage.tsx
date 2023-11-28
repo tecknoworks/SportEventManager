@@ -11,6 +11,7 @@ function EditProfilePage() {
   useEffect(() => {
     if (isSuccess) handleGenericSuccess('You have successfully updated your profile.');
   }, [isSuccess]);
+
   return (
     <Box paddingTop="50px">
       <EditProfileForm />

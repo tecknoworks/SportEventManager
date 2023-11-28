@@ -1,5 +1,4 @@
 import { Box } from '@chakra-ui/react';
-import React from 'react';
 import CreateEventForm from '../components/forms/CreateEventForm';
 
 function CreateEventPage() {

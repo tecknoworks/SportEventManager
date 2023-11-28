@@ -1,4 +1,4 @@
-import { HStack, Avatar, VStack, Text } from '@chakra-ui/react';
+import { HStack, Avatar, VStack, Text, useColorMode } from '@chakra-ui/react';
 import { ChatDetails, Message } from 'features/chat/api/dtos/dtos';
 
 type Props = {
@@ -8,6 +8,9 @@ type Props = {
 };
 
 const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails }: Props) => {
+  const { colorMode } = useColorMode();
+  const bgColorChat = colorMode === 'dark' ? 'gray.800' : 'gray.200';
+
   return (
     <HStack
       key={chat.id}
@@ -15,10 +18,10 @@ const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails }: Props) 
       p={5}
       spacing={4}
       _hover={{
-        bg: chat.id === selectedChatDetails?.id ? undefined : 'gray.100',
+        bg: chat.id === selectedChatDetails?.id ? undefined : bgColorChat,
         cursor: 'pointer',
       }}
-      bg={chat.id === selectedChatDetails?.id ? 'gray.300' : 'transparent'}
+      bg={chat.id === selectedChatDetails?.id ? bgColorChat : 'transparent'}
       onClick={() => setSelectedChatDetails(chat)}
     >
       <Avatar name={chat.name} src={chat.imageUrl} />

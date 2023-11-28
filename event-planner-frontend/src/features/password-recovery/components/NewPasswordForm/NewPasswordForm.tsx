@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { useDebounce } from 'use-debounce';
-import { Box, Stack, Text } from '@chakra-ui/react';
+import { Box, Stack, Text, useColorMode } from '@chakra-ui/react';
 
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import PasswordInput from 'common/components/PasswordInput/PasswordInput';
@@ -68,8 +68,11 @@ function NewPasswordForm() {
     );
   };
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
-    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg={bgColor}>
       <Text color="black.500" as="b" fontSize="3xl">
         Create a new password
       </Text>

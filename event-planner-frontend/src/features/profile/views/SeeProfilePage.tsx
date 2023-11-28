@@ -9,9 +9,11 @@ import { useParams } from 'react-router-dom';
 function SeeProfilePage() {
   const isSuccess = useSelector(selectProfileIsSuccess);
   let { userId } = useParams() || '';
+
   useEffect(() => {
     if (isSuccess) handleGenericSuccess('You have successfully updated your profile.');
   }, [isSuccess]);
+
   return (
     <Box display="flex" justifyContent="center" width="100%" alignItems="center" h="100%">
       <SeeProfile userId={userId} />

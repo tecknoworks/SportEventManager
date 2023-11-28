@@ -1,5 +1,5 @@
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import { Input, List, ListItem } from '@chakra-ui/react';
+import { Input, List, ListItem, useColorMode } from '@chakra-ui/react';
 import { setKey } from 'react-geocode';
 
 type Props = {
@@ -18,6 +18,10 @@ function LocationSearch({ onCoordinatesChange, onAddressChange, address }: Props
 
   setKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '');
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
+
   return (
     <>
       <PlacesAutocomplete value={address} onChange={onAddressChange} onSelect={handleSelect}>
@@ -28,13 +32,13 @@ function LocationSearch({ onCoordinatesChange, onAddressChange, address }: Props
                 placeholder: 'Search Places ...',
               })}
             />
-            <List spacing={3} w="full" bg="white" maxH="15vh" overflowY="auto" minHeight="15vh">
+            <List spacing={3} w="full" bg={bgColor} maxH="15vh" overflowY="auto" minHeight="15vh">
               {loading ? (
                 <ListItem>Loading...</ListItem>
               ) : (
                 suggestions.map((suggestion) => {
                   const style = suggestion.active
-                    ? { bg: 'gray.100', cursor: 'pointer' }
+                    ? { bg: 'red', cursor: 'pointer' }
                     : { bg: 'white', cursor: 'pointer' };
                   return (
                     <ListItem

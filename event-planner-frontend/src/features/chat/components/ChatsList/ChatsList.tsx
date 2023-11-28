@@ -1,4 +1,4 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Text, VStack, useColorMode } from '@chakra-ui/react';
 import { ChatDetails } from 'features/chat/api/dtos/dtos';
 import ChatCard from '../ChatCard/ChatCard';
 import AssistantChatCard from '../AssistantCard/AssistantChatCard';
@@ -17,7 +17,11 @@ const assistantChat: ChatDetails = {
   participantsCount: 0,
 };
 
+
 const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props) => {
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
     <VStack
       width="100%"
@@ -28,7 +32,7 @@ const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props
       spacing={4}
       gap={0}
       overflowY="auto"
-      bgColor="white"
+      bgColor={bgColor}
       borderRadius="1rem"
       className="hide-scrollbar"
       sx={{
