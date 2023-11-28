@@ -1,14 +1,16 @@
-import { Box, Text } from '@chakra-ui/react';
-import React from 'react';
+import { Box, Text, useColorMode } from '@chakra-ui/react';
 
 function NotFound() {
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
-    <Box width="100%" height="100%" display="flex" justifyContent="center" alignItems="center">
+    <Box width="100%" height="100%" display="flex" justifyContent="center" alignItems="center" >
       <Box
         width="20%"
         height="auto"
         padding="20px"
-        bgColor="white"
+        bgColor={bgColor}
         borderRadius="md"
         display="flex"
         justifyContent="center"

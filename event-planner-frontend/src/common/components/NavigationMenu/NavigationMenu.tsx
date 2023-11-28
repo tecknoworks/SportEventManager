@@ -13,9 +13,10 @@ import {
   MenuList,
   Text,
   Stack,
+  useColorMode,
   useDisclosure,
 } from '@chakra-ui/react';
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { CloseIcon, HamburgerIcon, MoonIcon, SunIcon } from '@chakra-ui/icons';
 import NavLink from './components/NavLink';
 import { useNavigate } from 'react-router-dom';
 import { getUserFromToken } from 'services/auth/context/AuthContext';
@@ -27,6 +28,7 @@ import { getProfileThunk } from 'features/profile/store/thunks/getProfileThunk';
 import { selectProfile } from 'features/profile/store/selectors/profileSelector';
 import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
 import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
+import { IoSunny } from "react-icons/io5";
 import Notifications from 'features/notifications/Notifications';
 import {
   connectNotification,
@@ -95,6 +97,8 @@ const NavigationMenu = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
+  const { colorMode, toggleColorMode } = useColorMode();
+
   useEffect(() => {
     if (token) {
       const user = getUserFromToken(token);
@@ -107,6 +111,7 @@ const NavigationMenu = () => {
     }
   }, [token]);
 
+  const navbarBgColor = colorMode === 'dark' ? 'dark.navbar' : 'light.navbar';
   useEffect(() => {
     connectNotification();
     registerNotificationReceived((message: string) => {
@@ -123,7 +128,7 @@ const NavigationMenu = () => {
   }, [dispatch]);
 
   return (
-    <Box height="64px" width="100%" top="0" bg={'whiteAlpha.800'} px={4}>
+    <Box height="64px" width="100%" top="0" bg={navbarBgColor} px={4} >
       <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
         <IconButton
           backgroundColor="whiteAlpha.700"
@@ -134,7 +139,7 @@ const NavigationMenu = () => {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={'center'}>
-          <Box color="#610c9f" fontWeight="semibold">
+          <Box color={colorMode} fontWeight="semibold">
             SportSpark
           </Box>
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
@@ -149,6 +154,7 @@ const NavigationMenu = () => {
             )}
           </HStack>
         </HStack>
+
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton as={Button} rounded={'full'} variant={'link'} cursor={'pointer'} minW={0}>
@@ -159,6 +165,9 @@ const NavigationMenu = () => {
                 src={isLoggedIn ? profile?.profilePhoto : ''}
               />
             </MenuButton>
+            <Button onClick={toggleColorMode} ml="4">
+              {colorMode === 'light' ? <MoonIcon /> : <IoSunny />}
+            </Button>
             <MenuList zIndex="9">
               {isLoggedIn ? (
                 <>

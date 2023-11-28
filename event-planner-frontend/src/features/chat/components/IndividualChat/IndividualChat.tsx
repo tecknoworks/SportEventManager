@@ -14,6 +14,7 @@ import { registerMessageReceived, sendMessage, unregisterMessageReceived } from 
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
 import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
 import { AddMessagePaylod, addMessage } from 'features/chat/store/slices/chatSlice';
+import { useColorMode } from '@chakra-ui/react';
 
 type Props = {
   chatDetails?: ChatDetails;
@@ -84,8 +85,12 @@ const IndividualChat = ({ chatDetails }: Props) => {
     }
   };
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+  const bgColorChat = colorMode === 'dark' ? 'whiteAlpha.400' : 'whiteAlpha.700';
+
   return chatDetails && messagesSelector ? (
-    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor="whiteAlpha.800">
+    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor={bgColorChat} >
       <ChatHeader
         title={chatDetails.name}
         avatarUrl={chatDetails.imageUrl}
@@ -112,12 +117,13 @@ const IndividualChat = ({ chatDetails }: Props) => {
           currentUser={userDetails?.username || ''}
         />
       </VStack>
-      <HStack p={4} w="100%" bgColor="white" height="5rem" borderBottomRadius="1rem">
+      <HStack p={4} w="100%" bgColor={bgColor} height="5rem" borderBottomRadius="1rem">
         <Input
           placeholder="Type a message..."
           onKeyDown={handleKeyPress}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
+          bg={bgColor}
         />
         <PrimaryButton text={<ArrowRightIcon />} onClick={handleSendMessage} />
       </HStack>

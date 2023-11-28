@@ -1,4 +1,4 @@
-import { FormControl, Box, FormLabel, Heading } from '@chakra-ui/react';
+import { FormControl, Box, FormLabel, Heading, useColorMode } from '@chakra-ui/react';
 import LocationSearch from 'common/components/LocationSearch/LocationSearch';
 import { LatLng } from 'common/components/Map/models';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
@@ -108,6 +108,16 @@ function CreateEventForm() {
       }
     });
   };
+
+  const { colorMode } = useColorMode();
+
+  useEffect(() => {
+    if (colorMode === 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [colorMode]);
 
   return (
     <Box
