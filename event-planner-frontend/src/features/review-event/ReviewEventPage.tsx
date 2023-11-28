@@ -8,7 +8,7 @@ import RatingComponent from './views/RatingComponent';
 import { AppDispatch } from 'redux/store';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
 import { selectCurrentEvent, selectSendReviewSuccess } from 'features/event/store/selectors/eventSelectors';
-import { Box, Divider, Flex, Input, Text } from '@chakra-ui/react';
+import { Box, Divider, Flex, Input, Text, useColorMode } from '@chakra-ui/react';
 import PrimaryButton from 'common/components/buttons/PrimaryButton';
 import { sendReviewThunk } from './thunks/sendReviewThunk';
 import { SendReviewData } from './api/dto';
@@ -112,13 +112,16 @@ const ReviewEventPage = () => {
     }
   };
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
     <AccessToReviewPage userFromLink={userId}>
       <Text color="white" fontSize="24px" textAlign="center" marginTop="50px">
         Review the participants of {currentEvent?.name} event
       </Text>
       <Flex
-        backgroundColor="whiteAlpha.500"
+        backgroundColor={bgColor}
         padding="20px"
         w="auto"
         margin="50px"
@@ -147,7 +150,7 @@ const ReviewEventPage = () => {
           </React.Fragment>
         ))}
         <PrimaryButton marginTop="30px" text="Submit reviews" onClick={handleSubmitReviews} />
-        <Text marginTop="5px" color="blackAlpha.700">
+        <Text marginTop="5px" bg={bgColor}>
           If don't want to send any reviews, just press the submit button
         </Text>
       </Flex>

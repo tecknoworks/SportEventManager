@@ -1,4 +1,4 @@
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, useColorMode } from '@chakra-ui/react';
 import { FormInfo } from 'common/components/FormInfo/FromInfo';
 import 'common/styles/form.scss';
 import React, { useEffect, useState } from 'react';
@@ -44,10 +44,13 @@ const AccountConfirmationPage = () => {
     );
   }, [isDone, isSuccess]);
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
-    <Box overflowY="hidden" display="flex" alignItems="center" justifyContent="center" height="100%">
+    <Box overflowY="hidden" display="flex" alignItems="center" justifyContent="center" height="100%" >
       <Box
-        bgColor="white"
+        bgColor={bgColor}
         display="flex"
         flexDirection="column"
         justifyContent="center"

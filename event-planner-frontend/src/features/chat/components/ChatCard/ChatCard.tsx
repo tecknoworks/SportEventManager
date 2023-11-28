@@ -7,11 +7,9 @@ type Props = {
   setSelectedChatDetails: any;
 };
 
-
-
 const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails }: Props) => {
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? 'gray.800' : 'gray.200';
+  const bgColorChat = colorMode === 'dark' ? 'gray.800' : 'gray.200';
 
   return (
     <HStack
@@ -20,10 +18,10 @@ const ChatCard = ({ chat, selectedChatDetails, setSelectedChatDetails }: Props) 
       p={5}
       spacing={4}
       _hover={{
-        bg: chat.id === selectedChatDetails?.id ? undefined : bgColor,
+        bg: chat.id === selectedChatDetails?.id ? undefined : bgColorChat,
         cursor: 'pointer',
       }}
-      bg={chat.id === selectedChatDetails?.id ? bgColor : 'transparent'}
+      bg={chat.id === selectedChatDetails?.id ? bgColorChat : 'transparent'}
       onClick={() => setSelectedChatDetails(chat)}
     >
       <Avatar name={chat.name} src={chat.imageUrl} />

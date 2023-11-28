@@ -15,8 +15,8 @@ export const SearchBar = ({ onSearch }: Props) => {
   };
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
-  
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
     <>
       <InputGroup width="100%" bg={bgColor} borderRadius={5} size="md">

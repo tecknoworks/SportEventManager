@@ -68,7 +68,7 @@ const AssistantChat = ({ chatDetails }: Props) => {
   }, []);
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
   const bgColorChat = colorMode === 'dark' ? 'whiteAlpha.400' : 'whiteAlpha.700';
 
   return chatDetails ? (

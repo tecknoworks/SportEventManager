@@ -53,10 +53,10 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
   };
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
 
   return (
-    <Box overflow="auto"  bg={bgColor} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
+    <Box overflow="auto" bg={bgColor} borderRight="1px" padding="20px" borderRightColor={'gray.200'} {...rest}>
       <Flex h="20" alignItems="center">
         <Text color="gray.500" as="b" fontSize="3xl">
           Filters

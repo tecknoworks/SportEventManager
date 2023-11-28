@@ -85,9 +85,8 @@ const LogInForm = () => {
     });
   };
 
-
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
 
   return (
     <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg={bgColor}>

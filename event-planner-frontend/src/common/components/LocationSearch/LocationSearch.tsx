@@ -19,7 +19,8 @@ function LocationSearch({ onCoordinatesChange, onAddressChange, address }: Props
   setKey(process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '');
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
 
   return (
     <>

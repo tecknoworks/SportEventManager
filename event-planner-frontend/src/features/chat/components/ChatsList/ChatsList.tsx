@@ -20,8 +20,8 @@ const assistantChat: ChatDetails = {
 
 const ChatsList = ({ chats, setSelectedChatDetails, selectedChatDetails }: Props) => {
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
-  
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
     <VStack
       width="100%"

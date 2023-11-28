@@ -1,4 +1,4 @@
-import { Box, FormControl, FormErrorMessage, FormLabel, Input, Stack, Text } from '@chakra-ui/react';
+import { Box, FormControl, FormErrorMessage, FormLabel, Input, Stack, Text, useColorMode } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import 'common/styles/form.scss';
 import { isValidEmail } from 'common/validators/emailValidator';
@@ -38,8 +38,11 @@ function ResetLinkForm() {
     dispatch(resetLinkThunk({ email }));
   };
 
+  const { colorMode } = useColorMode();
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
+
   return (
-    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden">
+    <Box className="form-wrapper" display="flex" width="500px" borderWidth="1px" borderRadius="lg" overflow="hidden" bg={bgColor}>
       <Text color="black.500" as="b" fontSize="3xl">
         Recover password
       </Text>

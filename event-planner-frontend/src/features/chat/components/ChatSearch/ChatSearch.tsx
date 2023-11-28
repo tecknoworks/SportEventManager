@@ -26,7 +26,7 @@ const ChatSearch = ({ setFoundChats, allChats }: Props) => {
   }, [debouncedSearchValue, allChats, setFoundChats]);
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
 
   return (
     <Box display="flex" gap="0.5rem" padding="0.5rem">

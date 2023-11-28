@@ -21,16 +21,15 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
 
   const parsedDateEnd = event.endDate ? parseISO(event.endDate) : null;
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
-  
+
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
 
   return (
     <Box
       p={5}
       shadow="md"
       borderWidth="1px"
-      // bg="white"
       borderRadius="lg"
       transition="all 0.2s"
       _hover={{ transform: 'scale(1.03)' }}
@@ -72,9 +71,9 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
         padding="0.5rem"
       >
         <Icon as={MdPersonOutline} mr={2} />
-        <strong>Author:&nbsp;</strong> 
-        <Badge mr={2} px={2} py={1}  borderRadius="full" cursor="pointer" colorScheme="purple"  onClick={() => navigate(`/profile/${event.authorUserId}`)}>
-        {event.authorUserName ? event.authorUserName : 'Not specified'}
+        <strong>Author:&nbsp;</strong>
+        <Badge mr={2} px={2} py={1} borderRadius="full" cursor="pointer" colorScheme="purple" onClick={() => navigate(`/profile/${event.authorUserId}`)}>
+          {event.authorUserName ? event.authorUserName : 'Not specified'}
         </Badge>
       </Text>
       <Text display="flex" alignItems="center" padding="0.5rem">

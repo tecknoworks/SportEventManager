@@ -21,8 +21,7 @@ const EventsCardList = ({ events, showPagination, page, count, pageSize, onPageC
   const eventCards = Array.from(events, (event) => <EventCard event={event} currentUser={user} />);
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
-
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
 
   return (
     <Box

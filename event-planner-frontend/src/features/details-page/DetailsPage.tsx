@@ -9,7 +9,6 @@ import {
   Container,
   Divider,
   Icon,
-  useToast,
   useColorMode,
 } from '@chakra-ui/react';
 import { getEventThunk } from 'features/event/store/thunks/getEventThunk';
@@ -49,15 +48,12 @@ const DetailsPage = () => {
     endDate,
     eventPositions,
     hasPositions,
-    id,
-    isClosed,
     location,
     locationName,
     maximumParticipants,
     name,
     participants,
     skillLevel,
-    sportTypeId,
     sportTypeName,
     startDate,
   } = details;
@@ -91,7 +87,7 @@ const DetailsPage = () => {
   const formattedDateEnd = parsedDateEnd ? format(parsedDateEnd, 'HH:mm dd-MM-yyyy') : '';
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  const bgColor = colorMode === 'dark' ? 'dark.background' : 'light.background';
 
   return (
     <Container maxW="container.md" bg={bgColor} p={4} borderRadius="lg" boxShadow="md" mt={'9'} padding="2rem">
