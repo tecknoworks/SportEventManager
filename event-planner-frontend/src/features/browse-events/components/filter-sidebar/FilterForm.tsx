@@ -47,7 +47,9 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
     const sportId = event.target.value;
     const sport = sportTypes.find((s) => s.id === sportId) || undefined;
     setSelectedSport(sport);
-    dispatch(getPositionsForSportTypeThunk(sportId));
+    if (sport !== undefined) {
+      dispatch(getPositionsForSportTypeThunk(sportId));
+    }
   };
 
   const { colorMode } = useColorMode();
@@ -112,7 +114,6 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
           <FormLabel>Location</FormLabel>
           <LocationSearch
             onCoordinatesChange={setCoordinates}
-            initialAddress=""
             onAddressChange={setLocationName}
             address={locationName}
           />

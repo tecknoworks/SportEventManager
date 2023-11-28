@@ -50,16 +50,18 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
       <Box display="flex" alignItems="center" padding="0.5rem">
         <Icon as={MdLocationOn} mr={2} />
         <Text display="flex" alignItems="center">
-          Location: {event.locationName}
+          <strong>Location:&nbsp;</strong> {event.locationName}
         </Text>
       </Box>
       <Box display="flex" alignItems="center" padding="0.5rem">
         <Icon as={MdEvent} mr={2} />
-        <Text>Starts: {formattedDateStart}</Text>
+        <Text>
+          <strong>Starts: </strong> {formattedDateStart}
+        </Text>
       </Box>
       <Box display="flex" alignItems="center" padding="0.5rem">
         <Icon as={MdEventAvailable} mr={2} />
-        <Text>Ends: {formattedDateEnd}</Text>
+        <Text><strong>Ends: </strong>{formattedDateEnd}</Text>
       </Box>
 
       <Divider my={2} />
@@ -67,25 +69,24 @@ const EventCard: React.FC<{ event: SportEvent }> = ({ event }) => {
         mt={4}
         display="flex"
         alignItems="center"
-        onClick={() => navigate(`/profile/${event.authorUserId}`)}
-        cursor="pointer"
+        padding="0.5rem"
       >
         <Icon as={MdPersonOutline} mr={2} />
-        Author: {event.authorUserName ? event.authorUserName : 'Not specified'}
+        <strong>Author:&nbsp;</strong> 
+        <Badge mr={2} px={2} py={1}  borderRadius="full" cursor="pointer" colorScheme="purple"  onClick={() => navigate(`/profile/${event.authorUserId}`)}>
+        {event.authorUserName ? event.authorUserName : 'Not specified'}
+        </Badge>
       </Text>
-      <Text mt={2} display="flex" alignItems="center">
+      <Text display="flex" alignItems="center" padding="0.5rem">
         <Icon as={MdPeopleOutline} mr={2} />
-        Participants:{' '}
+        <strong>Participants:</strong>&nbsp;
         {event.participants && event.participants.length > 0 ? (
           event.participants
             .filter((participant: Participant) => participant.status !== 0)
             .map((participant: Participant, index: any) => (
-              <span key={participant.userId}>
-                <Text as="span" onClick={() => navigate(`/profile/${participant.userId}`)} cursor="pointer">
-                  {participant.userName || 'Anonymous'}
-                </Text>
-                {index < event.participants.length - 1 && <span>, &nbsp; </span>}
-              </span>
+              <Badge key={participant.userId} mr={2} px={2} py={1} borderRadius="full" cursor="pointer" colorScheme="blue" onClick={() => navigate(`/profile/${participant.userId}`)}>
+                {participant.userName || 'Anonymous'}
+              </Badge>
             ))
         ) : (
           <Text>No participants</Text>

@@ -73,7 +73,7 @@ const IndividualChat = ({ chatDetails }: Props) => {
   };
 
   const handleSendMessage = () => {
-    if (!chatDetails) return;
+    if (!chatDetails || newMessage.length === 0) return;
     sendMessage(newMessage, chatDetails.id);
     setNewMessage('');
   };
@@ -84,12 +84,13 @@ const IndividualChat = ({ chatDetails }: Props) => {
       handleSendMessage();
     }
   };
-  
+
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+  const bgColorChat = colorMode === 'dark' ? 'whiteAlpha.400' : 'whiteAlpha.700';
 
   return chatDetails && messagesSelector ? (
-    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor="whiteAlpha.800">
+    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bgColor={bgColorChat} >
       <ChatHeader
         title={chatDetails.name}
         avatarUrl={chatDetails.imageUrl}

@@ -22,12 +22,12 @@ import { closeEventThunk } from 'features/event/store/thunks/closeEventThunk';
 import { AppDispatch } from 'redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { CloseEventDto } from 'features/event/api/dtos';
-import { useEffect, useState } from 'react';
-import { selectCloseSuccess } from 'features/event/store/selectors/eventSelectors';
 import { UserDetails, getUserFromToken } from 'services/auth/context/AuthContext';
 import { MdEvent, MdLocationOn, MdOutlineDescription } from 'react-icons/md';
 import { selectToken } from 'features/login/store/selectors/logInSelectors';
-
+import DeleteButton from '../buttons/DeleteButton';
+import ConfirmationModal from 'features/admin-management/components/Moldal/ConfirmationModal';
+import { useState } from 'react';
 
 interface Props {
   event: EventDto;
@@ -40,28 +40,25 @@ const EventCard = ({ event, currentUser }: Props) => {
   const navigate = useNavigate();
   const [isResizable] = useMediaQuery('(max-width: 1136px)');
   const formattedStartDate = format(new Date(event.startDate), 'MM/dd/yyyy HH:mm');
-  const [reloadOnce, setReloadOnce] = useState(false);
-  const isCloseSuccess = useSelector(selectCloseSuccess);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<'closeEvent' | null>(null);
 
   const token = useSelector(selectToken);
   const user = getUserFromToken(token || '');
 
-  const isUserParticipant = event.participants?.find(participant => participant.userId === user?.userId);
+  const isUserParticipant = event.participants?.find((participant) => participant.userId === user?.userId);
 
   const handleEventUserClick = () => {
     navigate(`/event-users/${event.id}`);
   };
 
-  useEffect(() => {
-    if (isCloseSuccess && !reloadOnce) {
-      setReloadOnce(true);
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
-    }
-  }, [isCloseSuccess, reloadOnce]);
+  const openCloseEvent = () => {
+    setConfirmAction('closeEvent');
+    setIsModalOpen(true);
+  };
 
   const handleCloseEvent = () => {
+    setIsModalOpen(false);
     const data: CloseEventDto = {
       eventId: event.id,
     };
@@ -114,14 +111,16 @@ const EventCard = ({ event, currentUser }: Props) => {
             w={!isResizable ? '' : '100%'}
             onClick={() => navigate(`/event-details/${event.id}`)}
           />
-          {token && <JoinButton
-            text="Join Event"
-            isDisabled={event.isClosed || event.maximumParticipants === 0 || !!isUserParticipant ? true : false}
-            w={!isResizable ? '' : '100%'}
-            marginTop={!isResizable ? '' : '10px'}
-            marginLeft={!isResizable ? '30px' : ''}
-            onClick={onOpen}
-          />}
+          {token && (
+            <JoinButton
+              text="Join Event"
+              isDisabled={event.isClosed || event.maximumParticipants === 0 || !!isUserParticipant ? true : false}
+              w={!isResizable ? '' : '100%'}
+              marginTop={!isResizable ? '' : '10px'}
+              marginLeft={!isResizable ? '30px' : ''}
+              onClick={onOpen}
+            />
+          )}
           {event.authorUserId === currentUser?.userId && event.isClosed === false && (
             <>
               <SecondaryButton
@@ -131,19 +130,19 @@ const EventCard = ({ event, currentUser }: Props) => {
                 marginLeft={!isResizable ? '30px' : ''}
                 onClick={handleEventUserClick}
               />
-              <SecondaryButton
-                text="Close Event"
-                w={!isResizable ? '' : '100%'}
-                marginTop={!isResizable ? '' : '10px'}
-                marginLeft={!isResizable ? '30px' : ''}
-                onClick={handleCloseEvent}
-              />
               <PrimaryButton
                 text="Edit Event"
                 w={!isResizable ? '' : '100%'}
                 marginTop={!isResizable ? '' : '10px'}
                 marginLeft={!isResizable ? '30px' : ''}
                 onClick={() => navigate(`/edit-event/${event.id}`)}
+              />
+              <DeleteButton
+                text="Close Event"
+                w={!isResizable ? '' : '100%'}
+                marginTop={!isResizable ? '' : '10px'}
+                marginLeft={!isResizable ? '30px' : ''}
+                onClick={openCloseEvent}
               />
             </>
           )}
@@ -155,6 +154,12 @@ const EventCard = ({ event, currentUser }: Props) => {
         eventPositions={event.eventPositions}
         eventId={event.id}
         userId={currentUser?.userId}
+      />
+      <ConfirmationModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        confirmAction={confirmAction}
+        handleConfirm={handleCloseEvent}
       />
     </>
   );

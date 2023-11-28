@@ -41,6 +41,7 @@ const AssistantChat = ({ chatDetails }: Props) => {
   };
 
   const handleSendMessage = () => {
+    if (newMessage.length === 0) return;
     const messageDto: CreateMessage = {
       threadId: localStorage.getItem('threadId') || '',
       assistantId: localStorage.getItem('assistantId') || '',
@@ -67,10 +68,11 @@ const AssistantChat = ({ chatDetails }: Props) => {
   }, []);
 
   const { colorMode } = useColorMode();
-  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white'; 
+  const bgColor = colorMode === 'dark' ? '#2d3748' : 'white';
+  const bgColorChat = colorMode === 'dark' ? 'whiteAlpha.400' : 'whiteAlpha.700';
 
   return chatDetails ? (
-    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bg='whiteAlpha.800'>
+    <VStack borderRadius="2rem" align="stretch" flex="1" height="100%" bg={bgColorChat}>
       <ChatHeader title={chatDetails.name} avatarUrl={chatDetails.imageUrl} />
       <VStack
         flex="1"

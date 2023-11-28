@@ -1,12 +1,10 @@
-﻿using DataAccessLayer.Helpers;
-using DataAccessLayer.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using DataAccessLayer.Models;
 
 namespace DataAccessLayer.Interfaces
 {
     public interface IEventRepository
     {
-        Task<string> CreateEventAsync(Event newEvent);
+        Task<Guid> CreateEventAsync(Event newEvent);
         Task<Event> GetEventByIdAsync(Guid eventId);
         Task<IList<SportType>> GetAvailableSportTypesAsync();
         Task<IList<Position>> GetPositionsForSportTypeAsync(Guid sportTypeId);
@@ -20,6 +18,7 @@ namespace DataAccessLayer.Interfaces
         Task<Participant> GetParticipant(Guid eventId, string userId);
         Task<string> DeleteParticipantAsync(string userId, Guid eventId);
         Task <string> PostReviewAsync(Review review);
+        Task<IList<Guid>> GetUserCreatedOrJoinedEvents(string userId);
         Task<Guid> GetEventPositionIdForEvent(Guid eventId, Guid? positionId);
     }
 }

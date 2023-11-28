@@ -16,11 +16,11 @@ namespace DataAccessLayer.Repositories
             _eventPlannerContext = eventPlannerContext;
         }
 
-        public async Task<string> CreateEventAsync(Event newEvent)
+        public async Task<Guid> CreateEventAsync(Event newEvent)
         {
             _eventPlannerContext.Events.Add(newEvent);
             await _eventPlannerContext.SaveChangesAsync();
-            return "Event was created successfuly.";
+            return newEvent.Id;
         }
 
         public async Task<string> PostReviewAsync(Review review)
@@ -46,17 +46,6 @@ namespace DataAccessLayer.Repositories
                 throw new EventPlannerException($"Event with id {eventId} does not exist.");
             }
 
-            foreach (var participant in eventEntity.Participants)
-            {
-                var dbParticipant = await _eventPlannerContext.Participants
-                    .FirstOrDefaultAsync(p => p.UserId == participant.UserId);
-
-                if (dbParticipant != null)
-                {
-                    participant.Status = dbParticipant.Status;
-                }
-            }
-
             return eventEntity;
         }
 
@@ -70,9 +59,6 @@ namespace DataAccessLayer.Repositories
                 .Include(evnt => evnt.Participants)
                          .ThenInclude(part => part.User)
                             .ThenInclude(user => user.Profile);
-
-
-
 
             if (!string.IsNullOrEmpty(searchData))
             {
@@ -172,17 +158,16 @@ namespace DataAccessLayer.Repositories
                 EventId = eventId,
                 UserId = userId,
                 Status = ParticipantStatus.Pending,
-                EventPositionId = eventPositionId
+                EventPositionId = eventPositionId == Guid.Empty ? null : eventPositionId
             };
 
             try
             {
                 participant.User = await _eventPlannerContext.Users.FirstOrDefaultAsync(user => user.Id == userId);
-                if (eventPositionId !=null)
+                if (eventPositionId.HasValue && eventPositionId.Value != Guid.Empty)
                 {
-                    participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
+                    participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId.Value);
                 }
-                participant.EventPosition = await _eventPlannerContext.EventPositions.FirstOrDefaultAsync(x => x.Id == eventPositionId);
                 participant.Event = await _eventPlannerContext.Events.FirstOrDefaultAsync(x => x.Id == eventId);
 
                 var eventPosition = eventPositionId.HasValue
@@ -236,6 +221,16 @@ namespace DataAccessLayer.Repositories
                 throw new EventPlannerException($"Participant with user id {userId} and event id {eventId} does not exist.");
             }
 
+            var currentEvent = await GetEventByIdAsync(eventId);
+
+            if (participantEntity.Event.SportType.HasPositions)
+            {
+                var currentPositionOccupied = currentEvent.EventPositions.FirstOrDefault(position => position.Id == participantEntity.EventPositionId);
+                currentPositionOccupied.AvailablePositions += 1;
+            }
+
+            currentEvent.MaximumParticipants += 1;
+
             _eventPlannerContext.Participants.Remove(participantEntity);
             await _eventPlannerContext.SaveChangesAsync();
             return "Participant deleted successfully";
@@ -257,5 +252,19 @@ namespace DataAccessLayer.Repositories
                     .Select(ep => ep.Id)
                     .FirstOrDefaultAsync();
         }
-    }
+        public async Task<IList<Guid>> GetUserCreatedOrJoinedEvents(string userId)
+        {
+            var joined = await _eventPlannerContext.Participants
+                    .Where(participant => participant.UserId == userId && participant.Status == ParticipantStatus.Accepted)
+                    .Select(participant => participant.EventId)
+                    .ToListAsync();
+
+            var createdEventIds = await _eventPlannerContext.Users
+                .Where(user => user.Id == userId)
+                .SelectMany(user => user.Events.Select(eventItem => eventItem.Id))
+                .ToListAsync();
+
+            var result = joined.Union(createdEventIds).ToList();
+            return result;
+        }     }
 }

@@ -25,7 +25,7 @@ import { useNavigate } from 'react-router-dom';
 
 function CreateEventForm() {
   const dispatch: AppDispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [selectedSport, setSelectedSport] = React.useState<GetSportTypesDto | undefined>(undefined);
   const [eventName, setEventName] = useState('');
   const [eventDescription, setEventDescription] = useState('');
@@ -102,8 +102,11 @@ function CreateEventForm() {
       eventPositions: eventPositions,
     };
 
-    dispatch(createEventThunk(createEventDto));
-    navigate('/my-events')
+    dispatch(createEventThunk(createEventDto)).then((response) => {
+      if (response) {
+        navigate(`/event-details/${response.payload}`);
+      }
+    });
   };
 
   const { colorMode } = useColorMode();
@@ -158,12 +161,7 @@ function CreateEventForm() {
 
       <FormControl isRequired>
         <FormLabel>Location</FormLabel>
-        <LocationSearch
-          onCoordinatesChange={setCoordinates}
-          initialAddress=""
-          onAddressChange={setLocationName}
-          address={locationName}
-        />
+        <LocationSearch onCoordinatesChange={setCoordinates} onAddressChange={setLocationName} address={locationName} />
       </FormControl>
 
       <PrimaryButton text="Create event" onClick={() => handleCreateEvent()} />

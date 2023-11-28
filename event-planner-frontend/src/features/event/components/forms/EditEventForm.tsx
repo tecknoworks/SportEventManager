@@ -19,6 +19,7 @@ import PositionSelection from '../fields/PositionSelection';
 import SkillLevelField from '../fields/SkillLevelField';
 import MaxParticipantsField from '../fields/MaxParticipantsField';
 import DateTimeField from '../fields/DateTimeField';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   eventId: string;
@@ -38,6 +39,8 @@ function EditEventForm({ eventId }: Props) {
     handleAvailablePositionsChange,
     handleDeletePosition,
   } = usePositionManager(positionsForSportType);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getEventThunk(eventId));
@@ -66,7 +69,6 @@ function EditEventForm({ eventId }: Props) {
         skillLevel: event.skillLevel,
         isClosed: false,
         eventPositions: event.eventPositions,
-        participants: event.participants,
       };
 
       const mappedEventPositions = event.eventPositions?.map(
@@ -78,6 +80,7 @@ function EditEventForm({ eventId }: Props) {
           }) as EventPosition
       );
 
+      setLocationName(event.locationName);
       setSelectedPositions(mappedEventPositions || []);
       setCurrentEvent(updatedEvent);
       dispatch(getPositionsForSportTypeThunk(event.sportTypeId));
@@ -113,7 +116,11 @@ function EditEventForm({ eventId }: Props) {
       currentEvent.eventPositions = mappedEventPositions;
       currentEvent.location = coordinates?.lat + ',' + coordinates?.lng;
       currentEvent.locationName = locationName;
-      dispatch(updateEventThunk({ eventId, data: currentEvent }));
+      dispatch(updateEventThunk({ eventId, data: currentEvent })).then((response) => {
+        if (response) {
+          navigate(`/event-details/${eventId}`);
+        }
+      });
     }
   };
 
@@ -185,12 +192,7 @@ function EditEventForm({ eventId }: Props) {
       />
       <FormControl isRequired>
         <FormLabel>Location</FormLabel>
-        <LocationSearch
-          onCoordinatesChange={setCoordinates}
-          initialAddress={currentEvent?.location || ''}
-          onAddressChange={setLocationName}
-          address={locationName}
-        />
+        <LocationSearch onCoordinatesChange={setCoordinates} onAddressChange={setLocationName} address={locationName} />
       </FormControl>
       <PrimaryButton text="Edit event" onClick={() => handleUpdateEvent()} />
     </Box>

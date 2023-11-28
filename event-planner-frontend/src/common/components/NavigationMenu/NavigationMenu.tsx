@@ -28,6 +28,15 @@ import { selectProfile } from 'features/profile/store/selectors/profileSelector'
 import { deleteAssitantThunk } from 'features/chat/store/thunks/deleteAssistantThunk';
 import { deleteThreadThunk } from 'features/chat/store/thunks/deleteThreadThunk';
 import { IoSunny } from "react-icons/io5";
+import Notifications from 'features/notifications/Notifications';
+import {
+  connectNotification,
+  disconnectNotification,
+  registerNotificationReceived,
+  unregisterNotificationReceived,
+} from 'services/notificationService';
+import { addNotificationMessage } from './store/notificationSlice';
+import { handleGenericSuccess } from 'services/notificationHandlingService';
 
 type LinkType = {
   key: number;
@@ -38,6 +47,8 @@ type LinkType = {
 
 const NavigationMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const notificationsDisclosure = useDisclosure();
+
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
   const Links: LinkType[] = [
@@ -86,7 +97,7 @@ const NavigationMenu = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   const { colorMode, toggleColorMode } = useColorMode();
-  
+
   useEffect(() => {
     if (token) {
       const user = getUserFromToken(token);
@@ -99,8 +110,21 @@ const NavigationMenu = () => {
     }
   }, [token]);
 
- 
   const navbarBgColor = colorMode === 'dark' ? 'dark.navbar' : 'light.navbar';
+  useEffect(() => {
+    connectNotification();
+    registerNotificationReceived((message: string) => {
+      dispatch(addNotificationMessage(message));
+      handleGenericSuccess('You have new notifications');
+    });
+
+    return () => {
+      unregisterNotificationReceived((message: string) => {
+        console.log('Unregistered callback:', message);
+      });
+      disconnectNotification();
+    };
+  }, [dispatch]);
 
   return (
     <Box height="64px" width="100%" top="0" bg={navbarBgColor} px={4} >
@@ -160,6 +184,8 @@ const NavigationMenu = () => {
                   >
                     All events you joined
                   </MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={notificationsDisclosure.onOpen}>Notifications</MenuItem>
                   <MenuDivider />
                   <MenuItem
                     onClick={async () => {
@@ -223,6 +249,9 @@ const NavigationMenu = () => {
           </Stack>
         </Box>
       ) : null}
+      {notificationsDisclosure.isOpen && (
+        <Notifications isOpen={notificationsDisclosure.isOpen} onClose={notificationsDisclosure.onClose} />
+      )}
     </Box>
   );
 };

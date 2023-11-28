@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DataAccessLayer.Helpers;
 using System.Security.Claims;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using DataAccessLayer.Models;
 
@@ -91,7 +90,7 @@ namespace EventPlannerAPI.Controllers
 
         [Authorize]
         [HttpPost("CreateEvent")]
-        public async Task<ActionResult> CreateEvent([FromBody] CreateEventDto newEventDto)
+        public async Task<ActionResult<Guid>> CreateEvent([FromBody] CreateEventDto newEventDto)
         {
             try
             {

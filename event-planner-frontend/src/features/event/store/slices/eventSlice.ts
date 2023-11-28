@@ -5,6 +5,7 @@ import { getPositionsForSportTypeThunk } from '../thunks/getPositionsForSportTyp
 import { getEventThunk } from '../thunks/getEventThunk';
 import { closeEventThunk } from '../thunks/closeEventThunk';
 import { sendReviewThunk } from 'features/review-event/thunks/sendReviewThunk';
+import { updateEventThunk } from '../thunks/updateEventThunk';
 
 type State = {
   sportTypes: GetSportTypesDto[] | undefined;

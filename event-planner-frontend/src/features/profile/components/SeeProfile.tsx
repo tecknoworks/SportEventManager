@@ -1,6 +1,5 @@
 import {
   FormControl,
-  FormLabel,
   Heading,
   Stack,
   useColorModeValue,
@@ -27,7 +26,7 @@ const SeeProfile = ({ userId }: Props) => {
   const dispatch: AppDispatch = useDispatch();
   const profile = useSelector(selectProfile);
   const rating = useSelector(selectUserRating);
-  const [isMobile] = useMediaQuery('(max-width: 1037px)');
+  const [isMobile] = useMediaQuery('(max-width: 700px)');
 
   useEffect(() => {
     dispatch(getProfileThunk(userId || ''));
@@ -35,7 +34,7 @@ const SeeProfile = ({ userId }: Props) => {
   }, []);
 
   return (
-    <Box width="100%" display="flex" justifyContent="center" alignItems="center">
+    <Box width="100%" display="flex" justifyContent="center" pt={isMobile ? '9rem' : '0'}>
       <Stack
         spacing={6}
         p={6}
@@ -44,7 +43,7 @@ const SeeProfile = ({ userId }: Props) => {
         rounded={'xl'}
         my={12}
         margin="0"
-        alignItems="center"
+        alignItems={isMobile ? 'center' : 'flex-start'}
       >
         <Heading lineHeight={1.1} fontSize={{ base: '2xl', sm: '3xl' }}>
           User Profile
@@ -57,9 +56,9 @@ const SeeProfile = ({ userId }: Props) => {
           justifyContent="space-around"
           gap={!isMobile ? '45px' : '0px'}
         >
-          <Stack spacing={4}>
+          <Stack width='100%'>
             <FormControl id="userName">
-              <FormLabel>User Icon</FormLabel>
+              <Heading as='h6' size='sm' mb='0.5rem'>User Icon</Heading>
               <Stack direction={['column', 'row']} spacing={6}>
                 <Center>
                   <Avatar
@@ -72,37 +71,37 @@ const SeeProfile = ({ userId }: Props) => {
               </Stack>
             </FormControl>
             <FormControl id="firstName">
-              <FormLabel>First Name</FormLabel>
+              <Heading as='h6' size='sm'>First Name</Heading>
               <Text>{profile?.firstName}</Text>
             </FormControl>
             <FormControl id="lastName">
-              <FormLabel>Last Name</FormLabel>
+              <Heading as='h6' size='sm'>Last Name</Heading>
               <Text>{profile?.lastName}</Text>
             </FormControl>
             <FormControl id="phoneNumber">
-              <FormLabel>Phone Number</FormLabel>
+              <Heading as='h6' size='sm'>Phone Number</Heading>
               <Text>{profile?.phoneNumber}</Text>
             </FormControl>
           </Stack>
-          <Stack spacing={4}>
+          <Stack width='100%' marginTop={!isMobile ? '57px' : '10px'}>
             <FormControl id="DateOfBirth">
-              <FormLabel>Date of Birth</FormLabel>
+              <Heading as='h6' size='sm'>Date of Birth</Heading>
               <Text>{profile?.dateOfBirth ? formatDate(profile?.dateOfBirth) : 'Date not provided'}</Text>
             </FormControl>
             <FormControl id="Country">
-              <FormLabel>Country</FormLabel>
+              <Heading as='h6' size='sm'>Country</Heading>
               <Text>{profile?.country}</Text>
             </FormControl>
             <FormControl id="County">
-              <FormLabel>County</FormLabel>
+              <Heading as='h6' size='sm'>County</Heading>
               <Text>{profile?.county}</Text>
             </FormControl>
             <FormControl id="City">
-              <FormLabel>City</FormLabel>
+              <Heading as='h6' size='sm'>City</Heading>
               <Text>{profile?.city}</Text>
             </FormControl>
             <FormControl>
-              <FormLabel>{profile?.firstName} Rating</FormLabel>
+              <Heading as='h6' size='sm'>{profile?.firstName} Rating</Heading>
               <Box display="flex" alignItems="center">
                 <Text> {rating === 0 ? `No rating yet` : Number(rating).toFixed(1)} </Text>
                 {rating === 0 ? <EmptyStar /> : <FullStar color="#ffd700" />}
