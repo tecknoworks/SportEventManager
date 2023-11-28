@@ -86,7 +86,7 @@ const FilterForm = ({ onClose, onSendFilter, isMyEvents, ...rest }: SidebarProps
           />
         </FormControl>
         <FormControl>
-          <FormLabel>Maximum Duration</FormLabel>
+          <FormLabel>Maximum Duration (hours)</FormLabel>
           <Input
             type="number"
             placeholder="Maximum Duration"
