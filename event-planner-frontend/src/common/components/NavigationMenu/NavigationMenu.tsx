@@ -11,6 +11,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Text,
   Stack,
   useColorMode,
   useDisclosure,
@@ -139,7 +140,7 @@ const NavigationMenu = () => {
         />
         <HStack spacing={8} alignItems={'center'}>
           <Box color={colorMode} fontWeight="semibold">
-            EventPlanner
+            SportSpark
           </Box>
           <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
             {Links.map(
@@ -175,7 +176,10 @@ const NavigationMenu = () => {
                       navigate('/edit-profile');
                     }}
                   >
-                    Profile: {profile?.userName}
+                    Profile: &nbsp;
+                    <Text maxW="120px" overflow="hidden" textOverflow="ellipsis" whiteSpace="nowrap">
+                      {profile?.userName}
+                    </Text>
                   </MenuItem>
                   <MenuItem
                     onClick={() => {

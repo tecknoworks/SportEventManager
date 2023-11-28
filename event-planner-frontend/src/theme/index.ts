@@ -14,12 +14,12 @@ const colors = {
   light: {
     background: 'white',
     text: '#000000',
-    navbar: 'rgb(255,255,255, 0.8)'
+    navbar: 'rgb(255,255,255, 0.8)',
   },
   dark: {
     background: '#2d3748',
     text: '#ffffff',
-    navbar: '#2d3748'
+    navbar: '#2d3748',
   },
 };
 
@@ -51,4 +51,3 @@ const overrides = extendTheme({
 const customTheme = extendTheme(overrides);
 
 export default customTheme;
-

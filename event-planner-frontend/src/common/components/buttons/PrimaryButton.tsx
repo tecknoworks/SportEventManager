@@ -9,9 +9,10 @@ type Props = {
   w?: string;
   marginTop?: string;
   marginLeft?: string;
+  isLoading?: boolean;
 };
 
-function PrimaryButton({ text, isDisabled, className, onClick, type, w, marginTop, marginLeft }: Props) {
+function PrimaryButton({ text, isDisabled, className, onClick, type, w, marginTop, marginLeft, isLoading }: Props) {
   return (
     <Button
       type={type}
@@ -24,6 +25,7 @@ function PrimaryButton({ text, isDisabled, className, onClick, type, w, marginTo
       w={w}
       marginTop={marginTop}
       marginLeft={marginLeft}
+      isLoading={isLoading}
     >
       {text}
     </Button>

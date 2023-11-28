@@ -45,7 +45,7 @@ const EventUsers = () => {
                 whiteSpace="nowrap"
                 textOverflow="ellipsis"
                 w="100%"
-                maxWidth="100%"
+                maxW="150px"
                 p="2"
               >
                 {participant.userName}
@@ -66,7 +66,7 @@ const EventUsers = () => {
                 whiteSpace="nowrap"
                 textOverflow="ellipsis"
                 w="100%"
-                maxWidth="100%"
+                maxW="150px"
                 p="2"
               >
                 {participant.userName}
